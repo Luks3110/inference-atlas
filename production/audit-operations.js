@@ -1,0 +1,83 @@
+export const operationsAudit = [{
+  moduleTitle: 'Produção & padrões',
+  baseline: 'As aulas já propagavam deadlines, limitavam retries e tokens por tenant, contabilizavam resoluções, restringiam escopos MCP e dimensionavam a frota para a perda de uma zona.',
+  gaps: [
+    'Que registro impede uma tentativa antiga de repetir um efeito depois de expirar a janela de deduplicação?',
+    'Quanto da frota dois tenants podem perder juntos? Qual é o custo de uma resolução adicional quando a rota cara só ajuda parte das consultas?',
+    'Como manter a descoberta de ferramentas barata e a execução restrita? O que continua de pé se todas as zonas perderem o mesmo armazenamento?',
+  ],
+  cases: [
+    {
+      org: 'Amazon EC2', title: 'Retries tardios em APIs idempotentes',
+      url: 'https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/',
+      observed: 'Na API de criação de instâncias do EC2, o cliente pode fornecer um identificador da intenção. A Amazon descreve o caso de uma tentativa tardia chegar após a instância já ter sido encerrada.',
+      mechanism: 'O serviço associa o identificador ao solicitante e aos parâmetros originais. Uma repetição pode receber resposta semanticamente equivalente mesmo que o recurso tenha mudado. Reutilizar o identificador com outros parâmetros produz erro de validação.',
+      limits: 'O tempo de retenção depende da operação. O desenho de deduplicação da aula pressupõe que a aplicação controla o destino da escrita ou que o destino oferece um contrato equivalente.',
+    },
+    {
+      org: 'Amazon Route 53', title: 'Isolamento de clientes com shuffle sharding',
+      url: 'https://aws.amazon.com/builders-library/workload-isolation-using-shuffle-sharding/',
+      observed: 'A equipe do Route 53 descreve como atribuiu combinações de servidores de nomes aos clientes para limitar o impacto de sobrecarga sobre outros domínios.',
+      mechanism: 'Conjuntos que compartilham apenas parte dos servidores conservam caminhos distintos para responder. A sobreposição depende da estratégia de atribuição e da distribuição das falhas.',
+      limits: 'O caso publicado é de DNS. Em serving de IA há pesos residentes, afinidade de cache e tempos longos de execução. Reatribuir uma requisição só é viável se outra réplica adequada tiver capacidade.',
+    },
+    {
+      org: 'Anthropic', title: 'Quando o fan-out compensa no produto Research',
+      url: 'https://www.anthropic.com/research/multi-agent-research-system',
+      observed: 'No Research, um agente principal distribui buscas entre subagentes. A equipe relata que tarefas com várias direções independentes se beneficiaram dessa arquitetura e que o consumo típico observado de tokens foi aproximadamente 15 vezes o de chats.',
+      mechanism: 'Os subagentes pesquisam em paralelo, usam suas próprias janelas e devolvem achados condensados. Isso amplia a busca ao preço de mais trabalho total. Tarefas com dependências estreitas oferecem menos oportunidades de paralelismo.',
+      limits: 'A comparação publicada toma conversas de chat como referência. Ela não mede o custo marginal de resolver um chamado do seu produto. O exercício calcula essa grandeza com duas políticas testadas na mesma população.',
+    },
+    {
+      org: 'Cloudflare', title: 'Descoberta progressiva no servidor MCP da API',
+      url: 'https://blog.cloudflare.com/code-mode-mcp/',
+      observed: 'Para uma API com mais de 2.500 endpoints, a Cloudflare disponibilizou duas ferramentas, search e execute, com definições que ocupam cerca de mil tokens no contexto.',
+      mechanism: 'A primeira ferramenta permite consultar a especificação. A segunda executa operações por meio de um cliente autenticado com permissões limitadas às concedidas pelo usuário. O modelo pode consultar detalhes de apenas uma operação antes de usá-la.',
+      limits: 'O tamanho publicado descreve as definições fixas. Resultados de descoberta, retornos de chamadas e tentativas também consomem contexto e entram na medição de uma tarefa completa.',
+    },
+    {
+      org: 'Cloudflare', title: 'Indisponibilidade do Workers KV em 12 de junho de 2025',
+      url: 'https://blog.cloudflare.com/cloudflare-service-outage-june-12-2025/',
+      observed: 'Uma falha no armazenamento do Workers KV interrompeu leituras frias e escritas. Parte das leituras continuou a ser respondida pelo cache. A dependência compartilhada afetou vários produtos, incluindo Workers AI.',
+      mechanism: 'O cache permitia atender itens já disponíveis na borda. Quando uma requisição precisava ir à origem, o problema no armazenamento se propagava a serviços que dependiam do KV para configuração, autenticação ou entrega de conteúdo.',
+      limits: 'O relatório descreve os serviços da Cloudflare. A taxa de faltas de cache e a vazão de inferência do exercício são premissas de uma implantação hipotética.',
+    },
+  ],
+  lessons: {
+    'deadlines-e-retries': {
+      gap: 'O ensaio limitava a amplificação da fila, mas deixava implícita a duração da garantia de deduplicação.',
+      title: 'A resposta atrasada depois da exclusão do recurso', caseIndex: 0,
+      method: 'Separe a identidade da intenção da identidade do recurso. Grave (tenant, operação, chave), um resumo dos parâmetros normalizados e o recibo junto com a mutação na mesma transação. Faça duas chamadas concorrentes disputar uma restrição única. Quando o efeito ocorre em outro serviço, propague a chave até lá e reconcilie o recibo. Um lock temporário no worker pode vencer enquanto o destino ainda confirma a primeira chamada.',
+      signal: 'Reproduza quatro intercalações no ensaio: resposta perdida após commit, duplicata concorrente, repetição após exclusão e mesma chave com parâmetros diferentes. Conte entregas, efeitos confirmados e conflitos. A repetição válida deve devolver o mesmo identificador lógico e o conflito deve produzir zero novos efeitos.',
+      exercise: {prompt: 'O serviço conclui 50 intenções/s, inclusive as de recursos depois excluídos. Cada recibo de deduplicação ocupa 96 bytes. Quanto armazenamento bruto mantém 72 horas de recibos desde a conclusão? Operações pede para reprocessar uma fila morta até sete dias depois. Que contrato permite fazer isso?', solution: 'Em regime estável, 50 × 72 × 3.600 = 12.960.000 recibos. A 96 bytes, são 1,24416 GB decimais antes de índices e réplicas. Para aceitar sete dias desde a conclusão, o mínimo sobe a 30.240.000 recibos ou 2,90304 GB brutos, além da margem para atraso. Se a retenção continuar em 72 horas, rejeite o redrive vencido e reconcilie a intenção com um registro durável antes de aprovar outra ação. O recibo de uma criação precisa sobreviver à exclusão do recurso pelo prazo contratado.'},
+    },
+    'tenancy-e-admissao': {
+      gap: 'A cota por tenant controlava a entrada, mas faltava calcular a sobreposição dos destinos que ainda podiam falhar juntos.',
+      title: 'Medir a sobreposição entre pools de tenants', caseIndex: 1,
+      method: 'Fixe um subconjunto de réplicas elegíveis por tenant e versão do modelo. Encaminhe ao worker saudável com menos trabalho previsto entre os elegíveis. Se todos saturarem, preserve o isolamento aplicando a admissão contratada antes de ampliar o conjunto. Distribua o subconjunto entre domínios físicos de falha. Dois IDs de réplica na mesma máquina podem cair juntos.',
+      signal: 'Registre as interseções reais dos subconjuntos e a fração de tenants que perde todos os caminhos quando um vizinho satura o seu. Observe também TTFT p99 dos vizinhos parcialmente sobrepostos, rejeições por tenant e pressão de KV. Uma sobrevivente sem folga pode existir no inventário e falhar no SLO.',
+      exercise: {prompt: 'Oito workers equivalentes. Cada tenant sorteia uniformemente dois distintos e conserva esse par. Um tenant satura os dois dele. Qual a chance de outro perder os dois? E a chance de ter pelo menos um atingido?', solution: 'Existem C(8,2) = 28 pares possíveis. Apenas um coincide por inteiro, portanto 1/28. Há C(6,2) = 15 pares totalmente intactos. A chance de algum impacto é 13/28, incluindo 12 pares com apenas um worker comprometido. Essas probabilidades supõem atribuições independentes. Compare-as ao mapa real se houver peso por GPU ou afinidade de modelo.'},
+    },
+    'custo-por-resolucao': {
+      gap: 'O custo médio por resolução escondia quanto custava recuperar um único resultado adicional em uma classe difícil.',
+      title: 'Comprar a próxima resolução com um orçamento marginal', caseIndex: 2,
+      method: 'Congele uma amostra de tarefas por faixa de dificuldade, execute cada uma com a política simples e a de fan-out e julgue ambas com o mesmo critério e janela de reabertura. Para cada faixa, divida o custo adicional pela diferença de resoluções. Inclua custo das buscas e síntese final. Se a diferença for pequena, use reamostragem por tarefa para verificar se até o sinal do ganho é incerto.',
+      signal: 'Libere a rota cara somente nas faixas em que o ganho é consistente, o custo incremental cabe no valor de recuperar a tarefa e a latência atende ao SLO. Em tráfego vivo, valide com grupos aleatórios, registre a política sorteada e acompanhe reaberturas antes de fechar a conta.',
+      exercise: {prompt: 'Em 1.000 tarefas pareadas, a rota simples custa R$ 120 e resolve 700. A rota paralela custa R$ 360 e resolve 760. O produto atribui R$ 3 a cada resolução adicional. Vale trocar a política nessa população?', solution: 'O custo adicional é R$ 240 para 60 resoluções líquidas, ou R$ 4 por resolução adicional. O benefício estimado é R$ 180, menor que os R$ 240 gastos. Desagregue pelos estratos definidos antes da avaliação e examine também tarefas que deixaram de ser resolvidas. Um subgrupo promissor precisa de nova validação antes do rollout.'},
+    },
+    'mcp-em-producao': {
+      gap: 'O contrato tratava identidade e efeitos, mas a aula ainda exigia imaginar um catálogo grande e o custo de expô-lo ao modelo.',
+      title: 'Consultar o catálogo de ferramentas sob demanda', caseIndex: 3,
+      method: 'Projete uma consulta de descoberta que aceite uma intenção e devolva identificador estável, versão, descrição e um resumo dos parâmetros das operações relevantes. Traga o esquema detalhado só para a operação escolhida. Na execução, confira novamente tenant, escopo, orçamento de chamadas e versão da operação. Um resultado de descoberta guardado antes de uma revogação continua sendo apenas metadado.',
+      signal: 'No replay das mesmas tarefas, compare tokens de definição e de retornos, rodadas até a primeira ação válida, frequência de escolha da operação errada e taxa de conclusão. Revogue uma permissão entre descoberta e execução e exija zero mutações. Limite linhas e tamanho em bytes de cada retorno para evitar ocupar o contexto com dados intermediários.',
+      exercise: {prompt: 'Suponha 180 ferramentas de 240 tokens cada. Uma interface progressiva custa 1.100 tokens fixos, mais duas respostas de esquema com 600 tokens cada em uma tarefa. Após as duas consultas, qual a diferença de tamanho entre o catálogo completo e o conteúdo de descoberta acumulado, contando cada definição e cada retorno uma única vez? Qual verificação ainda é obrigatória ao executar?', solution: 'Sob essas premissas, o catálogo completo ocupa 43.200 tokens e o fluxo progressivo, 2.300. A diferença é 40.900. Isso não mede a latência das rodadas extras nem os tokens faturados em todo o histórico. No momento da ação, o servidor valida a identidade, o recurso, a operação e as permissões vigentes.'},
+    },
+    'capacidade-milhoes': {
+      gap: 'A frota sobrevivia à perda de zona na planilha. Faltava dimensionar uma dependência compartilhada durante a mudança de perfil do cache.',
+      title: 'Dimensionar a origem quando o failover esfria o cache', caseIndex: 4,
+      method: 'Mapeie por tipo de requisição quais dependências bloqueiam a resposta. Para cada uma, estime chegadas × consultas por chegada × fração de misses. Separe leitura de configuração, autorização e escrita. Ensaie a troca de zona com namespaces frios e registre a recuperação do hit rate ao longo do tempo. Para configuração versionada, um snapshot local pode reduzir a carga. Dados de autorização exigem uma política explícita de revogação e validade.',
+      signal: 'Compare QPS esperado e observado na origem, idade da configuração usada, saturação da conexão e TTFT de hits e misses. Registre requisições recusadas junto com as bem-sucedidas. Meça a capacidade da origem no mesmo prazo do serviço e use esse limite para controlar a admissão durante o aquecimento.',
+      exercise: {prompt: 'A região recebe 6.000 pedidos/s e cada pedido consulta duas chaves independentes. Antes da falha, o hit rate por consulta é 99%. Durante o aquecimento cai para 80%. A origem sustenta 900 consultas/s. Qual é o primeiro gargalo e que taxa de entrada cabe enquanto o cache está frio?', solution: 'A origem passa de 120 para 2.400 consultas/s e faltam 1.500/s. Com duas consultas e 20% de misses, cada pedido exige em média 0,4 consulta à origem. O teto teórico é 900/0,4 = 2.250 pedidos/s, antes de reservar margem para escritas e variação. Mais GPUs não alteram essa conta. Refaça a medição após pré-aquecer as chaves quentes e observe a fila por partição.'},
+    },
+  },
+}];

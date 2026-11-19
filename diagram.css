@@ -1,0 +1,336 @@
+.dg {
+  --dg-outline: #403d35;
+  --dg-ivory: #fff9e8;
+  --dg-stone: #ded8c7;
+  --dg-shadow: #bfbbaa;
+  --dg-terminal: #414944;
+  --dg-screen: #34443d;
+  --dg-peach: #f6c38b;
+  --dg-orange: #eca365;
+  --dg-rust: #a45f3f;
+  --dg-mint: #c5e3cf;
+  --dg-sea: #a3c5ae;
+  --dg-deep: #668d78;
+  --dg-blue: #dce8f2;
+  --dg-blue-side: #b6ccde;
+  --dg-blue-end: #7395a6;
+  --dg-paper: var(--panel, #fcfaf6);
+  --dg-grid: #bcaa91;
+  --dg-request: #b95129;
+  --dg-response: #588371;
+  --dg-focus: #ed9e5c;
+  --dg-chip-bg: #fffaf1;
+  --dg-chip-text: #4d463d;
+  --dg-chip-border: #c5bbab;
+  --dg-active-bg: #ffdcad;
+  --dg-active-text: #6b3a1b;
+  --dg-active-border: #ae7849;
+  box-sizing: border-box;
+  container-type: inline-size;
+  overflow: hidden;
+  margin: 0;
+  color: var(--ink, #282824);
+  background: var(--dg-paper);
+  border: 1px solid var(--line, #d9d4c8);
+  border-radius: 12px;
+}
+.dg *,
+.dg *::before {
+  box-sizing: border-box;
+}
+.dg-head,
+.dg-legend,
+.dg-heading,
+.dg-tools,
+.dg-tools button,
+.dg-legend span {
+  display: flex;
+  align-items: center;
+}
+.dg-head {
+  justify-content: space-between;
+  gap: 8px;
+  padding: 13px 16px 0;
+}
+.dg-heading {
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.dg-heading svg {
+  color: var(--muted, #706d64);
+}
+.dg-tools {
+  gap: 6px;
+  flex-shrink: 0;
+}
+.dg-tools button {
+  gap: 5px;
+  justify-content: center;
+  min-width: 30px;
+  height: 29px;
+  padding: 0 7px;
+  border: 1px solid var(--line, #d9d4c8);
+  border-radius: 5px;
+  color: var(--ink, #302d26);
+  background: var(--dg-paper);
+  font: 500 11px var(--mono, ui-monospace, monospace);
+  cursor: pointer;
+}
+.dg-tools button:hover {
+  background: var(--soft, #eee9df);
+}
+.dg-tools button:focus-visible {
+  outline: 2px solid var(--accent, #ae4e2d);
+  outline-offset: 2px;
+}
+.dg-stage {
+  display: grid;
+  place-items: center;
+}
+.dg-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.dg-wide {
+  min-height: 250px;
+  max-height: 485px;
+}
+.dg-mobile {
+  display: none;
+}
+.dg-gridlines {
+  fill: none;
+  stroke: var(--dg-grid);
+  stroke-width: 0.85;
+  opacity: 0.46;
+}
+.dg-drop {
+  fill: #534a32;
+  opacity: 0.09;
+}
+.dg-focus {
+  fill: var(--dg-focus);
+  fill-opacity: 0.12;
+  stroke: var(--dg-focus);
+  stroke-width: 1.15;
+}
+.dg-trace,
+.dg-feedback {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.dg-trace {
+  stroke: var(--dg-request);
+  stroke-width: 2;
+}
+.dg-feedback {
+  stroke: var(--dg-response);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 5;
+  opacity: 0.7;
+}
+.dg-emphasized {
+  stroke-width: 2.1;
+  opacity: 1;
+}
+.dg-packet {
+  stroke: var(--dg-paper);
+  stroke-width: 1;
+}
+.dg-request {
+  fill: var(--dg-request);
+}
+.dg-reply {
+  fill: var(--dg-response);
+}
+.dg-node-label text,
+.dg-caption,
+.dg-annotation text {
+  font-family: var(--mono, ui-monospace, SFMono-Regular, Consolas, monospace);
+}
+.dg-node-label text {
+  font-size: 11.5px;
+  font-weight: 650;
+  fill: var(--dg-chip-text);
+}
+.dg-node-label rect {
+  fill: var(--dg-chip-bg);
+  stroke: var(--dg-chip-border);
+  stroke-width: 1;
+}
+.dg-node-label.dg-selected text {
+  fill: var(--dg-active-text);
+}
+.dg-node-label.dg-selected rect {
+  fill: var(--dg-active-bg);
+  stroke: var(--dg-active-border);
+}
+.dg-caption,
+.dg-annotation text {
+  font-size: 10px;
+  fill: var(--muted, #67665c);
+}
+.dg-annotation path {
+  fill: none;
+  stroke: var(--dg-active-border);
+  stroke-dasharray: 2 2;
+}
+.dg-annotation rect {
+  fill: var(--dg-paper);
+  stroke: var(--dg-chip-border);
+}
+.dg-legend {
+  gap: 18px;
+  padding: 0 16px 12px;
+  color: var(--muted, #6d6c60);
+  font: 500 10px var(--mono, ui-monospace, monospace);
+}
+.dg-legend span {
+  gap: 5px;
+}
+.dg-legend i {
+  display: block;
+  width: 13px;
+  border-top: 2px solid var(--dg-request);
+}
+.dg-legend-return i {
+  border-top: 2px dashed var(--dg-response);
+}
+.dg-legend .dg-legend-focus i {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--dg-active-border);
+  border-radius: 2px;
+  background: var(--dg-active-bg);
+}
+@container (max-width: 480px) {
+  .dg-wide {
+    display: none;
+  }
+  .dg-mobile {
+    display: block;
+    max-height: 325px;
+  }
+  .dg-head {
+    padding: 11px 11px 0;
+  }
+  .dg-heading {
+    gap: 5px;
+  }
+  .dg-legend {
+    padding: 0 12px 12px;
+    gap: 14px;
+  }
+}
+[data-theme='dark'] .dg {
+  --dg-grid: #8c8c7b;
+  --dg-request: #e99f69;
+  --dg-response: #8bbaa5;
+  --dg-focus: #e5a267;
+  --dg-chip-bg: #34372f;
+  --dg-chip-text: #efeadd;
+  --dg-chip-border: #696b5c;
+  --dg-active-bg: #563923;
+  --dg-active-text: #ffdda5;
+  --dg-active-border: #a4784c;
+}
+
+.ds-map {
+  --ds-done-bg: #e0eee3;
+  --ds-done-edge: #6d9279;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--dg-grid) 27%, transparent) 0.7px,
+    transparent 0.8px
+  );
+  background-size: 14px 14px;
+}
+.dg-stage:has(.ds-map) {
+  margin-block: 8px;
+}
+.ds-text {
+  font: 600 12px var(--mono, ui-monospace, monospace);
+  fill: var(--dg-chip-text);
+}
+.ds-text.ds-small {
+  font-size: 10px;
+  font-weight: 500;
+}
+.ds-text.ds-caption {
+  font-size: 11px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--dg-paper);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+.ds-box {
+  fill: var(--dg-chip-bg);
+  stroke: var(--dg-chip-border);
+  stroke-width: 1.2;
+}
+.ds-box.ds-work {
+  fill: var(--dg-active-bg);
+  stroke: var(--dg-active-border);
+}
+.ds-box.ds-done {
+  fill: var(--ds-done-bg);
+  stroke: var(--ds-done-edge);
+}
+.ds-box.ds-empty {
+  fill: var(--dg-paper);
+  stroke-dasharray: 3 3;
+}
+.ds-box.ds-track {
+  fill: var(--dg-chip-border);
+  opacity: 0.5;
+  stroke: none;
+}
+.ds-box.ds-ink {
+  fill: var(--dg-chip-text);
+  stroke: none;
+}
+.ds-box.ds-ink-work {
+  fill: var(--dg-request);
+  stroke: none;
+}
+.ds-box.ds-outline {
+  stroke: var(--dg-active-border);
+  fill: var(--dg-active-bg);
+  fill-opacity: 0.22;
+}
+.ds-wire {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+.ds-wire-idle {
+  stroke: var(--dg-chip-border);
+  stroke-dasharray: 3 4;
+}
+.ds-wire-work {
+  stroke: var(--dg-request);
+}
+.ds-wire-done {
+  stroke: var(--dg-response);
+  stroke-dasharray: 4 3;
+}
+.ds-dot {
+  stroke: var(--dg-paper);
+  stroke-width: 1;
+}
+.ds-dot-work {
+  fill: var(--dg-request);
+}
+.ds-dot-done {
+  fill: var(--dg-response);
+}
+[data-theme='dark'] .ds-map {
+  --ds-done-bg: #2b443a;
+  --ds-done-edge: #6d9d83;
+}

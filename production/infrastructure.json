@@ -1,0 +1,146 @@
+[
+  {
+    "title": "Fundamentos de IA",
+    "lessons": [
+      {
+        "id": "ciclo-de-inferencia",
+        "title": "O ciclo de inferência",
+        "summary": "Siga uma mensagem da janela de chat até a GPU e descubra como a resposta chega token por token.",
+        "level": "Iniciante"
+      },
+      {
+        "id": "treino-e-inferencia",
+        "title": "Do treino à produção",
+        "summary": "Acompanhe um classificador de chamados desde os exemplos rotulados até a primeira previsão.",
+        "level": "Iniciante"
+      },
+      {
+        "id": "latencia-e-vazao",
+        "title": "Latência e vazão",
+        "summary": "Leia a mesma execução pelo relógio de quem usa o chat e pelo contador de quem opera a GPU.",
+        "level": "Iniciante"
+      }
+    ]
+  },
+  {
+    "title": "Servindo com vLLM",
+    "lessons": [
+      {
+        "id": "servidor-vllm",
+        "title": "Seu primeiro servidor vLLM",
+        "summary": "Carregue um modelo de chat, consulte a API local e receba uma resposta pelo terminal.",
+        "level": "Iniciante"
+      },
+      {
+        "id": "memoria-da-gpu",
+        "title": "Orçamento de memória",
+        "summary": "Estime os pesos e descubra quanto espaço sobra para conversas simultâneas.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "quantizacao",
+        "title": "Quantização de pesos",
+        "summary": "Compare a economia de memória com a qualidade e a velocidade observadas no seu hardware.",
+        "level": "Intermediário"
+      }
+    ]
+  },
+  {
+    "title": "Otimização da inferência",
+    "lessons": [
+      {
+        "id": "kv-cache",
+        "title": "KV cache e PagedAttention",
+        "summary": "Veja como o motor estende o contexto de uma conversa usando blocos de memória.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "batching-continuo",
+        "title": "Batching contínuo",
+        "summary": "Encaixe uma conversa nova enquanto outra ainda está gerando sua resposta.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "cache-de-prefixo",
+        "title": "Reuso de prefixos",
+        "summary": "Reaproveite a leitura de um manual quando chegam várias perguntas sobre o mesmo documento.",
+        "level": "Intermediário"
+      }
+    ]
+  },
+  {
+    "title": "MoE e paralelismo",
+    "lessons": [
+      {
+        "id": "mistura-de-especialistas",
+        "title": "Mixture of Experts",
+        "summary": "Acompanhe um token pela camada esparsa do Mixtral e descubra onde o cálculo acontece.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "paralelismo-de-especialistas",
+        "title": "Expert parallelism",
+        "summary": "Distribua especialistas entre GPUs e siga as ativações que cruzam a interconexão.",
+        "level": "Avançado"
+      },
+      {
+        "id": "paralelismo-de-modelo",
+        "title": "Tensor, pipeline e réplicas",
+        "summary": "Decida o que dividir quando o modelo ultrapassa a memória de uma GPU ou a demanda cresce.",
+        "level": "Avançado"
+      }
+    ]
+  },
+  {
+    "title": "Operação em escala",
+    "lessons": [
+      {
+        "id": "replicas-e-autoscaling",
+        "title": "Réplicas e autoscaling",
+        "summary": "Transforme uma fila crescente em uma decisão de escala que respeite o tempo de carregar o modelo.",
+        "level": "Avançado"
+      },
+      {
+        "id": "saude-e-prontidao",
+        "title": "Saúde e prontidão",
+        "summary": "Evite enviar conversas a um pod que ainda carrega pesos ou reiniciar um modelo saudável.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "observabilidade",
+        "title": "Diagnóstico de latência",
+        "summary": "Descubra onde investigar quando os usuários esperam mais para ver a primeira palavra.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "rollout-canario",
+        "title": "Rollout e rollback",
+        "summary": "Promova uma versão de modelo com tráfego limitado e critérios verificáveis de reversão.",
+        "level": "Avançado"
+      }
+    ]
+  },
+  {
+    "title": "Arquiteturas aplicadas",
+    "lessons": [
+      {
+        "id": "rag-em-producao",
+        "title": "RAG em produção",
+        "summary": "Monte um assistente que consulte os trechos autorizados da documentação antes de responder.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "inferencia-em-lote",
+        "title": "Inferência em lote",
+        "summary": "Classifique um catálogo inteiro durante a noite e retome o trabalho após uma interrupção.",
+        "level": "Intermediário"
+      },
+      {
+        "id": "features-online",
+        "title": "Features para ML online",
+        "summary": "Sirva um modelo de recomendação com atributos atualizados e acompanhe a diferença entre treino e produção.",
+        "level": "Intermediário"
+      }
+    ]
+  }
+]

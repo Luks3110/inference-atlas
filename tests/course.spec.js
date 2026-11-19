@@ -1,0 +1,185 @@
+import { test, expect } from '@playwright/test';
+import { lessons, coreLessons, productionModules } from '../curriculum.js';
+
+test('selecionar aula mantém a mesma lista lateral, o foco e a posição de leitura', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 780 });
+  await page.goto('/');
+  const lowerGroup = page.getByRole('button', { name: /Produção & padrões/ });
+  await lowerGroup.click();
+  const link = page.locator('#sidebar a[href="#/aula/mcp-em-producao/1"]');
+  await link.scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => {
+    window.scrollTo(0, 120);
+    window.oldNav = document.querySelector('.module-list');
+    return { list: window.oldNav.scrollTop, doc: scrollY };
+  });
+  expect(before.list).toBeGreaterThan(0);
+  await link.click();
+  await expect(page.getByRole('heading', { name: 'MCP como contrato de integração' })).toBeVisible();
+  expect(await page.evaluate(() => window.oldNav === document.querySelector('.module-list'))).toBe(true);
+  expect(await page.locator('.module-list').evaluate((el) => el.scrollTop)).toBeCloseTo(before.list, 0);
+  expect(await page.evaluate(() => scrollY)).toBeCloseTo(before.doc, 0);
+  await expect(link).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(page).toHaveURL(/mcp-em-producao\/2$/);
+  expect(await page.locator('.module-list').evaluate((el) => el.scrollTop)).toBeCloseTo(before.list, 0);
+});
+
+test('estado anterior, progresso, busca, teclado, temas e modos sobrevivem à migração', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.addInitScript(() => {
+    if (!localStorage.getItem('seeded')) {
+      localStorage.setItem('atlas:completed', '["treino-e-inferencia"]');
+      localStorage.setItem('atlas:position', '"#/aula/ciclo-de-inferencia/2"');
+      localStorage.setItem('seeded', '1');
+    }
+  });
+  await page.goto('/');
+  await expect(page.locator('#step-title')).toHaveText('Como o modelo transforma a pergunta em números');
+  await page.locator('.objective-checks input').first().check();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox').fill('efConstruction');
+  await page.locator('#finder .results a').filter({ hasText: 'HNSW em produção' }).first().click();
+  await expect(page.locator('h1')).toHaveText('HNSW em produção');
+  await page.goBack();
+  await expect(page.locator('.objective-checks input').first()).toBeChecked();
+  await page.locator('.theme-button').click();
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.goto('/#/aula/ciclo-de-inferencia/10');
+  await page.locator('[data-action=next]').click();
+  await expect(page.getByRole('dialog').locator('.finish-total')).toContainText('2 de ' + coreLessons.length);
+  await page.keyboard.press('Escape');
+  await page.locator('.topnav a[href="#/pratica"]').click();
+  for (let i = 0; i < 5; i++) {
+    await page.locator('[data-choice]').first().click();
+    await page.locator('[data-next]').click();
+  }
+  await expect(page.locator('.am-result h2')).toHaveText('Resultado da prática');
+  await page.locator('.topnav a[href="#/laboratorio"]').click();
+  await expect(page.locator('.skill-lab .score')).toContainText('Passou no teste');
+  await page.getByLabel('Simular acesso indevido à ferramenta de reembolso').check();
+  await expect(page.locator('.skill-lab .score')).toContainText('2 erros no uso de ferramentas');
+  await expect(page.locator('.skill-lab .score')).toContainText('Publicação bloqueada');
+  await page.locator('.topnav a[href="#/guias"]').click();
+  await page.locator('[data-guide="1"]').click();
+  await page.locator('[data-copy]').click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('summarize(results).passes');
+  await page.locator('.topnav a[href="#/producao"]').click();
+  await expect(page.locator('.topic-card')).toHaveCount(productionModules.length);
+});
+
+test('todo estado de cada aula tem telemetria, explicação e diagrama no celular', async ({ page }) => {
+  test.setTimeout(240000);
+  await page.setViewportSize({ width: 375, height: 810 });
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto('/');
+  // Hash navigation is also how the real timeline, menu, and browser history select a frame.
+  for (const l of lessons) {
+    expect(l.steps.length, l.id).toBeGreaterThanOrEqual(8);
+    for (const [i, s] of l.steps.entries()) {
+      const hash = '#/aula/' + l.id + '/' + (i + 1);
+      await page.evaluate(
+        async ({ hash, title, id }) => {
+          location.hash = hash;
+          for (let t = 0; t < 80; t++) {
+            if (
+              document.querySelector('.reader-content h2')?.textContent === title &&
+              document.querySelector('h1')?.textContent === id
+            )
+              return;
+            await new Promise(requestAnimationFrame);
+          }
+          throw Error('Rota não atualizou: ' + hash);
+        },
+        { hash, title: s.title, id: l.title },
+      );
+      const referenceReading = await page.locator('.step-decision').evaluate(async (section) => {
+        section.querySelector('.reading').click();
+        await Promise.resolve();
+        return section.querySelector('.flow small')?.textContent;
+      });
+      expect(referenceReading, hash).toBe(s.decision[4]);
+      const snapshot = await page.evaluate(() => ({
+        values: document.querySelectorAll('.instruments dd').length,
+        drawings: document.querySelectorAll('.dg-stage [data-illustration]').length,
+        change: document.querySelector('.step-change p')?.textContent,
+        decision: document.querySelector('.step-decision h2')?.textContent,
+        actors: [...document.querySelectorAll('.step-decision .flow > span')].map((el) => el.firstChild.textContent),
+        metric: document.querySelector('.comparison-pair > figure > figcaption')?.textContent,
+        readings: [...document.querySelectorAll('.step-decision .reading strong')].map((el) => el.textContent),
+        rationale: document.querySelector('.original-rationale')?.textContent,
+        overflow: document.documentElement.scrollWidth > innerWidth,
+      }));
+      expect(snapshot, hash).toMatchObject({
+        values: s.metrics.length,
+        drawings: 2,
+        change: s.change,
+        decision: s.decision[0],
+        actors: s.decision.slice(1, 3),
+        metric: s.decision[3],
+        readings: s.decision.slice(4, 6),
+        rationale: s.decision[6],
+        overflow: false,
+      });
+    }
+  }
+  expect(errors).toEqual([]);
+});
+
+test('laboratórios reproduzíveis de frota e de índices', async ({ page, request }) => {
+  await page.goto('/#/aula/capacidade-milhoes/1');
+  await expect(page.locator('.fleet-result dl')).toContainText('42');
+  await page.goto('/#/aula/rag-quantizacao-vetorial/1');
+  await page.locator('.vector-lab select').selectOption('IVFPQ');
+  await expect(page.locator('.bench-scroll tbody tr')).toHaveCount(6);
+  await expect(page.locator('.bench-scroll')).toContainText('82,25%');
+  const response = await request.get('/labs/bench-indexes.py');
+  expect(response.ok()).toBe(true);
+  expect(await response.text()).toContain('IndexHNSWFlat');
+});
+
+test('a leitura vem antes da simulação e o iniciante pode conferir o que entendeu', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 810 });
+  await page.goto('/#/aula/ciclo-de-inferencia/1');
+  const title = page.locator('.lesson-main #step-title');
+  await expect(title).toHaveText('Você envia a pergunta. O relógio começa.');
+  await expect(page.locator('.lesson-explanation .start-here')).toContainText('100 milissegundos');
+  await expect(page.locator('.lesson-explanation .start-here')).not.toContainText(/template|TTFT|989aa798/);
+  expect(await page.locator('.lesson-main').evaluate(main => {
+    const explanation = main.querySelector('.lesson-explanation');
+    const simulation = main.querySelector('.instrument-board');
+    return Boolean(explanation.compareDocumentPosition(simulation) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
+  await page.getByRole('button', { name: 'Quando o navegador envia o pedido.' }).click();
+  await expect(page.locator('fieldset [role=status]')).toContainText('A rede e a fila');
+  await page.locator('.reader-actions [data-action=next]').click();
+  await expect(title).toBeFocused();
+  await expect(title).toBeInViewport();
+  await expect(title).toHaveText('Como o modelo transforma a pergunta em números');
+  await page.getByText('Termos usados nesta etapa', { exact: true }).click();
+  await expect(page.locator('.lesson-explanation .course-terms')).toContainText('Cada peça tem um número próprio');
+  await expect(page.locator('.technical-example')).not.toHaveAttribute('open', '');
+});
+
+test('a nova trilha abre arquitetura, anotação humana e o portal fictício', async ({page}) => {
+  await page.goto('/#/aula/servidor-vllm/1');
+  await expect(page).toHaveURL(/mastra-e-orquestracao\/1$/);
+  const choices = page.getByRole('region', { name:'Quem escolhe o próximo passo?' });
+  await choices.getByRole('button', {name:'Workflow com agentes'}).click();
+  await expect(choices).toContainText('Workflow espera aprovação');
+  await page.goto('/#/aula/avaliacao-humana/5');
+  await expect(page.locator('#step-title')).toContainText('acordo');
+  await page.getByRole('spinbutton', {name:'Valor de Casos de acordo'}).fill('12');
+  await expect(page.locator('.live-readings')).toContainText('60');
+  await page.goto('/#/aula/computer-use/2');
+  await page.getByRole('button', {name:'Trocar layout do portal'}).click();
+  await page.getByRole('button', {name:'Consultar entrega'}).click();
+  await expect(page.locator('.portal-practice [role=status]')).toHaveText('Pedido 42 entregue.');
+  await page.getByRole('button', {name:'Tentar encerrar pedido'}).click();
+  await expect(page.locator('.portal-practice [role=status]')).toContainText('Ação recusada');
+});

@@ -1,0 +1,311 @@
+{
+  "seed": 29,
+  "vectors": 16000,
+  "dims": 64,
+  "queries": 160,
+  "k": 10,
+  "repeats": 3,
+  "M": 16,
+  "efConstruction": 100,
+  "threads": 1,
+  "faiss": "1.12.0",
+  "cpu": "x86_64",
+  "ef": [
+    16,
+    32,
+    64,
+    128,
+    256
+  ],
+  "selectivity": [
+    0.5,
+    1,
+    5,
+    10,
+    25,
+    50,
+    100
+  ],
+  "rows": [
+    {
+      "ef": 16,
+      "selectivity": 0.5,
+      "eligible": 80,
+      "recall": 15.5,
+      "p95": 0.038,
+      "filled": 2.194
+    },
+    {
+      "ef": 32,
+      "selectivity": 0.5,
+      "eligible": 80,
+      "recall": 21.188,
+      "p95": 0.0585,
+      "filled": 3.269
+    },
+    {
+      "ef": 64,
+      "selectivity": 0.5,
+      "eligible": 80,
+      "recall": 32.438,
+      "p95": 0.0744,
+      "filled": 5.419
+    },
+    {
+      "ef": 128,
+      "selectivity": 0.5,
+      "eligible": 80,
+      "recall": 49.625,
+      "p95": 0.1339,
+      "filled": 8.781
+    },
+    {
+      "ef": 256,
+      "selectivity": 0.5,
+      "eligible": 80,
+      "recall": 73.688,
+      "p95": 0.2499,
+      "filled": 10.0
+    },
+    {
+      "ef": 16,
+      "selectivity": 1,
+      "eligible": 160,
+      "recall": 23.938,
+      "p95": 0.0319,
+      "filled": 4.056
+    },
+    {
+      "ef": 32,
+      "selectivity": 1,
+      "eligible": 160,
+      "recall": 32.812,
+      "p95": 0.0484,
+      "filled": 6.125
+    },
+    {
+      "ef": 64,
+      "selectivity": 1,
+      "eligible": 160,
+      "recall": 46.438,
+      "p95": 0.0813,
+      "filled": 8.963
+    },
+    {
+      "ef": 128,
+      "selectivity": 1,
+      "eligible": 160,
+      "recall": 64.125,
+      "p95": 0.1626,
+      "filled": 9.963
+    },
+    {
+      "ef": 256,
+      "selectivity": 1,
+      "eligible": 160,
+      "recall": 85.812,
+      "p95": 0.27,
+      "filled": 10.0
+    },
+    {
+      "ef": 16,
+      "selectivity": 5,
+      "eligible": 800,
+      "recall": 53.375,
+      "p95": 0.0413,
+      "filled": 9.919
+    },
+    {
+      "ef": 32,
+      "selectivity": 5,
+      "eligible": 800,
+      "recall": 65.625,
+      "p95": 0.0684,
+      "filled": 9.988
+    },
+    {
+      "ef": 64,
+      "selectivity": 5,
+      "eligible": 800,
+      "recall": 77.0,
+      "p95": 0.0812,
+      "filled": 10.0
+    },
+    {
+      "ef": 128,
+      "selectivity": 5,
+      "eligible": 800,
+      "recall": 89.188,
+      "p95": 0.1614,
+      "filled": 10.0
+    },
+    {
+      "ef": 256,
+      "selectivity": 5,
+      "eligible": 800,
+      "recall": 97.125,
+      "p95": 0.4162,
+      "filled": 10.0
+    },
+    {
+      "ef": 16,
+      "selectivity": 10,
+      "eligible": 1600,
+      "recall": 69.25,
+      "p95": 0.0855,
+      "filled": 10.0
+    },
+    {
+      "ef": 32,
+      "selectivity": 10,
+      "eligible": 1600,
+      "recall": 80.0,
+      "p95": 0.0691,
+      "filled": 10.0
+    },
+    {
+      "ef": 64,
+      "selectivity": 10,
+      "eligible": 1600,
+      "recall": 88.562,
+      "p95": 0.1036,
+      "filled": 10.0
+    },
+    {
+      "ef": 128,
+      "selectivity": 10,
+      "eligible": 1600,
+      "recall": 95.625,
+      "p95": 0.1447,
+      "filled": 10.0
+    },
+    {
+      "ef": 256,
+      "selectivity": 10,
+      "eligible": 1600,
+      "recall": 99.0,
+      "p95": 0.2547,
+      "filled": 10.0
+    },
+    {
+      "ef": 16,
+      "selectivity": 25,
+      "eligible": 4000,
+      "recall": 79.625,
+      "p95": 0.0472,
+      "filled": 10.0
+    },
+    {
+      "ef": 32,
+      "selectivity": 25,
+      "eligible": 4000,
+      "recall": 89.0,
+      "p95": 0.0603,
+      "filled": 10.0
+    },
+    {
+      "ef": 64,
+      "selectivity": 25,
+      "eligible": 4000,
+      "recall": 93.938,
+      "p95": 0.087,
+      "filled": 10.0
+    },
+    {
+      "ef": 128,
+      "selectivity": 25,
+      "eligible": 4000,
+      "recall": 97.5,
+      "p95": 0.142,
+      "filled": 10.0
+    },
+    {
+      "ef": 256,
+      "selectivity": 25,
+      "eligible": 4000,
+      "recall": 99.375,
+      "p95": 0.2909,
+      "filled": 10.0
+    },
+    {
+      "ef": 16,
+      "selectivity": 50,
+      "eligible": 8000,
+      "recall": 86.438,
+      "p95": 0.0481,
+      "filled": 10.0
+    },
+    {
+      "ef": 32,
+      "selectivity": 50,
+      "eligible": 8000,
+      "recall": 93.688,
+      "p95": 0.0525,
+      "filled": 10.0
+    },
+    {
+      "ef": 64,
+      "selectivity": 50,
+      "eligible": 8000,
+      "recall": 97.438,
+      "p95": 0.1192,
+      "filled": 10.0
+    },
+    {
+      "ef": 128,
+      "selectivity": 50,
+      "eligible": 8000,
+      "recall": 98.938,
+      "p95": 0.1904,
+      "filled": 10.0
+    },
+    {
+      "ef": 256,
+      "selectivity": 50,
+      "eligible": 8000,
+      "recall": 99.875,
+      "p95": 0.3254,
+      "filled": 10.0
+    },
+    {
+      "ef": 16,
+      "selectivity": 100,
+      "eligible": 16000,
+      "recall": 91.25,
+      "p95": 0.0581,
+      "filled": 10.0
+    },
+    {
+      "ef": 32,
+      "selectivity": 100,
+      "eligible": 16000,
+      "recall": 96.375,
+      "p95": 0.0629,
+      "filled": 10.0
+    },
+    {
+      "ef": 64,
+      "selectivity": 100,
+      "eligible": 16000,
+      "recall": 98.875,
+      "p95": 0.1019,
+      "filled": 10.0
+    },
+    {
+      "ef": 128,
+      "selectivity": 100,
+      "eligible": 16000,
+      "recall": 99.688,
+      "p95": 0.1613,
+      "filled": 10.0
+    },
+    {
+      "ef": 256,
+      "selectivity": 100,
+      "eligible": 16000,
+      "recall": 99.938,
+      "p95": 0.3084,
+      "filled": 10.0
+    }
+  ]
+}

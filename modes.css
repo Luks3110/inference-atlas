@@ -1,0 +1,304 @@
+.am-mode {
+  --am-ink: var(--ink, #232927);
+  --am-muted: var(--muted, #5b6561);
+  --am-surface: var(--panel, #fff);
+  --am-line: var(--line, #d7dcd8);
+  --am-accent: var(--accent, #c34a18);
+  --am-fill: var(--soft, #f1f3ee);
+  --am-mono: var(--mono, 'IBM Plex Mono', ui-monospace, monospace);
+  width: min(100%, 1120px);
+  padding: clamp(22px, 3.5vw, 52px);
+  box-sizing: border-box;
+  margin-inline: auto;
+  color: var(--am-ink);
+  text-align: left;
+}
+
+.am-mode *,
+.am-mode *::before,
+.am-mode *::after {
+  box-sizing: border-box;
+}
+.am-mode button,
+.am-mode input,
+.am-mode select {
+  font: inherit;
+}
+.am-mode button,
+.am-mode select,
+.am-mode input[type='range'],
+.am-mode summary {
+  cursor: pointer;
+}
+.am-mode button:focus-visible,
+.am-mode select:focus-visible,
+.am-mode input:focus-visible,
+.am-mode summary:focus-visible,
+.am-mode a:focus-visible {
+  outline: 2px solid var(--am-accent);
+  outline-offset: 3px;
+}
+.am-mode h1,
+.am-mode h2 {
+  color: var(--am-ink);
+  margin: 0;
+  letter-spacing: -0.045em;
+}
+.am-mode h1 {
+  font-size: clamp(30px, 4vw, 49px);
+  line-height: 1.08;
+}
+.am-mode h2 {
+  font-size: clamp(22px, 2.3vw, 30px);
+  line-height: 1.18;
+}
+.am-mode p {
+  color: var(--am-muted);
+  line-height: 1.65;
+  margin: 12px 0 20px;
+  font-size: 15px;
+}
+.am-mode small,
+.am-mode .am-cardbar,
+.am-mode .am-letter,
+.am-mode .am-terminal > div,
+.am-mode .am-mark {
+  font-family: var(--am-mono);
+}
+.am-mode .am-heading {
+  margin: 0 0 28px;
+}
+.am-mode .am-heading p {
+  margin: 10px 0 0;
+}
+.am-mode .am-card {
+  border: 1px solid var(--am-line);
+  border-radius: 12px;
+  background: var(--am-surface);
+  min-width: 0;
+}
+.am-mode .am-cardbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 14px 22px;
+  font-size: 12px;
+  color: var(--am-muted);
+  border-bottom: 1px solid var(--am-line);
+}
+.am-mode .am-pad,
+.am-mode .am-result {
+  padding: clamp(18px, 2.6vw, 32px);
+}
+.am-mode .am-options {
+  display: grid;
+  gap: 9px;
+  margin-top: 22px;
+}
+.am-mode .am-option {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 13px 16px;
+  width: 100%;
+  background: var(--am-surface);
+  color: var(--am-ink);
+  border: 1px solid var(--am-line);
+  border-radius: 7px;
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.45;
+  min-height: 48px;
+}
+.am-mode .am-option:enabled:hover,
+.am-mode .am-guidenav button:hover {
+  background: var(--am-fill);
+  border-color: var(--am-muted);
+}
+.am-mode .am-option:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.am-mode .am-letter {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--am-line);
+  border-radius: 5px;
+  font-size: 12px;
+}
+.am-mode .am-option.is-correct {
+  border-color: #4c8970;
+  background: color-mix(in srgb, #5da886 10%, var(--am-surface));
+}
+.am-mode .am-option.is-wrong {
+  border-color: var(--am-accent);
+}
+.am-mode .am-mark {
+  margin-left: auto;
+  font-size: 11px;
+}
+.am-mode .am-feedback {
+  margin: 22px 0 16px;
+  border-left: 3px solid var(--am-accent);
+  background: var(--am-fill);
+  padding: 15px 18px;
+}
+.am-mode .am-feedback p {
+  margin: 6px 0 10px;
+}
+.am-mode .am-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 17px;
+  border: none;
+  border-radius: 7px;
+  background: var(--am-ink);
+  color: var(--am-surface);
+  font-weight: 650;
+}
+.am-mode .am-primary:hover {
+  opacity: 0.86;
+}
+.am-mode .am-source {
+  color: var(--am-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.am-mode .am-review {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 24px;
+}
+.am-mode .am-review li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--am-line);
+  font-size: 14px;
+}
+.am-mode .am-review b {
+  font-family: var(--am-mono);
+  font-size: 12px;
+}
+.am-mode .am-score {
+  font-size: clamp(42px, 5vw, 64px);
+  line-height: 1.1;
+  color: var(--am-ink);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  margin: 20px 0;
+}
+.am-mode .am-score small {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--am-muted);
+  letter-spacing: -0.03em;
+}
+.am-mode .am-guidegrid {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.6fr) minmax(0, 1.65fr);
+  gap: 15px;
+  align-items: start;
+}
+.am-mode .am-guidenav {
+  display: grid;
+  gap: 7px;
+}
+.am-mode .am-guidenav button {
+  display: grid;
+  gap: 6px;
+  text-align: left;
+  line-height: 1.35;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px 15px;
+  border: 1px solid var(--am-line);
+  border-radius: 7px;
+  background: var(--am-surface);
+  color: var(--am-ink);
+}
+.am-mode .am-guidenav button[aria-current='true'] {
+  border-color: var(--am-accent);
+  background: color-mix(in srgb, var(--am-accent) 6%, var(--am-surface));
+}
+.am-mode .am-guidenav small {
+  color: var(--am-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+.am-mode .am-terminal {
+  overflow: hidden;
+  background: #18221f;
+  color: #e8f1e9;
+  border-radius: 7px;
+  margin: 17px 0 15px;
+}
+.am-mode .am-terminal > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 14px;
+  border-bottom: 1px solid #48524f;
+  font-size: 11px;
+}
+.am-mode .am-terminal button {
+  border: 1px solid #68746d;
+  background: transparent;
+  color: inherit;
+  border-radius: 4px;
+  padding: 6px 9px;
+  font-size: 12px;
+}
+.am-mode .am-terminal button:hover {
+  background: #34423b;
+}
+.am-mode .am-terminal pre {
+  margin: 0;
+  padding: 16px;
+  overflow: auto;
+}
+.am-mode .am-terminal code {
+  color: inherit;
+  background: none;
+  font: 12px/1.8 var(--am-mono);
+}
+.am-mode .am-copy-status:not(:empty) {
+  display: block;
+  color: var(--am-muted);
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+@media (max-width: 850px) {
+  .am-mode .am-guidegrid {
+    grid-template-columns: 1fr;
+  }
+  .am-mode .am-guidenav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .am-mode {
+    padding: 16px;
+  }
+  .am-mode .am-option {
+    flex-wrap: wrap;
+    gap: 7px;
+    padding: 11px;
+  }
+  .am-mode .am-option > span:nth-child(2) {
+    flex: 1;
+  }
+  .am-mode .am-mark {
+    flex-basis: 100%;
+    padding-left: 33px;
+  }
+}

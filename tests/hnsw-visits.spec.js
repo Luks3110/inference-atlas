@@ -1,0 +1,35 @@
+import { test, expect } from '@playwright/test';
+
+test('efSearch muda IDs e ligações reais; o pós-filtro mantém o percurso', async ({page}) => {
+  await page.goto('/#/aula/rag-indice-hnsw/6');
+  const panel = page.locator('.hnsw-play');
+  const outcome = panel.locator('.outcome');
+  const complete = async () => expect(outcome).toHaveAttribute('aria-busy', 'false');
+  const added = panel.locator('[data-diff=added]');
+  const removed = panel.locator('[data-diff=removed]');
+  const graph = panel.getByRole('img', {name:/Percurso HNSW/});
+  await complete();
+  await expect(added).toContainText('+ 0 ·');
+  await panel.getByRole('slider', { name: 'efSearch' }).fill('160');
+  await complete();
+  await expect(added).toHaveText(/\+ [1-9][\d.]* ·/);
+  await expect(graph.locator('line.added').first()).toBeVisible();
+  await expect(graph.locator('g.added').first()).toBeVisible();
+  const paths = () => panel.locator('.visit-map > path').evaluateAll(nodes => nodes.map(n => n.getAttribute('d')));
+  const at160 = await paths();
+  const visibleIds = () => graph.locator('g[data-node]').evaluateAll(nodes => nodes.map(n => [n.dataset.node,n.getAttribute('transform')]));
+  await expect(graph.locator(':scope > g')).toHaveCount(1);
+  const previousIds = await visibleIds();
+  await panel.getByRole('slider', {name:'Seletividade do filtro'}).fill('1');
+  await complete();
+  expect(await paths()).toEqual(at160);
+  expect(await visibleIds()).toEqual(previousIds);
+  await panel.getByRole('button', {name:'Fixar medição para comparar'}).click();
+  await expect(added).toContainText('+ 0 ·');
+  await panel.getByRole('slider', { name: 'efSearch' }).fill('10');
+  await complete();
+  await expect(removed).toHaveText(/− [1-9][\d.]* ·/);
+  await expect(graph.locator('line.removed').first()).toBeVisible();
+  await panel.locator('.all-visits summary').click();
+  await expect(panel.locator('.all-visits')).toContainText(/#[0-9]+ → #[0-9]+/);
+});
