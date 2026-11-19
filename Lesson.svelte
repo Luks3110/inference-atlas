@@ -12,6 +12,7 @@
   import { lessonAims } from './production/lesson-aims.js';
   import CourseTerms from './CourseTerms.svelte';
   import ArchitectureChoice from './ArchitectureChoice.svelte';
+  import ToolCallingStep from './ToolCallingStep.svelte';
   import ToolCallingWalkthrough from './ToolCallingWalkthrough.svelte';
   import PortalPractice from './PortalPractice.svelte';
   import QuickCheck from './QuickCheck.svelte';
@@ -23,10 +24,11 @@
   let exercise = $derived(lesson.fieldwork?.exercise || lesson.challenge);
   let checks = $state.raw(new Set(Array.isArray(read('self-checks', [])) ? read('self-checks', []) : []));
   let diagram = $state();
+  let model = $derived(simulations[lesson.id]?.[index]);
   let termsText = $derived([
-    step.title, step.body, step.idea, step.change, ...step.decision,
-    ...simulations[lesson.id][index].knobs.map(knob => knob.label),
-    ...step.metrics.flat(), simulations[lesson.id][index].explanation,
+    step.title, step.body, step.idea, step.change, ...(step.decision ?? []),
+    ...(model?.knobs.map(knob => knob.label) ?? []),
+    ...(step.metrics?.flat() ?? []), model?.explanation,
   ].join(' '));
   let investigation = $derived(investigations.get(lesson.id));
   function focusCase() {
@@ -121,12 +123,18 @@
       </div>
     </article>
     {/key}
-    {#if lesson.id === 'tool-calling' && (index === 1 || index === 7)}
-      {#key index}<ToolCallingWalkthrough />{/key}
-    {/if}
+    {#if lesson.lab === 'tool-calling'}
+      {#key index}
+        {#if index === 1 || index === 7}
+          <ToolCallingWalkthrough />
+        {:else}
+          <ToolCallingStep {index} />
+        {/if}
+      {/key}
+    {:else}
     <div class="instrument-board">
       {#key step}
-        <StepDecision decision={step.decision} model={simulations[lesson.id][index]}
+        <StepDecision decision={step.decision} {model}
           illustrate={illustrations[lesson.id][index]} stageId={lesson.id + '-' + index} stepLabel={step.label} hnsw={lesson.id === 'rag-indice-hnsw'}>
           {#snippet readings()}
       <dl class="instruments" aria-label="Medições da etapa">
@@ -144,13 +152,16 @@
       {/key}
 
     </div>
+    {/if}
     {#if lesson.id === 'mastra-e-orquestracao' && index === 0}<ArchitectureChoice />{/if}
     {#if lesson.id === 'computer-use' && index === 1}<PortalPractice />{/if}
     <div class="step-takeaway">
-        <section class="step-change">
-          <h3>O que mudou</h3>
-          <p>{step.change}</p>
-        </section>
+        {#if step.change}
+          <section class="step-change">
+            <h3>O que mudou</h3>
+            <p>{step.change}</p>
+          </section>
+        {/if}
         <div class="insight">
           <h3>{@html icon('idea', 17)} Ideia-chave</h3>
           <p>{step.idea}</p>
@@ -164,7 +175,7 @@
           <h3>{@html icon('notes', 15)} {step.artifact.label}</h3>
           <pre>{step.artifact.lines.join('\n')}</pre>
         </section>{/if}
-      <details class="trace-history">
+      {#if step.metrics}<details class="trace-history">
         <summary>{@html icon('chart', 15)} Comparar medições das etapas</summary>
         <ol>
           {#each lesson.steps.slice(0, index + 1) as s, i}<li>
@@ -173,7 +184,7 @@
               >
             </li>{/each}
         </ol>
-      </details>
+      </details>{/if}
     </div>
       <div class="reader-actions">
         <button

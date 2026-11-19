@@ -37,7 +37,7 @@ export function matchLessons(query, lessons, modules) {
     const name = normalize([item.title, item.summary, modules[item.group].title].join(' '));
     if (matches(name)) return [{ item, index: 0 }];
     const index = item.steps.findIndex((s) =>
-      matches(normalize([s.label, s.title, s.body, s.idea, s.change, s.code, ...s.decision].join(' '))),
+      matches(normalize([s.label, s.title, s.body, s.idea, s.change, s.code, ...(s.decision ?? [])].join(' '))),
     );
     if (index >= 0) return [{ item, index }];
     const work = item.fieldwork;

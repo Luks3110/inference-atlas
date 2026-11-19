@@ -3,14 +3,16 @@ import { simulations } from '../production/simulations.js';
 import { lessons } from '../curriculum.js';
 import { snap, responseCurves } from '../production/sim-core.js';
 
+const numericLessons = lessons.filter(lesson => !lesson.lab);
+
 function scenarios(model) {
   return model.knobs.reduce((cases, p) => cases.flatMap(values =>
     [...new Set([p.min, p.initial, p.max])].map(value => [...values,value])), [[]]);
 }
 
 test('todos os controles têm limites válidos e métricas finitas inclusive nas bordas', () => {
-  expect(Object.keys(simulations).sort()).toEqual(lessons.map(l=>l.id).sort());
-  for (const lesson of lessons) {
+  expect(Object.keys(simulations).sort()).toEqual(numericLessons.map(l=>l.id).sort());
+  for (const lesson of numericLessons) {
     expect(simulations[lesson.id],lesson.id).toHaveLength(lesson.steps.length);
     for (const [i,model] of simulations[lesson.id].entries()) {
       const where = lesson.id + '/' + (i+1);
@@ -31,11 +33,11 @@ test('todos os controles têm limites válidos e métricas finitas inclusive nas
   }
 });
 
-test('todas as etapas recalculam as medidas e o desenho ao editar os controles', async ({page})=>{
+test('as etapas com controles numéricos recalculam as medidas e o desenho ao editar os controles', async ({page})=>{
   test.setTimeout(240000);
   await page.setViewportSize({width:375,height:810});
   await page.goto('/');
-  for(const lesson of lessons) {
+  for(const lesson of numericLessons) {
     for(const [i,model] of simulations[lesson.id].entries()) {
       const initial=model.knobs.map(p=>p.initial);
       const reference=model.calculate(...initial);

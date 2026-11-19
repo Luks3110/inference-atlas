@@ -14,10 +14,12 @@ test('a sequência respeita pré-requisitos e cada decisão possui uma comparaç
   const rag = modules.find((m) => m.id === 'rag').lessons.map((l) => l.id);
   expect(rag.indexOf('rag-ivf-e-shards')).toBeLessThan(rag.indexOf('rag-reranking'));
   const interventions = new Set(), explanations = new Set();
-  expect(Object.keys(stepDecisions).sort()).toEqual(lessons.map(l => l.id).sort());
+  const numericLessons = lessons.filter(l => !l.lab);
+  expect(Object.keys(stepDecisions).sort()).toEqual(numericLessons.map(l => l.id).sort());
   for (const l of lessons) {
-    expect(stepDecisions[l.id], l.id).toHaveLength(l.steps.length);
     expect(l.steps.filter((s) => s.label === evidenceSteps[l.id]), l.id).toHaveLength(1);
+    if (l.lab) continue;
+    expect(stepDecisions[l.id], l.id).toHaveLength(l.steps.length);
     for (const step of l.steps) {
       expect(step.decision, l.id).toHaveLength(7);
       expect(step.decision.every((v) => typeof v === 'string' && v.trim()), l.id).toBe(true);
@@ -29,7 +31,7 @@ test('a sequência respeita pré-requisitos e cada decisão possui uma comparaç
       explanations.add(step.decision[6]);
     }
   }
-  const steps = lessons.reduce((n,l) => n + l.steps.length, 0);
+  const steps = numericLessons.reduce((n,l) => n + l.steps.length, 0);
   expect(interventions.size).toBe(steps);
   expect(explanations.size).toBe(steps);
 });

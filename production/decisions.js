@@ -18,6 +18,7 @@ export const stepDecisions = Object.fromEntries(
 
 export function withDecisions(lesson) {
   const rows = stepDecisions[lesson.id];
+  if (!rows) return lesson;
   const steps = lesson.steps.map((step, index) => ({ ...step, decision: rows[index] }));
   const words = rows.reduce((total, row) => total + row[6].split(/\s+/).length, 0);
   return { ...lesson, steps, minutes: lesson.minutes + Math.ceil(words / 180) };

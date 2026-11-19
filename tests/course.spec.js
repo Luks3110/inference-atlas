@@ -72,7 +72,7 @@ test('estado anterior, progresso, busca, teclado, temas e modos sobrevivem à mi
   await expect(page.locator('.topic-card')).toHaveCount(productionModules.length);
 });
 
-test('todo estado de cada aula tem telemetria, explicação e diagrama no celular', async ({ page }) => {
+test('toda etapa tem explicação e exercício visual no celular', async ({ page }) => {
   test.setTimeout(240000);
   await page.setViewportSize({ width: 375, height: 810 });
   const errors = [];
@@ -98,6 +98,12 @@ test('todo estado de cada aula tem telemetria, explicação e diagrama no celula
         },
         { hash, title: s.title, id: l.title },
       );
+      if (l.lab === 'tool-calling') {
+        await expect(page.locator('.tool-step, .tool-walkthrough')).toBeVisible();
+        await expect(page.getByRole('slider')).toHaveCount(0);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), hash).toBe(false);
+        continue;
+      }
       const referenceReading = await page.locator('.step-decision').evaluate(async (section) => {
         section.querySelector('.reading').click();
         await Promise.resolve();
@@ -189,6 +195,13 @@ test('a primeira aula de aplicações ensina a chamada antes do contrato de neg�
   const moduleLinks = page.locator('#sidebar a[href="#/aula/tool-calling/1"]').locator('xpath=../..');
   await expect(moduleLinks.getByRole('link').first()).toHaveText('Tool calling do zero');
   await expect(moduleLinks.getByRole('link').nth(1)).toHaveText('JSON com contrato de negócio');
+  const example = page.locator('.tool-step');
+  const answer = example.locator('.message').last();
+  await expect(answer).toContainText('Ainda não tenho o status');
+  await example.getByRole('button', {name:'Pergunta e status confirmado'}).click();
+  await expect(answer).toContainText('Seu pedido 42 está em transporte.');
+  await example.getByRole('button', {name:'Só a pergunta'}).click();
+  await expect(answer).toContainText('Ainda não tenho o status');
   await page.goto('/#/aula/tool-calling/2');
   const chat = page.getByRole('region', { name:'Siga a chamada no chat' });
   await chat.getByRole('button', {name:'Enviar ao modelo'}).click();
@@ -210,4 +223,14 @@ test('a primeira aula de aplicações ensina a chamada antes do contrato de neg�
   }
   await expect(chat).toContainText('Não consigo consultar esse pedido com a conta atual.');
   await expect(chat).not.toContainText('em transporte');
+
+  await page.goto('/#/aula/tool-calling/5');
+  await example.getByRole('button', {name:'Número veio como texto'}).click();
+  await expect(answer).toContainText('O campo exige um inteiro.');
+  await example.getByRole('button', {name:'Conta sem acesso'}).click();
+  await expect(answer).toContainText('A loja não recebe a consulta.');
+
+  await page.goto('/#/aula/tool-calling/7');
+  await example.getByRole('button', {name:'Consulta falhou'}).click();
+  await expect(answer).toContainText('Não consegui confirmar o status');
 });

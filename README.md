@@ -33,7 +33,7 @@ As setas esquerda e direita navegam pelas etapas. R restaura os parâmetros e re
 
 ## Simulações por etapa
 
-As etapas têm parâmetros numéricos editáveis por slider ou teclado. Cada modelo expressa hipóteses e unidades. O diagrama e as métricas são recalculados no cliente. As curvas variam um parâmetro com os demais fixos. O navegador conserva o ajuste de cada etapa na sessão e o botão Restaurar recupera os valores iniciais. A topologia e as medições fixas do exemplo continuam disponíveis na própria etapa.
+As simulações numéricas têm parâmetros editáveis por slider ou teclado. Cada modelo expressa hipóteses e unidades. O diagrama e as métricas são recalculados no cliente. As curvas variam um parâmetro com os demais fixos. O navegador conserva o ajuste de cada etapa na sessão e o botão Restaurar recupera os valores iniciais. A topologia e as medições fixas do exemplo continuam disponíveis na própria etapa.
 
 Nas nove etapas de HNSW, a opção **Busca HNSW · efSearch e filtro** executa a travessia do grafo em um Web Worker. O corpus contém 3.072 vetores sintéticos de 20 dimensões e 48 consultas. Após a busca, o worker aplica o filtro aos candidatos e compara os resultados com os dez vizinhos exatos elegíveis. O p95 é medido no aparelho do leitor. A medição pode ser fixada para comparar parâmetros. O benchmark Faiss de referência usa outro corpus, 16 mil vetores, 160 consultas e filtragem durante a busca. Os scripts permitem reproduzir ambos os ensaios.
 
