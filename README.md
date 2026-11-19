@@ -1,6 +1,6 @@
 # Inference Atlas
 
-Curso interativo em português para quem desenvolve aplicações com modelos de IA. São 55 aulas em 13 módulos, com 447 etapas. Cada etapa tem uma explicação, um diagrama e um simulador com hipóteses explícitas. O site usa Svelte 5. O navegador guarda o progresso e a etapa atual.
+Curso interativo em português para quem desenvolve aplicações com modelos de IA. São 56 aulas em 13 módulos, com 455 etapas. Cada etapa tem uma explicação, um diagrama e um simulador com hipóteses explícitas. O site usa Svelte 5. O navegador guarda o progresso e a etapa atual.
 
 ## Abrir localmente
 
@@ -21,7 +21,7 @@ O build gera o site estático em `dist/`, incluindo fontes e ilustrações. Sirv
 
 ## Explorar
 
-- **Aprender** começa pelo caminho de um pedido, pelas APIs de modelos e pelas ferramentas. Depois, compara workflows e agentes, passa por RAG e ensina a avaliar e operar o sistema.
+- **Aprender** começa pelo caminho de um pedido, pelas APIs de modelos e pelo harness que chama ferramentas. Depois, compara workflows e agentes, passa por RAG e ensina a avaliar e operar o sistema.
 - **Produção** reúne os módulos de aplicações, avaliação e operação. Os casos indicam a fonte e o que foi medido ou simulado.
 - **Prática** traz cinco decisões com explicação após a resposta.
 - **Laboratório** compara versões de uma skill de devoluções. O exercício roda sem credenciais e permite baixar o SKILL.md, os casos e o avaliador.

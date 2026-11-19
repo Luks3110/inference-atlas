@@ -12,6 +12,7 @@
   import { lessonAims } from './production/lesson-aims.js';
   import CourseTerms from './CourseTerms.svelte';
   import ArchitectureChoice from './ArchitectureChoice.svelte';
+  import ToolCallingWalkthrough from './ToolCallingWalkthrough.svelte';
   import PortalPractice from './PortalPractice.svelte';
   import QuickCheck from './QuickCheck.svelte';
   import VectorLab from './VectorLab.svelte';
@@ -120,6 +121,9 @@
       </div>
     </article>
     {/key}
+    {#if lesson.id === 'tool-calling' && (index === 1 || index === 7)}
+      {#key index}<ToolCallingWalkthrough />{/key}
+    {/if}
     <div class="instrument-board">
       {#key step}
         <StepDecision decision={step.decision} model={simulations[lesson.id][index]}

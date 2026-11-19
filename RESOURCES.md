@@ -12,3 +12,5 @@ As referências de cada tema ficam ao lado de suas aulas. Os casos em produção
 - Verifique como um agente anuncia suas interfaces e acompanha tarefas remotas. [Especificação A2A](https://a2a-protocol.org/latest/specification/)
 - Use o formato de descrição e instruções para preparar uma skill que possa ser avaliada. [Especificação Agent Skills](https://agentskills.io/specification)
 - Veja como adicionar notas e comentários a pedidos revisados por pessoas. [Filas de anotação do Langfuse](https://langfuse.com/docs/evaluation/evaluation-methods/annotation-queues)
+
+- Siga o pedido de chamada e o retorno do resultado ao modelo pela API Responses. [Guia de chamada de funções](https://developers.openai.com/api/docs/guides/function-calling)

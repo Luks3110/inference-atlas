@@ -116,7 +116,7 @@ export const llmApiDrills = {
     ],
   },
   'contratos-de-saida': {
-    scenario: 'Chegam mil mensagens de suporte por rodada. O sistema encaminha para entrega, financeiro ou revisão humana. A equipe pode revisar até 200 por rodada. Dos que forem encaminhados automaticamente, pelo menos 96% devem ir ao destino certo.',
+    scenario: 'O mesmo chat da loja agora precisa encaminhar mensagens para entrega, financeiro ou uma pessoa do suporte. O código lê essa escolha e abre o chamado no lugar certo. Neste exemplo, chegam mil mensagens. O suporte consegue revisar até 200, e pelo menos 96% das mensagens encaminhadas automaticamente precisam chegar ao destino certo.',
     initial: [
       reading('O contrato v1 define duas filas de destino e uma saída para dados insuficientes.', 'Destinos','3 valores','Rodada','1.000 tickets','Revisão máx.','200 tickets'),
       reading('O endpoint passa a gerar com o schema de triagem versionado.', 'Schemas ativos','1 versão','Campos obrigatórios','1 campo','Valores permitidos','3 destinos'),

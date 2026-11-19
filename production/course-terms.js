@@ -51,6 +51,7 @@ const glossary = [
   ['Paralelismo', 'TP divide cálculos de uma camada entre placas. PP coloca grupos de camadas em etapas sucessivas. DP distribui pedidos entre cópias do modelo. EP distribui especialistas.', 'TP', 'PP', 'DP', 'EP', 'rank', 'ranks', 'all-to-all', 'all-reduce'],
   ['API e HTTP', 'A API define como um programa pode falar com outro. HTTP é o protocolo que leva muitos desses pedidos e respostas pela rede.', 'API', 'HTTP', 'POST', 'endpoint'],
   ['Formato de dados', 'Um schema diz quais campos existem, quais são obrigatórios e quais valores servem. Por exemplo, o destino de um chamado pode ser financeiro, entrega ou revisão.', 'schema', 'schemas', 'JSON Schema'],
+  ['Harness', 'Código do aplicativo que prepara a conversa com o modelo, apresenta ferramentas, verifica e executa chamadas e devolve os resultados.', 'harness'],
   ['Ferramenta', 'Função que a aplicação pode chamar, como consultar um pedido. O modelo pode sugerir a chamada. O servidor confere os dados e a autorização antes de executá-la.', 'tool', 'tools', 'tool call', 'tool calls'],
   ['MCP', 'Padrão para uma aplicação listar e chamar ferramentas fornecidas por outro programa.', 'MCP', 'initialize', 'tools/list', 'tools/call'],
   ['Repetir com segurança', 'Uma operação idempotente pode receber de novo o mesmo pedido sem aplicar o efeito duas vezes, como cobrar o mesmo pagamento.', 'idempotência', 'idempotente', 'deduplicação'],

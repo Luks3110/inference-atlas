@@ -183,3 +183,31 @@ test('a nova trilha abre arquitetura, anotação humana e o portal fictício', a
   await page.getByRole('button', {name:'Tentar encerrar pedido'}).click();
   await expect(page.locator('.portal-practice [role=status]')).toContainText('Ação recusada');
 });
+
+test('a primeira aula de aplicações ensina a chamada antes do contrato de negócio', async ({page}) => {
+  await page.goto('/#/aula/tool-calling/1');
+  const moduleLinks = page.locator('#sidebar a[href="#/aula/tool-calling/1"]').locator('xpath=../..');
+  await expect(moduleLinks.getByRole('link').first()).toHaveText('Tool calling do zero');
+  await expect(moduleLinks.getByRole('link').nth(1)).toHaveText('JSON com contrato de negócio');
+  await page.goto('/#/aula/tool-calling/2');
+  const chat = page.getByRole('region', { name:'Siga a chamada no chat' });
+  await chat.getByRole('button', {name:'Enviar ao modelo'}).click();
+  await chat.getByRole('button', {name:'Ver o que o modelo pede'}).click();
+  await expect(chat).toContainText('Pede que o aplicativo consulte o pedido 42.');
+  await expect(chat).not.toContainText('em transporte');
+  await chat.getByRole('button', {name:'Conferir a chamada'}).click();
+  await chat.getByRole('button', {name:'Consultar e devolver o resultado'}).click();
+  await chat.getByRole('button', {name:'Mostrar a resposta'}).click();
+  await expect(chat).toContainText('Seu pedido 42 está em transporte.');
+  await chat.getByLabel('Situação').selectOption('missing');
+  await chat.getByRole('button', {name:'Enviar ao modelo'}).click();
+  await chat.getByRole('button', {name:'Ver o que o modelo pede'}).click();
+  await expect(chat).toContainText('Qual é o número do seu pedido?');
+  await expect(chat.getByRole('button', {name:'Conferir a chamada'})).toHaveCount(0);
+  await chat.getByLabel('Situação').selectOption('denied');
+  for (const name of ['Enviar ao modelo', 'Ver o que o modelo pede', 'Conferir a chamada', 'Devolver a recusa ao modelo', 'Mostrar a resposta']) {
+    await chat.getByRole('button', {name}).click();
+  }
+  await expect(chat).toContainText('Não consigo consultar esse pedido com a conta atual.');
+  await expect(chat).not.toContainText('em transporte');
+});

@@ -17,6 +17,7 @@ export const courseOrder = [
     phase: 'Aplicações de IA',
     symbol: 'box',
     lessons: [
+      'tool-calling',
       'contratos-de-saida',
       'execucao-idempotente-de-tools',
       'workflow-ou-agente',
