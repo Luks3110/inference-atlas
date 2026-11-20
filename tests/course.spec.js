@@ -320,6 +320,8 @@ test('os campos do JSON e do SSE explicam seu papel sem alterar a captura', asyn
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(rawRequest);
 
   await lab.getByRole('button', { name: 'Ler stream', exact: true }).click();
+  const added = trace.openai.http[0].events.find(event => event.type === 'response.output_item.added');
+  expect(await packetText.textContent()).toBe('event: ' + added.type + '\ndata: ' + JSON.stringify(added, null, 2));
   await field('item.id').click();
   await expect(note).toContainText('item_id');
   await expect(note).toContainText('call_id');
@@ -328,10 +330,14 @@ test('os campos do JSON e do SSE explicam seu papel sem alterar a captura', asyn
   await field('delta').click();
   await expect(note).toContainText('Fragmento literal dos argumentos');
   const delta = trace.openai.http[0].events.find(event => event.type === 'response.function_call_arguments.delta');
-  const rawEvent = 'event: ' + delta.type + '\ndata: ' + JSON.stringify(delta);
-  expect(await packetText.textContent()).toBe(rawEvent);
+  const prefix = 'event: ' + delta.type + '\ndata: ';
+  expect(await packetText.textContent()).toBe(prefix + JSON.stringify(delta, null, 2));
   await packet.getByRole('button', { name: 'Copiar SSE', exact: true }).click();
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(rawEvent);
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(prefix + JSON.stringify(delta));
+
+  await lab.getByRole('button', { name: 'Exibir texto', exact: true }).click();
+  const textDelta = trace.openai.http[1].events.find(event => event.type === 'response.output_text.delta');
+  expect(await packetText.textContent()).toBe('event: ' + textDelta.type + '\ndata: ' + JSON.stringify(textDelta, null, 2));
 
   await lab.getByRole('button', { name: 'Devolver resultado', exact: true }).click();
   await field('output').click();

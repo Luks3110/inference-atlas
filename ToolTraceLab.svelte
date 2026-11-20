@@ -136,7 +136,7 @@
         <pre><code>{content}</code></pre>
       </div>
     {:else}
-      <JsonInspector value={content} {prefix} compact={prefix !== ''} label={title} />
+      <JsonInspector value={content} {prefix} label={title} />
     {/if}
   </div>
 {/snippet}

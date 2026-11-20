@@ -166,11 +166,11 @@ export function describeField(key, value, parent) {
   return Object.hasOwn(fields, key) ? fields[key] : '';
 }
 
-// Build the same string as JSON.stringify. Only keys become interactive tokens.
-export function jsonTokens(value, compact = false) {
+// Build the indented JSON text. Only keys become interactive tokens.
+export function jsonTokens(value) {
   const tokens = [];
   const put = (text, kind) => tokens.push({text, kind});
-  const indent = level => compact ? '' : '\n' + '  '.repeat(level);
+  const indent = level => '\n' + '  '.repeat(level);
   function walk(node, path) {
     if (node === null || typeof node !== 'object') {
       put(JSON.stringify(node), typeof node === 'string' ? 'json-string' : 'json-literal');
@@ -186,7 +186,7 @@ export function jsonTokens(value, compact = false) {
       if (!array) {
         const text = JSON.stringify(key);
         tokens.push({text, key, path:next, help:describeField(key,value,node), value});
-        put(compact ? ':' : ': ');
+        put(': ');
       }
       walk(value, next);
     });

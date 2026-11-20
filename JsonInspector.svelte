@@ -5,7 +5,7 @@
   import JsonFieldNote from './JsonFieldNote.svelte';
   import { decodeField, formatPath, jsonTokens } from './production/tool-json-fields.js';
 
-  let { value, prefix = '', compact = false, depth = 0, label = '' } = $props();
+  let { value, prefix = '', depth = 0, label = '' } = $props();
   const detailId = $props.id();
   let code = $state();
   let inner = $state();
@@ -16,7 +16,7 @@
   let openTimer;
   let closeTimer;
   let restoringFocus = false;
-  let tokens = $derived(jsonTokens(value, compact));
+  let tokens = $derived(jsonTokens(value));
   let decoded = $derived(depth === 0 ? decodeField(active?.token.value) : null);
   let format = $derived(prefix ? 'SSE' : 'JSON');
 
@@ -114,7 +114,8 @@
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(prefix + JSON.stringify(value, null, compact ? 0 : 2));
+      const text = prefix ? prefix + JSON.stringify(value) : JSON.stringify(value, null, 2);
+      await navigator.clipboard.writeText(text);
       copyStatus = 'Copiado';
     } catch {
       copyStatus = 'Selecione o texto para copiar.';
@@ -133,7 +134,7 @@
       </div>
       <button type="button" aria-label={'Copiar ' + format} class="copy" onclick={copy}>
         {@html icon(copyStatus === 'Copiado' ? 'check' : 'copy', 14)}
-        <span>{copyStatus === 'Copiado' ? copyStatus : 'Copiar'}</span>
+        <span>{copyStatus === 'Copiado' ? copyStatus : 'Copiar ' + format}</span>
       </button>
       <span role="status" class="sr-only">{copyStatus}</span>
     </div>
