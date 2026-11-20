@@ -1,6 +1,6 @@
 # Inference Atlas
 
-Curso interativo em português para quem desenvolve aplicações com modelos de IA. São 56 aulas em 13 módulos, com 455 etapas. Cada etapa tem uma explicação, um diagrama e um simulador com hipóteses explícitas. O site usa Svelte 5. O navegador guarda o progresso e a etapa atual.
+Curso interativo em português para quem desenvolve aplicações com modelos de IA. São 56 aulas em 13 módulos, com 458 etapas. Cada etapa tem uma explicação, um diagrama e um simulador com hipóteses explícitas. O site usa Svelte 5. O navegador guarda o progresso e a etapa atual.
 
 ## Abrir localmente
 
@@ -30,6 +30,10 @@ O build gera o site estático em `dist/`, incluindo fontes e ilustrações. Sirv
 O aprofundamento opcional cobre os detalhes do modelo e da inferência, como KV cache, batching e MoE. O painel de progresso acompanha a trilha principal.
 
 As setas esquerda e direita navegam pelas etapas. R restaura os parâmetros e reinicia o diagrama. Espaço pausa a animação. Ctrl/Cmd + K abre a busca.
+
+## Laboratório de ferramentas e protocolo
+
+Em **Tool calling do zero**, abra a [stream e os JSONs da consulta ao pedido 42](https://inference-atlas-lemon.vercel.app/#/aula/tool-calling/4). Você pode baixar a captura e reproduzi-la em `examples/tool-calling` com `npm ci` e `npm run capture`. O servidor de teste simula a OpenAI. Mastra, LangChain, MCP e o executor QuickJS rodam localmente sobre os mesmos dados fictícios.
 
 ## Simulações por etapa
 

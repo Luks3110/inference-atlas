@@ -12,6 +12,7 @@
   import { lessonAims } from './production/lesson-aims.js';
   import CourseTerms from './CourseTerms.svelte';
   import ArchitectureChoice from './ArchitectureChoice.svelte';
+  import ToolTraceLab from './ToolTraceLab.svelte';
   import ToolCallingStep from './ToolCallingStep.svelte';
   import ToolCallingWalkthrough from './ToolCallingWalkthrough.svelte';
   import PortalPractice from './PortalPractice.svelte';
@@ -25,6 +26,12 @@
   let checks = $state.raw(new Set(Array.isArray(read('self-checks', [])) ? read('self-checks', []) : []));
   let diagram = $state();
   let model = $derived(simulations[lesson.id]?.[index]);
+  const traceViews = {
+    2: ['openai','request'], 3: ['openai','stream'], 4: ['openai','execute'],
+    5: ['openai','result'], 6: ['openai','text'], 8: ['mastra','execute'],
+    9: ['mcp','catalog'], 10: ['code','execute'],
+  };
+  let traceView = $derived(lesson.lab === 'tool-calling' ? traceViews[index] : null);
   let termsText = $derived([
     step.title, step.body, step.idea, step.change, ...(step.decision ?? []),
     ...(model?.knobs.map(knob => knob.label) ?? []),
@@ -127,6 +134,14 @@
       {#key index}
         {#if index === 1 || index === 7}
           <ToolCallingWalkthrough />
+        {:else if traceView}
+          <ToolTraceLab initialMode={traceView[0]} initialStep={traceView[1]} />
+          {#if index >= 2 && index <= 6}
+            <details class="tool-alternative">
+              <summary>Testar uma variação</summary>
+              <ToolCallingStep {index} />
+            </details>
+          {/if}
         {:else}
           <ToolCallingStep {index} />
         {/if}
@@ -282,6 +297,8 @@
 </div>
 
 <style>
+  .tool-alternative {margin:0 0 16px}
+  .tool-alternative > summary {color:var(--accent);font-size:14px;cursor:pointer;margin-bottom:8px}
   .lesson-main .reader-content {padding:0;max-width:72ch}
   .lesson-main .body-text,.start-here {font-size:clamp(15px,1.2vw,17px);line-height:1.65;color:var(--ink)}
   .lesson-explanation {margin:16px 0 22px;padding:clamp(16px,2.5vw,30px);border:1px solid var(--line);border-radius:10px;background:var(--panel)}

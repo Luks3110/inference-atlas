@@ -1,0 +1,22 @@
+{
+  "name": "atlas-tool-calling",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "capture": "node capture.mjs ../../public/labs/tool-calling/trace.json"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "4.0.121",
+    "@langchain/core": "1.4.2",
+    "@langchain/openai": "1.8.4",
+    "@mastra/core": "1.85.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "langchain": "1.6.7",
+    "quickjs-emscripten": "0.32.0",
+    "zod": "4.6.7"
+  }
+}

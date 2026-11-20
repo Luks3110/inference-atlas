@@ -99,7 +99,7 @@ test('toda etapa tem explicação e exercício visual no celular', async ({ page
         { hash, title: s.title, id: l.title },
       );
       if (l.lab === 'tool-calling') {
-        await expect(page.locator('.tool-step, .tool-walkthrough')).toBeVisible();
+        await expect(page.locator('.tool-step:visible, .tool-walkthrough:visible, .tool-trace:visible')).toBeVisible();
         await expect(page.getByRole('slider')).toHaveCount(0);
         expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), hash).toBe(false);
         continue;
@@ -225,12 +225,70 @@ test('a primeira aula de aplicações ensina a chamada antes do contrato de neg�
   await expect(chat).not.toContainText('em transporte');
 
   await page.goto('/#/aula/tool-calling/5');
+  await page.getByText('Testar uma variação', {exact:true}).click();
   await example.getByRole('button', {name:'Número veio como texto'}).click();
   await expect(answer).toContainText('O campo exige um inteiro.');
   await example.getByRole('button', {name:'Conta sem acesso'}).click();
   await expect(answer).toContainText('A loja não recebe a consulta.');
 
   await page.goto('/#/aula/tool-calling/7');
+  await page.getByText('Testar uma variação', {exact:true}).click();
   await example.getByRole('button', {name:'Consulta falhou'}).click();
   await expect(answer).toContainText('Não consegui confirmar o status');
+});
+
+test('a captura mostra schema, argumentos em SSE, execução e retorno em cada implementação', async ({page}) => {
+  await page.setViewportSize({width:390,height:820});
+  await page.goto('/#/aula/tool-calling/3');
+  const lab = page.getByRole('region',{name:'Veja os dados da chamada do pedido 42'});
+  const select = name => lab.getByRole('button',{name,exact:true}).click();
+  const packets = lab.locator('pre');
+  await expect(packets.first()).toContainText('"tool_choice": "auto"');
+  for (const field of ['consultar_pedido','calcular_frete','"required"','"additionalProperties": false']) {
+    await expect(packets.first()).toContainText(field);
+  }
+
+  await select('Ler stream');
+  await expect(packets.first()).toContainText('response.output_item.added');
+  await select('Próximo evento');
+  await expect(packets.last()).toHaveText('{"numero":');
+  await select('Próximo evento');
+  await expect(packets.last()).toHaveText('{"numero":4');
+  await select('Próximo evento');
+  await expect(packets.last()).toHaveText('{"numero":42}');
+  await expect(lab.locator('.status')).toHaveText('O harness ainda não executou a função.');
+  for (let i=0;i<3;i++) await select('Próximo evento');
+  await expect(packets.first()).toContainText('response.completed');
+  await expect(lab.locator('.status')).toContainText('pode conferir e executar');
+  await select('Devolver resultado');
+  await expect(packets.first()).toContainText('"call_id": "call_pedido42"');
+  await expect(packets.first()).toContainText('function_call_output');
+  await select('Exibir texto');
+  await expect(packets.last()).toHaveText('Seu pedido 42');
+  await select('Próximo evento');
+  await expect(packets.last()).toHaveText('Seu pedido 42 está em transporte.');
+
+  await page.goto('/#/aula/tool-calling/9');
+  await expect(packets.nth(2)).toContainText('"type": "tool-call"');
+  await expect(packets.nth(3)).toContainText('"type": "tool-result"');
+  await select('LangChain');
+  await expect(lab).toContainText('registry.get(action.name)');
+  await expect(packets.nth(1)).toContainText('tool_call_chunks');
+  await expect(packets.nth(3)).toContainText('"tool_call_id": "call_pedido42"');
+  await select('LangChain · agente');
+  await expect(packets.first()).toContainText('createAgent');
+  await expect(packets.last()).toContainText('ToolMessage');
+  await expect(packets.last()).toContainText('"tool_call_id": "call_pedido42"');
+  await select('MCP');
+  await expect(packets.first()).toContainText('"method": "tools/list"');
+  await expect(packets.nth(1)).toContainText('inputSchema');
+  await select('Executar');
+  await expect(packets.first()).toContainText('"method": "tools/call"');
+  await expect(packets.nth(1)).toContainText('em transporte');
+
+  await select('Code Mode');
+  await expect(packets.first()).toContainText('tools.consultar_pedido({ numero: 42 })');
+  await expect(packets.nth(1)).toContainText('"name": "consultar_rastreio"');
+  await expect(packets.last()).toContainText('"previsao": "21/11"');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390);
 });

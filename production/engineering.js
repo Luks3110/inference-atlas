@@ -88,16 +88,14 @@ const toolCalling = [
   {
     label: 'Descrever',
     title: 'Diga o que a função faz e o que precisa receber',
-    body: 'A função se chama consultar_pedido. A descrição diz que ela lê o status de uma entrega. Para fazer isso, precisa de um número de pedido inteiro. O harness envia essas informações junto com a pergunta.\n\nA descrição é para ajudar o modelo a escolher. Já a lista de campos e tipos é o esquema, que o aplicativo pode usar para conferir se os argumentos chegaram no formato esperado.',
+    body: 'No primeiro POST, abra tools. Há duas funções. consultar_pedido lê o status de uma entrega e exige um número de pedido inteiro. calcular_frete estima o preço do envio e exige um CEP. O harness envia os dois schemas, as descrições e a pergunta ao modelo.\n\nO modelo recebe essas opções no pedido. Ele usa a pergunta e a descrição para propor uma delas. tool_choice igual a auto deixa o modelo decidir entre propor a chamada e responder em texto. Nesta requisição, parallel_tool_calls está desligado para acompanhar uma chamada por vez. strict pede argumentos no formato do esquema. A sessão da pessoa continua sendo verificada pelo aplicativo.',
     idea: 'Se faltar o número, peça esse dado antes de consultar. O esquema diz quais campos a função exige.',
-    code: '{\n  "type": "function",\n  "name": "consultar_pedido",\n  "description": "Lê o status da entrega pelo número do pedido.",\n  "parameters": {\n    "type": "object",\n    "properties": {\n      "numero": {\n        "type": "integer"\n      }\n    },\n    "required": [\n      "numero"\n    ],\n    "additionalProperties": false\n  },\n  "strict": true\n}',
   },
   {
     label: 'Pedir',
     title: 'O modelo pede uma chamada',
-    body: 'O modelo lê a pergunta e a lista de ferramentas. Uma resposta possível é pedir ao aplicativo que execute consultar_pedido com o número 42. Esse pedido para usar uma função é o tool call. Até aqui, ninguém abriu o sistema da loja.\n\nSe a pessoa só disser "obrigado", o modelo pode devolver texto e o harness termina. Neste exemplo, o harness trata uma resposta com chamada de função de forma diferente de uma resposta só com texto.',
+    body: 'Depois de response.created, o evento response.output_item.added abre a chamada. O campo item.name diz consultar_pedido, e arguments começa vazio. Avance na stream e veja os fragmentos que completam o número 42. O harness junta os fragmentos pelo item_id e espera response.completed.\n\nO item tem dois identificadores. Usa-se item_id para localizar os argumentos durante a stream. O resultado volta com call_id para que a API saiba a qual chamada ele pertence.',
     idea: 'O pedido de consulta é uma proposta. A leitura do pedido ainda não aconteceu.',
-    code: '{\n  "type": "function_call",\n  "name": "consultar_pedido",\n  "call_id": "call_42",\n  "arguments": "{\\"numero\\":42}"\n}',
   },
   {
     label: 'Conferir',
@@ -110,7 +108,6 @@ const toolCalling = [
     title: 'O harness consulta e devolve o resultado ao modelo',
     body: 'No exercício, a consulta autorizada de número 42 retorna "em transporte". O harness envia esse resultado de volta ao modelo e usa o identificador da chamada para indicar a qual pedido de ferramenta ele pertence. A resposta da função é um dado que o modelo pode usar na próxima mensagem.\n\nSe a consulta falhar, o harness devolve uma falha. Não transforme um erro do sistema numa resposta dizendo que o pacote está a caminho.',
     idea: 'O identificador da chamada liga o resultado à função que o modelo pediu.',
-    code: '{\n  "type": "function_call_output",\n  "call_id": "call_42",\n  "output": "{\\"status\\":\\"em transporte\\"}"\n}',
   },
   {
     label: 'Responder',
@@ -121,8 +118,38 @@ const toolCalling = [
   {
     label: 'Praticar',
     title: 'Experimente uma chamada que não pode rodar',
-    body: 'Repita a conversa sem o número do pedido. Veja em que ponto o aplicativo para. Depois, teste com o 42. Confira se você consegue apontar quem pediu a consulta, quem a executou e o que o modelo recebeu de volta.\n\nNa próxima aula, o aplicativo vai escolher entre três destinos para uma mensagem de suporte. Aí entra outro problema: como combinar o formato de uma resposta que será lida por código.',
+    body: 'Repita a conversa sem o número do pedido. Veja em que ponto o aplicativo para. Depois, teste com o 42. Confira se você consegue apontar quem pediu a consulta, quem a executou e o que o modelo recebeu de volta.\n\nNas próximas etapas, siga a mesma chamada por Mastra e LangChain, por um servidor MCP e por um executor de JavaScript.',
     idea: 'Quando falta um dado obrigatório, peça o que falta antes de consultar o sistema.',
+  },
+  {
+    label: 'Frameworks',
+    title: 'Abra o que Mastra e LangChain recebem do modelo',
+    body: 'Na aba Mastra, veja o evento tool-call. O framework lê o nome consultar_pedido no retorno da OpenAI, acha a ferramenta no registro tools e roda execute com os argumentos convertidos em objeto. O evento tool-result carrega a saída. O agente segue para a segunda chamada com esse resultado.\n\nNa aba LangChain, compare tool_call_chunks e tool_calls. bindTools declara o schema. Nesta versão manual, o harness junta os fragmentos, busca a função pelo nome e chama invoke. A ToolMessage liga o resultado ao ID da chamada. Na aba LangChain · agente, veja createAgent fazer o mesmo automaticamente. As atualizações da stream mostram a passagem do nó do modelo para o nó de ferramentas.',
+    idea: 'A escolha do nome vem do modelo. O aplicativo ou o framework conecta esse nome a uma função registrada e executa a chamada.',
+    source: {
+      label: 'Como o LangChain lê chamadas de ferramentas em streaming',
+      url: 'https://docs.langchain.com/oss/javascript/langchain/models',
+    },
+  },
+  {
+    label: 'MCP',
+    title: 'Da ferramenta remota à chamada MCP',
+    body: 'O aplicativo abre uma sessão de cliente MCP com o servidor da loja. Depois da inicialização, tools/list devolve o catálogo. Compare a resposta MCP com o primeiro POST da OpenAI. No exemplo, o harness copia inputSchema para parameters ao preencher tools.\n\nO modelo escolhe consultar_pedido como antes. O harness valida o pedido, manda tools/call com o nome e os argumentos e lê o resultado do servidor. Só então envia function_call_output para a OpenAI. O id de JSON-RPC pertence à conversa MCP. O call_id pertence à conversa com a OpenAI.',
+    idea: 'Neste desenho o harness é cliente dos dois lados. Ele fala JSON-RPC com o servidor MCP e usa o formato Responses quando fala com o modelo.',
+    source: {
+      label: 'Especificação MCP para listar e executar ferramentas',
+      url: 'https://modelcontextprotocol.io/specification/2025-11-25/server/tools',
+    },
+  },
+  {
+    label: 'Code Mode',
+    title: 'Do JavaScript escrito pelo modelo às funções permitidas',
+    body: 'Neste modo, a lista tools anuncia executar_codigo. O modelo envia um programa como argumento. O harness coloca esse texto em um interpretador separado e oferece ao programa só duas funções da loja. O programa consulta o pedido, usa o número retornado para consultar o rastreio e devolve um objeto final. Veja as duas chamadas registradas a partir de um único pedido da OpenAI.\n\nA autorização continua nas funções do host. O interpretador deste exemplo roda dados fictícios, sem rede, e limita tempo, memória e chamadas. O harness serializa o retorno do programa e usa o mesmo function_call_output da consulta simples. Depois, a aula de JSON mostra como o aplicativo lê uma decisão estruturada como saída.',
+    idea: 'No Code Mode, o modelo escreve o trecho que combina as operações. O harness define quais operações o código pode chamar e executa cada uma sob a sessão autorizada.',
+    source: {
+      label: 'Code Mode e execução de código isolada',
+      url: 'https://blog.cloudflare.com/code-mode/',
+    },
   },
 ].map((step) => ({ step }));
 

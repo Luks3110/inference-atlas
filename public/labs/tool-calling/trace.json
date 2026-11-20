@@ -1,0 +1,3992 @@
+{
+  "openai": {
+    "http": [
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+          "input": [
+            {
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "description": "Estima o preço do envio pelo CEP.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          ],
+          "tool_choice": "auto",
+          "parallel_tool_calls": false,
+          "stream": true,
+          "store": false
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "",
+              "status": "in_progress"
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "{\"numero\":",
+            "sequence_number": 2
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "4",
+            "sequence_number": 3
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "2}",
+            "sequence_number": 4
+          },
+          {
+            "type": "response.function_call_arguments.done",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "arguments": "{\"numero\":42}",
+            "sequence_number": 5
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "function_call",
+                  "id": "fc_pedido42",
+                  "call_id": "call_pedido42",
+                  "name": "consultar_pedido",
+                  "arguments": "{\"numero\":42}",
+                  "status": "completed"
+                }
+              ]
+            },
+            "sequence_number": 7
+          }
+        ]
+      },
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+          "input": [
+            {
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            },
+            {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            {
+              "type": "function_call_output",
+              "call_id": "call_pedido42",
+              "output": "{\"numero\":42,\"status\":\"em transporte\"}"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "description": "Estima o preço do envio pelo CEP.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          ],
+          "tool_choice": "none",
+          "parallel_tool_calls": false,
+          "stream": true,
+          "store": false
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "in_progress",
+              "content": []
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.content_part.added",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 2
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": "Seu pedido 42",
+            "logprobs": [],
+            "sequence_number": 3
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": " está em transporte.",
+            "logprobs": [],
+            "sequence_number": 4
+          },
+          {
+            "type": "response.output_text.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "text": "Seu pedido 42 está em transporte.",
+            "logprobs": [],
+            "sequence_number": 5
+          },
+          {
+            "type": "response.content_part.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "Seu pedido 42 está em transporte.",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "Seu pedido 42 está em transporte.",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            },
+            "sequence_number": 7
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_pedido42",
+                  "role": "assistant",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Seu pedido 42 está em transporte.",
+                      "annotations": [],
+                      "logprobs": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "sequence_number": 8
+          }
+        ]
+      }
+    ],
+    "observations": [],
+    "executions": [
+      {
+        "name": "consultar_pedido",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte"
+        }
+      }
+    ]
+  },
+  "mastra": {
+    "http": [
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "input": [
+            {
+              "role": "system",
+              "content": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio."
+            },
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "Onde está meu pedido 42?"
+                }
+              ]
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "parameters": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "strict": false
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "description": "Estima o preço do envio pelo CEP.",
+              "parameters": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "strict": false
+            }
+          ],
+          "tool_choice": "auto",
+          "stream": true
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "",
+              "status": "in_progress"
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "{\"numero\":",
+            "sequence_number": 2
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "4",
+            "sequence_number": 3
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "2}",
+            "sequence_number": 4
+          },
+          {
+            "type": "response.function_call_arguments.done",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "arguments": "{\"numero\":42}",
+            "sequence_number": 5
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "function_call",
+                  "id": "fc_pedido42",
+                  "call_id": "call_pedido42",
+                  "name": "consultar_pedido",
+                  "arguments": "{\"numero\":42}",
+                  "status": "completed"
+                }
+              ]
+            },
+            "sequence_number": 7
+          }
+        ]
+      },
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "input": [
+            {
+              "role": "system",
+              "content": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio."
+            },
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "Onde está meu pedido 42?"
+                }
+              ]
+            },
+            {
+              "type": "function_call",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}"
+            },
+            {
+              "type": "function_call_output",
+              "call_id": "call_pedido42",
+              "output": "{\"numero\":42,\"status\":\"em transporte\"}"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "parameters": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "strict": false
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "description": "Estima o preço do envio pelo CEP.",
+              "parameters": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "strict": false
+            }
+          ],
+          "tool_choice": "auto",
+          "stream": true
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "in_progress",
+              "content": []
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.content_part.added",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 2
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": "Seu pedido 42",
+            "logprobs": [],
+            "sequence_number": 3
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": " está em transporte.",
+            "logprobs": [],
+            "sequence_number": 4
+          },
+          {
+            "type": "response.output_text.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "text": "Seu pedido 42 está em transporte.",
+            "logprobs": [],
+            "sequence_number": 5
+          },
+          {
+            "type": "response.content_part.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "Seu pedido 42 está em transporte.",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "Seu pedido 42 está em transporte.",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            },
+            "sequence_number": 7
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": false
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_pedido42",
+                  "role": "assistant",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Seu pedido 42 está em transporte.",
+                      "annotations": [],
+                      "logprobs": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "sequence_number": 8
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "type": "tool-call-input-streaming-start",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "toolCallId": "call_pedido42",
+          "toolName": "consultar_pedido"
+        }
+      },
+      {
+        "type": "tool-call-delta",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "argsTextDelta": "{\"numero\":",
+          "toolCallId": "call_pedido42",
+          "toolName": "consultar_pedido"
+        }
+      },
+      {
+        "type": "tool-call-delta",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "argsTextDelta": "4",
+          "toolCallId": "call_pedido42",
+          "toolName": "consultar_pedido"
+        }
+      },
+      {
+        "type": "tool-call-delta",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "argsTextDelta": "2}",
+          "toolCallId": "call_pedido42",
+          "toolName": "consultar_pedido"
+        }
+      },
+      {
+        "type": "tool-call-input-streaming-end",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "toolCallId": "call_pedido42"
+        }
+      },
+      {
+        "type": "tool-call",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "toolCallId": "call_pedido42",
+          "toolName": "consultar_pedido",
+          "args": {
+            "numero": 42
+          },
+          "providerMetadata": {
+            "openai": {
+              "itemId": "fc_pedido42"
+            }
+          }
+        }
+      },
+      {
+        "type": "tool-result",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "args": {
+            "numero": 42
+          },
+          "toolCallId": "call_pedido42",
+          "toolName": "consultar_pedido",
+          "result": {
+            "numero": 42,
+            "status": "em transporte"
+          },
+          "providerMetadata": {
+            "openai": {
+              "itemId": "fc_pedido42"
+            }
+          }
+        }
+      },
+      {
+        "type": "text-delta",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "id": "msg_pedido42",
+          "text": "Seu pedido 42"
+        }
+      },
+      {
+        "type": "text-delta",
+        "runId": "af3c2155-4143-436f-8769-86e6e450ecd9",
+        "from": "AGENT",
+        "payload": {
+          "id": "msg_pedido42",
+          "text": " está em transporte."
+        }
+      }
+    ],
+    "executions": [
+      {
+        "name": "consultar_pedido",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte"
+        }
+      }
+    ]
+  },
+  "langchain": {
+    "http": [
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "stream": true,
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "strict": null
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Estima o preço do envio pelo CEP.",
+              "strict": null
+            }
+          ],
+          "text": {},
+          "input": [
+            {
+              "type": "message",
+              "role": "system",
+              "content": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio."
+            },
+            {
+              "type": "message",
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            }
+          ]
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "",
+              "status": "in_progress"
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "{\"numero\":",
+            "sequence_number": 2
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "4",
+            "sequence_number": 3
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "2}",
+            "sequence_number": 4
+          },
+          {
+            "type": "response.function_call_arguments.done",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "arguments": "{\"numero\":42}",
+            "sequence_number": 5
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "function_call",
+                  "id": "fc_pedido42",
+                  "call_id": "call_pedido42",
+                  "name": "consultar_pedido",
+                  "arguments": "{\"numero\":42}",
+                  "status": "completed"
+                }
+              ]
+            },
+            "sequence_number": 7
+          }
+        ]
+      },
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "stream": true,
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "strict": null
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Estima o preço do envio pelo CEP.",
+              "strict": null
+            }
+          ],
+          "text": {},
+          "input": [
+            {
+              "type": "message",
+              "role": "system",
+              "content": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio."
+            },
+            {
+              "type": "message",
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            },
+            {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            {
+              "type": "function_call_output",
+              "call_id": "call_pedido42",
+              "output": "{\"numero\":42,\"status\":\"em transporte\"}"
+            }
+          ]
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "in_progress",
+              "content": []
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.content_part.added",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 2
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": "Seu pedido 42",
+            "logprobs": [],
+            "sequence_number": 3
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": " está em transporte.",
+            "logprobs": [],
+            "sequence_number": 4
+          },
+          {
+            "type": "response.output_text.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "text": "Seu pedido 42 está em transporte.",
+            "logprobs": [],
+            "sequence_number": 5
+          },
+          {
+            "type": "response.content_part.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "Seu pedido 42 está em transporte.",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "Seu pedido 42 está em transporte.",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            },
+            "sequence_number": 7
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_pedido42",
+                  "role": "assistant",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Seu pedido 42 está em transporte.",
+                      "annotations": [],
+                      "logprobs": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "sequence_number": 8
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "tool_call_chunks": [
+          {
+            "type": "tool_call_chunk",
+            "name": "consultar_pedido",
+            "args": "",
+            "id": "call_pedido42",
+            "index": 0
+          }
+        ]
+      },
+      {
+        "tool_call_chunks": [
+          {
+            "type": "tool_call_chunk",
+            "args": "{\"numero\":",
+            "index": 0
+          }
+        ]
+      },
+      {
+        "tool_call_chunks": [
+          {
+            "type": "tool_call_chunk",
+            "args": "4",
+            "index": 0
+          }
+        ]
+      },
+      {
+        "tool_call_chunks": [
+          {
+            "type": "tool_call_chunk",
+            "args": "2}",
+            "index": 0
+          }
+        ]
+      },
+      {
+        "tool_calls": [
+          {
+            "name": "consultar_pedido",
+            "args": {
+              "numero": 42
+            },
+            "id": "call_pedido42",
+            "type": "tool_call"
+          }
+        ]
+      },
+      {
+        "type": "ToolMessage",
+        "tool_call_id": "call_pedido42",
+        "content": "{\"numero\":42,\"status\":\"em transporte\"}"
+      }
+    ],
+    "executions": [
+      {
+        "name": "consultar_pedido",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte"
+        }
+      }
+    ]
+  },
+  "langchain-agent": {
+    "http": [
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "stream": true,
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "strict": null
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Estima o preço do envio pelo CEP.",
+              "strict": null
+            }
+          ],
+          "text": {},
+          "input": [
+            {
+              "type": "message",
+              "role": "system",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio."
+                }
+              ]
+            },
+            {
+              "type": "message",
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            }
+          ]
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "",
+              "status": "in_progress"
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "{\"numero\":",
+            "sequence_number": 2
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "4",
+            "sequence_number": 3
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "2}",
+            "sequence_number": 4
+          },
+          {
+            "type": "response.function_call_arguments.done",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "arguments": "{\"numero\":42}",
+            "sequence_number": 5
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "function_call",
+                  "id": "fc_pedido42",
+                  "call_id": "call_pedido42",
+                  "name": "consultar_pedido",
+                  "arguments": "{\"numero\":42}",
+                  "status": "completed"
+                }
+              ]
+            },
+            "sequence_number": 7
+          }
+        ]
+      },
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "stream": true,
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "strict": null
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "parameters": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Estima o preço do envio pelo CEP.",
+              "strict": null
+            }
+          ],
+          "text": {},
+          "input": [
+            {
+              "type": "message",
+              "role": "system",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio."
+                }
+              ]
+            },
+            {
+              "type": "message",
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            },
+            {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            {
+              "type": "function_call_output",
+              "call_id": "call_pedido42",
+              "output": "{\"numero\":42,\"status\":\"em transporte\"}"
+            }
+          ]
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "in_progress",
+              "content": []
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.content_part.added",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 2
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": "Seu pedido 42",
+            "logprobs": [],
+            "sequence_number": 3
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": " está em transporte.",
+            "logprobs": [],
+            "sequence_number": 4
+          },
+          {
+            "type": "response.output_text.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "text": "Seu pedido 42 está em transporte.",
+            "logprobs": [],
+            "sequence_number": 5
+          },
+          {
+            "type": "response.content_part.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "Seu pedido 42 está em transporte.",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "Seu pedido 42 está em transporte.",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            },
+            "sequence_number": 7
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": null,
+              "metadata": {},
+              "parallel_tool_calls": true,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "strict": null
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "parameters": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "strict": null
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_pedido42",
+                  "role": "assistant",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Seu pedido 42 está em transporte.",
+                      "annotations": [],
+                      "logprobs": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "sequence_number": 8
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "node": "model_request",
+        "tool_calls": [
+          {
+            "name": "consultar_pedido",
+            "args": {
+              "numero": 42
+            },
+            "id": "call_pedido42",
+            "type": "tool_call"
+          }
+        ]
+      },
+      {
+        "node": "tools",
+        "type": "ToolMessage",
+        "tool_call_id": "call_pedido42",
+        "content": "{\"numero\":42,\"status\":\"em transporte\"}"
+      }
+    ],
+    "executions": [
+      {
+        "name": "consultar_pedido",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte"
+        }
+      }
+    ]
+  },
+  "mcp": {
+    "http": [
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+          "input": [
+            {
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+              },
+              "strict": true
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "description": "Estima o preço do envio pelo CEP.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          ],
+          "tool_choice": "auto",
+          "parallel_tool_calls": false,
+          "stream": true,
+          "store": false
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "",
+              "status": "in_progress"
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "{\"numero\":",
+            "sequence_number": 2
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "4",
+            "sequence_number": 3
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "delta": "2}",
+            "sequence_number": 4
+          },
+          {
+            "type": "response.function_call_arguments.done",
+            "item_id": "fc_pedido42",
+            "output_index": 0,
+            "arguments": "{\"numero\":42}",
+            "sequence_number": 5
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "function_call",
+                  "id": "fc_pedido42",
+                  "call_id": "call_pedido42",
+                  "name": "consultar_pedido",
+                  "arguments": "{\"numero\":42}",
+                  "status": "completed"
+                }
+              ]
+            },
+            "sequence_number": 7
+          }
+        ]
+      },
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+          "input": [
+            {
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            },
+            {
+              "type": "function_call",
+              "id": "fc_pedido42",
+              "call_id": "call_pedido42",
+              "name": "consultar_pedido",
+              "arguments": "{\"numero\":42}",
+              "status": "completed"
+            },
+            {
+              "type": "function_call_output",
+              "call_id": "call_pedido42",
+              "output": "{\"numero\":42,\"status\":\"em transporte\"}"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "consultar_pedido",
+              "description": "Consulta o status da entrega de um pedido pelo número.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "numero": {
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "numero"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+              },
+              "strict": true
+            },
+            {
+              "type": "function",
+              "name": "calcular_frete",
+              "description": "Estima o preço do envio pelo CEP.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "cep": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "cep"
+                ],
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          ],
+          "tool_choice": "none",
+          "parallel_tool_calls": false,
+          "stream": true,
+          "store": false
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "in_progress",
+              "content": []
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.content_part.added",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 2
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": "Seu pedido 42",
+            "logprobs": [],
+            "sequence_number": 3
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": " está em transporte.",
+            "logprobs": [],
+            "sequence_number": 4
+          },
+          {
+            "type": "response.output_text.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "text": "Seu pedido 42 está em transporte.",
+            "logprobs": [],
+            "sequence_number": 5
+          },
+          {
+            "type": "response.content_part.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "Seu pedido 42 está em transporte.",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "Seu pedido 42 está em transporte.",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            },
+            "sequence_number": 7
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Para perguntas sobre status da entrega, use consultar_pedido. Use calcular_frete só para estimar preço de envio.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "consultar_pedido",
+                  "description": "Consulta o status da entrega de um pedido pelo número.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "numero": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "required": [
+                      "numero"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                },
+                {
+                  "type": "function",
+                  "name": "calcular_frete",
+                  "description": "Estima o preço do envio pelo CEP.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "cep": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cep"
+                    ],
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_pedido42",
+                  "role": "assistant",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Seu pedido 42 está em transporte.",
+                      "annotations": [],
+                      "logprobs": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "sequence_number": 8
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "direction": "harness → servidor MCP",
+        "message": {
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "harness-de-teste",
+              "version": "1.0.0"
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 0
+        }
+      },
+      {
+        "direction": "servidor MCP → harness",
+        "message": {
+          "result": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {
+              "tools": {
+                "listChanged": true
+              }
+            },
+            "serverInfo": {
+              "name": "loja-de-teste",
+              "version": "1.0.0"
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 0
+        }
+      },
+      {
+        "direction": "harness → servidor MCP",
+        "message": {
+          "method": "notifications/initialized",
+          "jsonrpc": "2.0"
+        }
+      },
+      {
+        "direction": "harness → servidor MCP",
+        "message": {
+          "method": "tools/list",
+          "jsonrpc": "2.0",
+          "id": 1
+        }
+      },
+      {
+        "direction": "servidor MCP → harness",
+        "message": {
+          "result": {
+            "tools": [
+              {
+                "name": "consultar_pedido",
+                "description": "Consulta o status da entrega de um pedido pelo número.",
+                "inputSchema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "type": "object",
+                  "properties": {
+                    "numero": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "numero"
+                  ],
+                  "additionalProperties": false
+                },
+                "execution": {
+                  "taskSupport": "forbidden"
+                }
+              },
+              {
+                "name": "calcular_frete",
+                "description": "Estima o preço do envio pelo CEP.",
+                "inputSchema": {
+                  "$schema": "http://json-schema.org/draft-07/schema#",
+                  "type": "object",
+                  "properties": {
+                    "cep": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "cep"
+                  ],
+                  "additionalProperties": false
+                },
+                "execution": {
+                  "taskSupport": "forbidden"
+                }
+              }
+            ]
+          },
+          "jsonrpc": "2.0",
+          "id": 1
+        }
+      },
+      {
+        "direction": "harness → servidor MCP",
+        "message": {
+          "method": "tools/call",
+          "params": {
+            "name": "consultar_pedido",
+            "arguments": {
+              "numero": 42
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 2
+        }
+      },
+      {
+        "direction": "servidor MCP → harness",
+        "message": {
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"numero\":42,\"status\":\"em transporte\"}"
+              }
+            ]
+          },
+          "jsonrpc": "2.0",
+          "id": 2
+        }
+      }
+    ],
+    "executions": [
+      {
+        "name": "consultar_pedido",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte"
+        }
+      }
+    ]
+  },
+  "code": {
+    "http": [
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "instructions": "Consulte status e previsão do pedido usando executar_codigo.",
+          "input": [
+            {
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "executar_codigo",
+              "description": "Executa JavaScript síncrono com tools.consultar_pedido e tools.consultar_rastreio. Ambas recebem { numero: inteiro }. Retorne um objeto JSON.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "codigo": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "codigo"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          ],
+          "tool_choice": "auto",
+          "parallel_tool_calls": false,
+          "stream": true,
+          "store": false
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Consulte status e previsão do pedido usando executar_codigo.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "executar_codigo",
+                  "description": "Executa JavaScript síncrono com tools.consultar_pedido e tools.consultar_rastreio. Ambas recebem { numero: inteiro }. Retorne um objeto JSON.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "codigo": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "codigo"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_codigo42",
+              "call_id": "call_codigo42",
+              "name": "executar_codigo",
+              "arguments": "",
+              "status": "in_progress"
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_codigo42",
+            "output_index": 0,
+            "delta": "{\"codigo\":\"(",
+            "sequence_number": 2
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_codigo42",
+            "output_index": 0,
+            "delta": "() => {\\n  const pedido = tools.consultar_pedido({ numero: 42 });\\n  if (pedido.error) r",
+            "sequence_number": 3
+          },
+          {
+            "type": "response.function_call_arguments.delta",
+            "item_id": "fc_codigo42",
+            "output_index": 0,
+            "delta": "eturn pedido;\\n  const rastreio = tools.consultar_rastreio({ numero: pedido.numero });\\n  return { numero: pedido.numero, status: pedido.status, previsao: rastreio.previsao };\\n})()\"}",
+            "sequence_number": 4
+          },
+          {
+            "type": "response.function_call_arguments.done",
+            "item_id": "fc_codigo42",
+            "output_index": 0,
+            "arguments": "{\"codigo\":\"(() => {\\n  const pedido = tools.consultar_pedido({ numero: 42 });\\n  if (pedido.error) return pedido;\\n  const rastreio = tools.consultar_rastreio({ numero: pedido.numero });\\n  return { numero: pedido.numero, status: pedido.status, previsao: rastreio.previsao };\\n})()\"}",
+            "sequence_number": 5
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "function_call",
+              "id": "fc_codigo42",
+              "call_id": "call_codigo42",
+              "name": "executar_codigo",
+              "arguments": "{\"codigo\":\"(() => {\\n  const pedido = tools.consultar_pedido({ numero: 42 });\\n  if (pedido.error) return pedido;\\n  const rastreio = tools.consultar_rastreio({ numero: pedido.numero });\\n  return { numero: pedido.numero, status: pedido.status, previsao: rastreio.previsao };\\n})()\"}",
+              "status": "completed"
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_call42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Consulte status e previsão do pedido usando executar_codigo.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "executar_codigo",
+                  "description": "Executa JavaScript síncrono com tools.consultar_pedido e tools.consultar_rastreio. Ambas recebem { numero: inteiro }. Retorne um objeto JSON.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "codigo": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "codigo"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "function_call",
+                  "id": "fc_codigo42",
+                  "call_id": "call_codigo42",
+                  "name": "executar_codigo",
+                  "arguments": "{\"codigo\":\"(() => {\\n  const pedido = tools.consultar_pedido({ numero: 42 });\\n  if (pedido.error) return pedido;\\n  const rastreio = tools.consultar_rastreio({ numero: pedido.numero });\\n  return { numero: pedido.numero, status: pedido.status, previsao: rastreio.previsao };\\n})()\"}",
+                  "status": "completed"
+                }
+              ]
+            },
+            "sequence_number": 7
+          }
+        ]
+      },
+      {
+        "request": {
+          "model": "gpt-4.1-mini",
+          "instructions": "Consulte status e previsão do pedido usando executar_codigo.",
+          "input": [
+            {
+              "role": "user",
+              "content": "Onde está meu pedido 42?"
+            },
+            {
+              "type": "function_call",
+              "id": "fc_codigo42",
+              "call_id": "call_codigo42",
+              "name": "executar_codigo",
+              "arguments": "{\"codigo\":\"(() => {\\n  const pedido = tools.consultar_pedido({ numero: 42 });\\n  if (pedido.error) return pedido;\\n  const rastreio = tools.consultar_rastreio({ numero: pedido.numero });\\n  return { numero: pedido.numero, status: pedido.status, previsao: rastreio.previsao };\\n})()\"}",
+              "status": "completed"
+            },
+            {
+              "type": "function_call_output",
+              "call_id": "call_codigo42",
+              "output": "{\"numero\":42,\"status\":\"em transporte\",\"previsao\":\"21/11\"}"
+            }
+          ],
+          "tools": [
+            {
+              "type": "function",
+              "name": "executar_codigo",
+              "description": "Executa JavaScript síncrono com tools.consultar_pedido e tools.consultar_rastreio. Ambas recebem { numero: inteiro }. Retorne um objeto JSON.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "codigo": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "codigo"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            }
+          ],
+          "tool_choice": "none",
+          "parallel_tool_calls": false,
+          "stream": true,
+          "store": false
+        },
+        "events": [
+          {
+            "type": "response.created",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Consulte status e previsão do pedido usando executar_codigo.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "executar_codigo",
+                  "description": "Executa JavaScript síncrono com tools.consultar_pedido e tools.consultar_rastreio. Ambas recebem { numero: inteiro }. Retorne um objeto JSON.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "codigo": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "codigo"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": null,
+              "status": "in_progress",
+              "output": []
+            },
+            "sequence_number": 0
+          },
+          {
+            "type": "response.output_item.added",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "in_progress",
+              "content": []
+            },
+            "sequence_number": 1
+          },
+          {
+            "type": "response.content_part.added",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 2
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": "Seu pedido 42 está em transporte.",
+            "logprobs": [],
+            "sequence_number": 3
+          },
+          {
+            "type": "response.output_text.delta",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "delta": " A previsão é 21/11.",
+            "logprobs": [],
+            "sequence_number": 4
+          },
+          {
+            "type": "response.output_text.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "text": "Seu pedido 42 está em transporte. A previsão é 21/11.",
+            "logprobs": [],
+            "sequence_number": 5
+          },
+          {
+            "type": "response.content_part.done",
+            "item_id": "msg_pedido42",
+            "output_index": 0,
+            "content_index": 0,
+            "part": {
+              "type": "output_text",
+              "text": "Seu pedido 42 está em transporte. A previsão é 21/11.",
+              "annotations": [],
+              "logprobs": []
+            },
+            "sequence_number": 6
+          },
+          {
+            "type": "response.output_item.done",
+            "output_index": 0,
+            "item": {
+              "type": "message",
+              "id": "msg_pedido42",
+              "role": "assistant",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "text": "Seu pedido 42 está em transporte. A previsão é 21/11.",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            },
+            "sequence_number": 7
+          },
+          {
+            "type": "response.completed",
+            "response": {
+              "id": "resp_final42",
+              "object": "response",
+              "created_at": 1770000000,
+              "model": "gpt-4.1-mini",
+              "error": null,
+              "incomplete_details": null,
+              "instructions": "Consulte status e previsão do pedido usando executar_codigo.",
+              "metadata": {},
+              "parallel_tool_calls": false,
+              "previous_response_id": null,
+              "reasoning": {
+                "effort": null,
+                "summary": null
+              },
+              "text": {
+                "format": {
+                  "type": "text"
+                }
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "name": "executar_codigo",
+                  "description": "Executa JavaScript síncrono com tools.consultar_pedido e tools.consultar_rastreio. Ambas recebem { numero: inteiro }. Retorne um objeto JSON.",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "codigo": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "codigo"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "strict": true
+                }
+              ],
+              "temperature": 1,
+              "top_p": 1,
+              "truncation": "disabled",
+              "store": false,
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 19,
+                "output_tokens_details": {
+                  "reasoning_tokens": 0
+                },
+                "total_tokens": 96
+              },
+              "status": "completed",
+              "output": [
+                {
+                  "type": "message",
+                  "id": "msg_pedido42",
+                  "role": "assistant",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "text": "Seu pedido 42 está em transporte. A previsão é 21/11.",
+                      "annotations": [],
+                      "logprobs": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "sequence_number": 8
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "name": "consultar_pedido",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte"
+        }
+      },
+      {
+        "name": "consultar_rastreio",
+        "args": {
+          "numero": 42
+        },
+        "result": {
+          "previsao": "21/11"
+        }
+      }
+    ],
+    "executions": [
+      {
+        "name": "executar_codigo",
+        "args": {
+          "codigo": "(() => {\n  const pedido = tools.consultar_pedido({ numero: 42 });\n  if (pedido.error) return pedido;\n  const rastreio = tools.consultar_rastreio({ numero: pedido.numero });\n  return { numero: pedido.numero, status: pedido.status, previsao: rastreio.previsao };\n})()"
+        },
+        "result": {
+          "numero": 42,
+          "status": "em transporte",
+          "previsao": "21/11"
+        }
+      }
+    ]
+  }
+}
