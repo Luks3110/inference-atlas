@@ -61,6 +61,8 @@
 </script>
 
 <script>
+  import JsonInspector from './JsonInspector.svelte';
+
   let { index } = $props();
   let selected = $state(0);
   let exercise = $derived(exercises[index]);
@@ -82,7 +84,7 @@
         {#if typeof row === 'string'}
           <p>{row}</p>
         {:else}
-          <pre>{JSON.stringify(row, null, 2)}</pre>
+          <JsonInspector value={row} />
         {/if}
       </div>
     {/each}
@@ -102,6 +104,5 @@
   .message + .message {border-left-color:var(--accent)}
   h3 {font-size:13px;margin:0 0 6px}
   p {margin:0;font-size:14px;line-height:1.5}
-  pre {margin:0;overflow:auto;font:12px/1.55 var(--mono)}
   .note {color:var(--muted);font-size:12px;margin-top:10px}
 </style>

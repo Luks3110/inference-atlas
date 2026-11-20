@@ -292,3 +292,53 @@ test('a captura mostra schema, argumentos em SSE, execução e retorno em cada i
   await expect(packets.last()).toContainText('"previsao": "21/11"');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390);
 });
+
+test('os campos do JSON e do SSE explicam seu papel sem alterar a captura', async ({ page, context, request }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.setViewportSize({ width: 390, height: 820 });
+  const trace = await (await request.get('/labs/tool-calling/trace.json')).json();
+  await page.goto('/#/aula/tool-calling/3');
+  const lab = page.getByRole('region', { name: 'Veja os dados da chamada do pedido 42' });
+  const packet = lab.locator('.packet').first();
+  const packetText = packet.locator('pre').first();
+  const field = path => packet.getByRole('button', { name: 'Explicar ' + path, exact: true });
+  const note = packet.locator('.field-note').first();
+  const rawRequest = JSON.stringify(trace.openai.http[0].request, null, 2);
+
+  const schemaType = field('tools[0].parameters.properties.numero.type');
+  await schemaType.focus();
+  await schemaType.press('Enter');
+  await expect(schemaType).toHaveAttribute('aria-pressed', 'true');
+  await expect(schemaType).toBeFocused();
+  await expect(note).toContainText('número inteiro');
+  await expect(note).toBeInViewport();
+  expect(await packetText.textContent()).toBe(rawRequest);
+  await packet.getByRole('button', { name: 'Copiar JSON', exact: true }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(rawRequest);
+
+  await lab.getByRole('button', { name: 'Ler stream', exact: true }).click();
+  await field('item.id').click();
+  await expect(note).toContainText('item_id');
+  await expect(note).toContainText('call_id');
+  await lab.getByRole('button', { name: 'Próximo evento', exact: true }).click();
+  await expect(note).toHaveCount(0);
+  await field('delta').click();
+  await expect(note).toContainText('Fragmento literal dos argumentos');
+  const delta = trace.openai.http[0].events.find(event => event.type === 'response.function_call_arguments.delta');
+  const rawEvent = 'event: ' + delta.type + '\ndata: ' + JSON.stringify(delta);
+  expect(await packetText.textContent()).toBe(rawEvent);
+  await packet.getByRole('button', { name: 'Copiar SSE', exact: true }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(rawEvent);
+
+  await lab.getByRole('button', { name: 'Devolver resultado', exact: true }).click();
+  await field('output').click();
+  await expect(note).toContainText('call_id');
+  await packet.getByText('Ver o JSON dentro desta string', { exact: true }).click();
+  await field('status').click();
+  await expect(packet.locator('.decoded .field-note')).toContainText('Situação da entrega');
+
+  await lab.getByRole('button', { name: 'MCP', exact: true }).click();
+  await field('id').click();
+  await expect(note).toContainText('parear a resposta com o pedido MCP');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+});

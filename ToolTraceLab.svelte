@@ -65,8 +65,6 @@
       'const result = await client.callTool({ name, arguments: args });',
     ].join('\n'),
   };
-  const json = value => JSON.stringify(value, null, 2);
-  const frame = event => 'event: ' + event.type + '\ndata: ' + JSON.stringify(event);
   const argTypes = new Set([
     'response.output_item.added', 'response.function_call_arguments.delta',
     'response.function_call_arguments.done', 'response.output_item.done', 'response.completed',
@@ -80,6 +78,7 @@
 
 <script>
   import { onMount } from 'svelte';
+  import JsonInspector from './JsonInspector.svelte';
   let { initialMode = 'openai', initialStep = 'request' } = $props();
   let mode = $state('openai');
   let step = $state('request');
@@ -128,10 +127,14 @@
   }
 </script>
 
-{#snippet packet(title, content)}
+{#snippet packet(title, content, prefix = '')}
   <div class="packet">
     <h3>{title}</h3>
-    <pre><code>{content}</code></pre>
+    {#if typeof content === 'string'}
+      <pre><code>{content}</code></pre>
+    {:else}
+      <JsonInspector value={content} {prefix} compact={prefix !== ''} />
+    {/if}
   </div>
 {/snippet}
 
@@ -140,7 +143,7 @@
   {#if error}
     <p>Não foi possível abrir a captura. <a href="/labs/tool-calling/trace.json">Abra o JSON diretamente.</a></p>
   {:else if scene}
-    <p>As requisições e os eventos abaixo foram registrados em um teste local. Um servidor de teste fez o papel da OpenAI. Os SDKs, a conexão MCP e o interpretador de JavaScript rodaram com dados fictícios.</p>
+    <p>As requisições e os eventos abaixo foram registrados em um teste local. Um servidor de teste fez o papel da OpenAI. Os SDKs, a conexão MCP e o interpretador de JavaScript rodaram com dados fictícios. Clique em um campo sublinhado no JSON para ver o que ele faz.</p>
     <div class="modes" role="group" aria-label="Escolher implementação">
       {#each modes as [value,label]}
         <button type="button" aria-pressed={mode === value} onclick={() => chooseMode(value)}>{label}</button>
@@ -158,8 +161,8 @@
       {#if step === 'catalog' && catalog}
         <p>Depois de inicializar a sessão, o cliente MCP chama <code>tools/list</code>. O harness pega <code>name</code>, <code>description</code> e <code>inputSchema</code> e põe a última em <code>parameters</code> ao montar <code>tools</code> na OpenAI.</p>
         <div class="pair">
-          {@render packet('Cliente → servidor MCP', json(catalog.request))}
-          {@render packet('Servidor MCP → cliente', json(catalog.result))}
+          {@render packet('Cliente → servidor MCP', catalog.request)}
+          {@render packet('Servidor MCP → cliente', catalog.result)}
         </div>
         {@render packet('Conversão no harness', sdkCode.mcp)}
       {:else if step === 'request'}
@@ -168,7 +171,7 @@
         {:else}
           <p>A pergunta pede o status de um pedido. O modelo recebe <code>consultar_pedido</code>, que aceita <code>numero</code>, e <code>calcular_frete</code>, que aceita <code>cep</code>. As instruções, as descrições e a pergunta dão ao modelo os dados para propor a ferramenta certa. Com <code>tool_choice: "auto"</code>, ele também pode devolver só texto. Se o campo for omitido, esse é o padrão quando há ferramentas. O harness ainda confere a chamada.</p>
         {/if}
-        {@render packet('Primeiro POST /v1/responses · corpo JSON', json(scene.http[0].request))}
+        {@render packet('Primeiro POST /v1/responses · corpo JSON', scene.http[0].request)}
       {:else if (step === 'stream' || step === 'text') && current}
         {#if step === 'stream'}
           <p>O servidor envia eventos em <code>text/event-stream</code>. O primeiro evento exibido abre o item. Os seguintes trazem pedaços de <code>arguments</code>. Acumule por <code>item_id</code> e espere <code>response.completed</code> antes de executar, mesmo se o trecho já parecer JSON válido. <code>call_id</code> liga o resultado à chamada.</p>
@@ -181,7 +184,7 @@
           <span aria-live="polite">Evento {position + 1} de {events.length}</span>
         </div>
         <div class="pair">
-          {@render packet('Evento SSE recebido', frame(current))}
+          {@render packet('Evento SSE recebido', current, 'event: ' + current.type + '\ndata: ')}
           {@render packet(step === 'text' ? 'Texto visível no chat' : 'Argumentos acumulados como texto',
             buffer || (step === 'text' ? 'Aguardando texto' : 'Ainda sem argumentos'))}
         </div>
@@ -195,42 +198,42 @@
           <p>A OpenAI devolve o nome da ferramenta. O Mastra monta o evento <code>tool-call</code> com <code>args</code> já lido como objeto. Ele encontra <code>tools.consultar_pedido</code> e chama o <code>execute</code> registrado. O código da função verifica a sessão e devolve o status. <code>tool-result</code> registra a saída que o agente usará na próxima chamada.</p>
           {@render packet('Registro e stream no Mastra', sdkCode.mastra)}
           {#each ['tool-call-delta','tool-call','tool-result'] as type}
-            {@render packet('Evento ' + type, json(scene.observations.find(event => event.type === type)))}
+            {@render packet('Evento ' + type, scene.observations.find(event => event.type === type))}
           {/each}
         {:else if mode === 'langchain'}
           <p><code>bindTools</code> anuncia o schema. Nesta versão manual, o LangChain monta <code>tool_call_chunks</code>, e o nosso código usa <code>concat</code> para juntar os fragmentos. Depois, busca a função pelo nome no registro, chama <code>invoke</code> e passa a <code>ToolMessage</code> junto do histórico na segunda chamada.</p>
           {@render packet('Código que liga o nome à função', sdkCode.langchain)}
-          {@render packet('Um fragmento de argumento', json(scene.observations.find(event => event.tool_call_chunks?.some(chunk => chunk.args))))}
-          {@render packet('Chamada completa', json(scene.observations.find(event => event.tool_calls)))}
-          {@render packet('Mensagem de retorno do LangChain', json(scene.observations.find(event => event.type === 'ToolMessage')))}
+          {@render packet('Um fragmento de argumento', scene.observations.find(event => event.tool_call_chunks?.some(chunk => chunk.args)))}
+          {@render packet('Chamada completa', scene.observations.find(event => event.tool_calls))}
+          {@render packet('Mensagem de retorno do LangChain', scene.observations.find(event => event.type === 'ToolMessage'))}
         {:else if mode === 'langchain-agent'}
           <p>Ao usar <code>createAgent</code>, a própria execução do agente encaminha <code>tool_calls</code> do nó do modelo ao nó de ferramentas. O nó encontra a função registrada pelo nome, gera a <code>ToolMessage</code> e devolve o controle ao modelo. Esta captura mostra a execução automática.</p>
           {@render packet('Agente com as duas ferramentas registradas', sdkCode['langchain-agent'])}
           {#each scene.observations as update}
-            {@render packet('Atualização do nó ' + update.node, json(update))}
+            {@render packet('Atualização do nó ' + update.node, update)}
           {/each}
         {:else if mode === 'mcp' && mcpCall}
           <p>O modelo pediu <code>consultar_pedido</code>. O harness validou os argumentos e usou o cliente MCP para mandar <code>tools/call</code>. O ID JSON-RPC liga a resposta ao pedido MCP. O harness ainda usa <code>call_id</code> para responder à OpenAI.</p>
           <div class="pair">
-            {@render packet('Cliente → servidor MCP', json(mcpCall.request))}
-            {@render packet('Servidor MCP → cliente', json(mcpCall.result))}
+            {@render packet('Cliente → servidor MCP', mcpCall.request)}
+            {@render packet('Servidor MCP → cliente', mcpCall.result)}
           </div>
         {:else if mode === 'code'}
           <p>A OpenAI devolveu uma chamada de <code>executar_codigo</code>. O harness leu o JSON em <code>arguments</code> e extraiu o campo <code>codigo</code> e passou para o interpretador, que tinha acesso só às duas funções expostas pelo host. Cada função conferiu o pedido e as permissões. O exemplo limita tempo, memória e chamadas.</p>
           {@render packet('Programa entregue pelo modelo', scene.executions[0].args.codigo)}
-          {@render packet('Chamadas que o host executou, na ordem', json(scene.observations))}
-          {@render packet('Objeto devolvido pelo programa', json(scene.executions[0].result))}
+          {@render packet('Chamadas que o host executou, na ordem', scene.observations)}
+          {@render packet('Objeto devolvido pelo programa', scene.executions[0].result)}
         {:else}
           <p>Depois de receber a resposta completa, o harness lê <code>arguments</code> com <code>JSON.parse</code> e usa <code>name</code> para encontrar a função. A função da loja valida o número e a sessão. Os dados autorizados voltam como objeto JavaScript.</p>
           {@render packet('Código do harness', sdkCode.openai)}
-          {@render packet('Função executada e resultado registrado', json(scene.executions[0]))}
+          {@render packet('Função executada e resultado registrado', scene.executions[0])}
         {/if}
       {:else if step === 'result'}
         <p>O segundo POST envia o histórico, a chamada feita pelo modelo e <code>function_call_output</code>. O <code>call_id</code> repete o identificador que veio na chamada. Em <code>output</code> vai o resultado da função serializado como texto.</p>
-        {@render packet('Item que liga o resultado à chamada', json(result))}
+        {@render packet('Item que liga o resultado à chamada', result)}
         <details>
           <summary>Ver corpo completo do segundo POST /v1/responses</summary>
-          {@render packet('Segundo POST /v1/responses · corpo JSON', json(scene.http[1].request))}
+          {@render packet('Segundo POST /v1/responses · corpo JSON', scene.http[1].request)}
         </details>
       {/if}
     </div>

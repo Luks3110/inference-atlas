@@ -1,4 +1,6 @@
 <script>
+  import JsonInspector from './JsonInspector.svelte';
+
   let scenario = $state('allowed');
   let cursor = $state(0);
   const request = { name: 'consultar_pedido', arguments: { numero: 42 }, call_id: 'call_42' };
@@ -63,7 +65,7 @@
         <strong>{entry.actor}</strong>
         <p>{entry.note}</p>
         {#if entry.data}
-          <details><summary>Ver os dados enviados</summary><pre>{JSON.stringify(entry.data, null, 2)}</pre></details>
+          <details><summary>Ver os dados enviados</summary><JsonInspector value={entry.data} /></details>
         {/if}
       </li>
     {/each}
@@ -87,7 +89,6 @@
   li:last-child {border-left-color:var(--accent)}
   strong {font-size:13px}
   summary {cursor:pointer;color:var(--accent);font-size:13px}
-  pre {font-size:12px;overflow:auto;margin:6px 0 0}
   .tool-actions {display:flex;gap:8px;flex-wrap:wrap}
   .advance {background:var(--sage);color:var(--sage-ink);font-weight:650}
 </style>
