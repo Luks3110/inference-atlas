@@ -4,8 +4,8 @@ function observation(change, metrics) {
 }
 
 function lab(nodes, frames) {
-  return frames.map(({ active, label, title, body, idea, change, metrics, code }) => ({
-    nodes, active, label, title, body, idea, change, metrics, ...(code ? { code } : {}),
+  return frames.map(({ active, label, title, body, idea, change, metrics, code, codeLanguage }) => ({
+    nodes, active, label, title, body, idea, change, metrics, ...(code ? { code, codeLanguage } : {}),
   }));
 }
 
@@ -61,7 +61,7 @@ export const ragEvalDrills = {
       {
         active: 0, label: 'Montar', title: 'Crie vizinhos que pertencem a tenants distintos',
         body: 'Crie um corpus SQLite em memória com cinco documentos e suas distâncias já calculadas para uma pergunta. Menor distância indica maior proximidade. Os documentos 4 e 5 são as duas evidências relevantes para o tenant B. O oráculo ordena somente os documentos autorizados e devolve os dois.',
-        code: "CREATE TABLE corpus(id INTEGER PRIMARY KEY, tenant TEXT, distancia REAL);\nINSERT INTO corpus VALUES\n  (1,'A',0.01),(2,'A',0.02),(3,'A',0.03),\n  (4,'B',0.04),(5,'B',0.05);",
+        codeLanguage: 'sql', code: "CREATE TABLE corpus(id INTEGER PRIMARY KEY, tenant TEXT, distancia REAL);\nINSERT INTO corpus VALUES\n  (1,'A',0.01),(2,'A',0.02),(3,'A',0.03),\n  (4,'B',0.04),(5,'B',0.05);",
         idea: 'Distâncias predefinidas tornam o teste independente do modelo e de bibliotecas de ANN.',
         change: 'A relação de relevância e o escopo da pergunta ficam fixos.',
         metrics: [['Documentos totais', '5'], ['Autorizados', '2'], ['Relevantes em B', '2']],
@@ -69,7 +69,7 @@ export const ragEvalDrills = {
       {
         active: 1, label: 'Reproduzir', title: 'O corte global remove as duas passagens autorizadas',
         body: 'Rode a consulta a seguir. As três menores distâncias globais pertencem a A. Ao descartar os itens de A após o limite, a lista de B fica vazia. Um reranker perfeito ainda receberia zero candidatos. Observe a diferença entre isolamento de saída e recuperação dentro do tenant.',
-        code: "WITH candidatos AS (\n  SELECT * FROM corpus ORDER BY distancia, id LIMIT 3\n)\nSELECT id FROM candidatos WHERE tenant='B';",
+        codeLanguage: 'sql', code: "WITH candidatos AS (\n  SELECT * FROM corpus ORDER BY distancia, id LIMIT 3\n)\nSELECT id FROM candidatos WHERE tenant='B';",
         idea: 'Uma resposta vazia causada pela ordem das operações pode parecer ausência de evidência no documento.',
         change: 'A busca global usa todas as vagas para documentos de outro tenant.',
         metrics: [['Janela global', '3'], ['Retidos para B', '0'], ['Recall@2', '0%']],
@@ -77,7 +77,7 @@ export const ragEvalDrills = {
       {
         active: 1, label: 'Filtrar', title: 'Aplique o escopo na formação dos candidatos',
         body: 'Rode o filtro dentro da consulta que ordena os vizinhos. No serviço, aplique a mesma identidade autorizada nos ramos vetorial e lexical antes da fusão e mantenha a checagem final de permissão. Se a engine usar um índice aproximado, meça o resultado com a implementação real e com filtros seletivos.',
-        code: "SELECT id FROM corpus\nWHERE tenant='B'\nORDER BY distancia, id LIMIT 2;",
+        codeLanguage: 'sql', code: "SELECT id FROM corpus\nWHERE tenant='B'\nORDER BY distancia, id LIMIT 2;",
         idea: 'Um filtro SQL sobre distâncias fixas é um oráculo de correção. A configuração, o custo e o recall do ANN precisam ser avaliados separadamente.',
         change: 'Os documentos 4 e 5 reaparecem entre os candidatos autorizados.',
         metrics: [['IDs esperados', '4 e 5'], ['Recall@2', '100%'], ['De outro tenant', '0']],

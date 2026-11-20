@@ -1,8 +1,8 @@
 const reference = (label, url) => ({ label, url });
 
 function sequence(nodes, entries) {
-  return entries.map(([active, label, title, body, idea, code]) => ({
-    active, nodes, label, title, body, idea, ...(code ? { code } : {}),
+  return entries.map(([active, label, title, body, idea, code, codeLanguage]) => ({
+    active, nodes, label, title, body, idea, ...(code ? { code, codeLanguage } : {}),
   }));
 }
 
@@ -83,7 +83,7 @@ export const llmApiModules = [
         summary: 'Construa uma API de triagem com um schema versionado e uma política explícita para dados insuficientes.',
         steps: sequence(['Contrato', 'Decodificador', 'Validador'], [
           [0, 'Modelar', 'Represente o caso em que falta informação', 'Uma mensagem de suporte pode chegar vaga, como "Não deu certo". O programa que recebe a saída do modelo aceita três destinos: financeiro, entrega ou revisão. Use revisão quando faltarem dados para escolher. Registre os destinos aceitos num esquema de dados. Ao acrescentar um destino, atualize primeiro o programa que lê a resposta.', 'Um enum fechado sem saída para ambiguidade pode forçar uma categoria incorreta.'],
-          [1, 'Restringir', 'Aplique o schema durante a geração', 'No endpoint de chat do vLLM, envie response_format do tipo json_schema. O trecho abaixo é o campo de formato do corpo da requisição. Dê ao modelo instruções sobre os limites de cada classe. Faça um teste de compatibilidade no modelo e backend usados em produção.', 'Um decodificador restrito filtra os próximos tokens pela linguagem permitida. Isso reduz o custo de reparo de JSON.', JSON.stringify({ response_format: { type: 'json_schema', json_schema: { name: 'triagem_v1', schema: { type: 'object', properties: { destino: { type: 'string', enum: ['financeiro', 'entrega', 'revisar'] } }, required: ['destino'], additionalProperties: false } } } }, null, 2)],
+          [1, 'Restringir', 'Aplique o schema durante a geração', 'No endpoint de chat do vLLM, envie response_format do tipo json_schema. O trecho abaixo é o campo de formato do corpo da requisição. Dê ao modelo instruções sobre os limites de cada classe. Faça um teste de compatibilidade no modelo e backend usados em produção.', 'Um decodificador restrito filtra os próximos tokens pela linguagem permitida. Isso reduz o custo de reparo de JSON.', JSON.stringify({ response_format: { type: 'json_schema', json_schema: { name: 'triagem_v1', schema: { type: 'object', properties: { destino: { type: 'string', enum: ['financeiro', 'entrega', 'revisar'] } }, required: ['destino'], additionalProperties: false } } } }, null, 2), 'json'],
           [2, 'Validar', 'Valide a mensagem final e a decisão', 'Espere o término da geração para fazer parse do conteúdo inteiro. Trate corte por limite de saída e falha de transporte como estados próprios. Aplique o schema no consumidor e valide invariantes de negócio. Se a conta está encerrada e o fluxo só atende contas ativas, encaminhe o caso para revisão.', 'Um objeto bem formado ainda pode escolher o destino errado. Monitore validade estrutural e acerto por classe separadamente.'],
           [2, 'Liberar', 'Inclua a primeira chamada no teste de carga', 'Schemas variáveis podem adicionar compilação e pressionar o cache do backend. Meça uma distribuição com schemas frios e quentes e agrupe latência por versão. Um schema estável para cada tarefa facilita aquecer réplicas e reproduzir uma regressão sem recompilar estruturas por usuário.', 'Registre a versão do contrato e o motivo da rejeição. Isso separa regressões de modelo de mudanças no consumidor.'],
         ]),

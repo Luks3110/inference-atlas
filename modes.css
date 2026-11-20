@@ -237,8 +237,9 @@
 }
 .am-mode .am-terminal {
   overflow: hidden;
-  background: #1c1917;
-  color: #f5f5f4;
+  background: var(--rail);
+  color: var(--ink);
+  border: 1px solid var(--edge);
   border-radius: 7px;
   margin: 17px 0 15px;
 }
@@ -247,11 +248,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 9px 14px;
-  border-bottom: 1px solid #44403b;
+  border-bottom: 1px solid var(--line);
   font-size: 11px;
 }
 .am-mode .am-terminal button {
-  border: 1px solid #79716b;
+  border: 1px solid var(--edge);
   background: transparent;
   color: inherit;
   border-radius: 4px;
@@ -259,7 +260,7 @@
   font-size: 12px;
 }
 .am-mode .am-terminal button:hover {
-  background: #292524;
+  background: var(--soft);
 }
 .am-mode .am-terminal pre {
   margin: 0;

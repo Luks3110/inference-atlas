@@ -1,5 +1,6 @@
 <script>
   import data from './production/vector-benchmark.json';
+  import HighlightedCode from './HighlightedCode.svelte';
   const families = [...new Set(data.rows.map((r) => r.family))];
   let family = $state('HNSW M=24');
   let rows = $derived(data.rows.filter((r) => r.family === family));
@@ -50,7 +51,7 @@
       de 8 bits. O p95 inclui a busca e, quando presente, o reranking L2 no top-40. O tamanho é o arquivo serializado
       e não inclui memória temporária. Repita no seu corpus com filtros e concorrência reais.
     </p>
-    <pre><code>uv run bench-indexes.py &gt; resultado.json</code></pre>
+    <pre><HighlightedCode source="uv run bench-indexes.py > resultado.json" language="bash" /></pre>
   </details>
   <a class="study-source" href="/labs/bench-indexes.py" download>Baixar o benchmark Python</a>
 </section>

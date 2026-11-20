@@ -13,6 +13,7 @@
   import CourseTerms from './CourseTerms.svelte';
   import ArchitectureChoice from './ArchitectureChoice.svelte';
   import ToolTraceLab from './ToolTraceLab.svelte';
+  import HighlightedCode from './HighlightedCode.svelte';
   import ToolCallingStep from './ToolCallingStep.svelte';
   import ToolCallingWalkthrough from './ToolCallingWalkthrough.svelte';
   import PortalPractice from './PortalPractice.svelte';
@@ -108,7 +109,7 @@
             <button data-action="copy" aria-label="Copiar trecho" onclick={copy}
               >{@html icon(copyId === href(lesson, index) ? 'check' : 'copy', 14)}</button
             >
-            <pre><code>{step.code}</code></pre>
+            <pre><HighlightedCode source={step.code} language={step.codeLanguage} /></pre>
           </div>
           <span role="status" class="sr-only">{copyMessage}</span>
         </details>{/if}

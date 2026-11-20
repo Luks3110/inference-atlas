@@ -79,6 +79,7 @@
 <script>
   import { onMount } from 'svelte';
   import { icon } from './icons.js';
+  import HighlightedCode from './HighlightedCode.svelte';
   import JsonInspector from './JsonInspector.svelte';
   let { initialMode = 'openai', initialStep = 'request' } = $props();
   let mode = $state('openai');
@@ -128,15 +129,15 @@
   }
 </script>
 
-{#snippet packet(title, content, prefix = '')}
+{#snippet packet(title, content, options = {})}
   <div class="packet">
     {#if typeof content === 'string'}
       <div class="plain-packet">
         <h3>{title}</h3>
-        <pre><code>{content}</code></pre>
+        <pre><HighlightedCode source={content} language={options.language} /></pre>
       </div>
     {:else}
-      <JsonInspector value={content} {prefix} label={title} />
+      <JsonInspector value={content} prefix={options.prefix} label={title} />
     {/if}
   </div>
 {/snippet}
@@ -180,7 +181,7 @@
           {@render packet('Cliente → servidor MCP', catalog.request)}
           {@render packet('Servidor MCP → cliente', catalog.result)}
         </div>
-        {@render packet('Conversão no harness', sdkCode.mcp)}
+        {@render packet('Conversão no harness', sdkCode.mcp, {language: 'javascript'})}
       {:else if step === 'request'}
         {#if mode === 'code'}
           <p>A lista tem <code>executar_codigo</code>. A descrição diz quais funções o programa pode chamar. O argumento <code>codigo</code> carrega o JavaScript como texto.</p>
@@ -200,7 +201,7 @@
           <button type="button" class="advance" onclick={() => position += 1} disabled={position >= events.length - 1}>Próximo evento {@html icon('arrow', 14)}</button>
         </div>
         <div class="pair">
-          {@render packet('Evento SSE recebido', current, 'event: ' + current.type + '\ndata: ')}
+          {@render packet('Evento SSE recebido', current, {prefix: 'event: ' + current.type + '\ndata: '})}
           {@render packet(step === 'text' ? 'Texto visível no chat' : 'Argumentos acumulados como texto',
             buffer || (step === 'text' ? 'Aguardando texto' : 'Ainda sem argumentos'))}
         </div>
@@ -212,19 +213,19 @@
       {:else if step === 'execute'}
         {#if mode === 'mastra'}
           <p>A OpenAI devolve o nome da ferramenta. O Mastra monta o evento <code>tool-call</code> com <code>args</code> já lido como objeto. Ele encontra <code>tools.consultar_pedido</code> e chama o <code>execute</code> registrado. O código da função verifica a sessão e devolve o status. <code>tool-result</code> registra a saída que o agente usará na próxima chamada.</p>
-          {@render packet('Registro e stream no Mastra', sdkCode.mastra)}
+          {@render packet('Registro e stream no Mastra', sdkCode.mastra, {language: 'javascript'})}
           {#each ['tool-call-delta','tool-call','tool-result'] as type}
             {@render packet('Evento ' + type, scene.observations.find(event => event.type === type))}
           {/each}
         {:else if mode === 'langchain'}
           <p><code>bindTools</code> anuncia o schema. Nesta versão manual, o LangChain monta <code>tool_call_chunks</code>, e o nosso código usa <code>concat</code> para juntar os fragmentos. Depois, busca a função pelo nome no registro, chama <code>invoke</code> e passa a <code>ToolMessage</code> junto do histórico na segunda chamada.</p>
-          {@render packet('Código que liga o nome à função', sdkCode.langchain)}
+          {@render packet('Código que liga o nome à função', sdkCode.langchain, {language: 'javascript'})}
           {@render packet('Um fragmento de argumento', scene.observations.find(event => event.tool_call_chunks?.some(chunk => chunk.args)))}
           {@render packet('Chamada completa', scene.observations.find(event => event.tool_calls))}
           {@render packet('Mensagem de retorno do LangChain', scene.observations.find(event => event.type === 'ToolMessage'))}
         {:else if mode === 'langchain-agent'}
           <p>Ao usar <code>createAgent</code>, a própria execução do agente encaminha <code>tool_calls</code> do nó do modelo ao nó de ferramentas. O nó encontra a função registrada pelo nome, gera a <code>ToolMessage</code> e devolve o controle ao modelo. Esta captura mostra a execução automática.</p>
-          {@render packet('Agente com as duas ferramentas registradas', sdkCode['langchain-agent'])}
+          {@render packet('Agente com as duas ferramentas registradas', sdkCode['langchain-agent'], {language: 'javascript'})}
           {#each scene.observations as update}
             {@render packet('Atualização do nó ' + update.node, update)}
           {/each}
@@ -236,12 +237,12 @@
           </div>
         {:else if mode === 'code'}
           <p>A OpenAI devolveu uma chamada de <code>executar_codigo</code>. O harness leu o JSON em <code>arguments</code> e extraiu o campo <code>codigo</code> e passou para o interpretador, que tinha acesso só às duas funções expostas pelo host. Cada função conferiu o pedido e as permissões. O exemplo limita tempo, memória e chamadas.</p>
-          {@render packet('Programa entregue pelo modelo', scene.executions[0].args.codigo)}
+          {@render packet('Programa entregue pelo modelo', scene.executions[0].args.codigo, {language: 'javascript'})}
           {@render packet('Chamadas que o host executou, na ordem', scene.observations)}
           {@render packet('Objeto devolvido pelo programa', scene.executions[0].result)}
         {:else}
           <p>Depois de receber a resposta completa, o harness lê <code>arguments</code> com <code>JSON.parse</code> e usa <code>name</code> para encontrar a função. A função da loja valida o número e a sessão. Os dados autorizados voltam como objeto JavaScript.</p>
-          {@render packet('Código do harness', sdkCode.openai)}
+          {@render packet('Código do harness', sdkCode.openai, {language: 'javascript'})}
           {@render packet('Função executada e resultado registrado', scene.executions[0])}
         {/if}
       {:else if step === 'result'}

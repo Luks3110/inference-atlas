@@ -5,7 +5,7 @@ const display = (value, unit) => format.format(value) + ' ' + unit;
 const count = (label, initial, max = 20, unit = 'casos') => knob(label, unit, 0, max, 1, initial);
 const quantity = (label, initial, max, unit) => knob(label, unit, 1, max, 1, initial);
 
-function stage(label, title, nodes, body, knobs, calculate, results, rule, code) {
+function stage(label, title, nodes, body, knobs, calculate, results, rule, code, codeLanguage) {
   const metrics = results.map(([name, unit]) => [name, unit]);
   const inputs = knobs.map((k) => k.initial);
   const current = calculate(...inputs);
@@ -21,6 +21,7 @@ function stage(label, title, nodes, body, knobs, calculate, results, rule, code)
       active: 1,
       body,
       code,
+      codeLanguage,
       metrics: metrics.map(([key, u], i) => [key, display(current[i], u)]),
       change: metrics.map(([key, u], i) => key.toLowerCase() + ' ' + display(current[i], u)).join(' e ') + '.',
       idea: rule,
@@ -41,7 +42,7 @@ function stage(label, title, nodes, body, knobs, calculate, results, rule, code)
 }
 
 // All counts below describe the fixture. Each edit reruns the same small model.
-function partition(label, title, nodes, body, limit, input, initial, yes, no, rule, code) {
+function partition(label, title, nodes, body, limit, input, initial, yes, no, rule, code, codeLanguage) {
   return stage(
     label,
     title,
@@ -55,10 +56,11 @@ function partition(label, title, nodes, body, limit, input, initial, yes, no, ru
     ],
     rule,
     code,
+    codeLanguage,
   );
 }
 
-function batches(label, title, nodes, body, first, second, results, rule, code) {
+function batches(label, title, nodes, body, first, second, results, rule, code, codeLanguage) {
   return stage(
     label,
     title,
@@ -69,6 +71,7 @@ function batches(label, title, nodes, body, first, second, results, rule, code) 
     [results[0], results[1]],
     rule,
     code,
+    codeLanguage,
   );
 }
 
@@ -178,6 +181,7 @@ const mastra = [
     'Pedem correção',
     'O esquema barra argumentos inválidos. A autorização ainda precisa passar antes da leitura.',
     'inputSchema: z.object({ orderId: z.string().min(1) })\n// Dentro de execute: obtenha a identidade da sessão verificada.',
+    'javascript',
   ),
   partition(
     'Registrar',
@@ -191,6 +195,7 @@ const mastra = [
     'Voltam para revisão',
     'No teste, uma resposta só sai quando o resultado da consulta sustenta o prazo informado.',
     'import { Mastra } from "@mastra/core";\nimport { Agent } from "@mastra/core/agent";\nconst support = new Agent({\n  id: "suporte", name: "Suporte", model,\n  instructions: "Use consultarPedido antes de informar um prazo.",\n  tools: { consultarPedido },\n});\nexport const mastra = new Mastra({ agents: { support } });',
+    'javascript',
   ),
   partition(
     'Delegar',
@@ -281,6 +286,7 @@ const skills = [
     'Ativação ou ausência errada',
     'Meça ativação com exemplos de uso e de não uso. Uma descrição vaga carrega instruções para pedidos que não precisam delas.',
     '---\nname: consultar-politica-de-devolucao\ndescription: Consulte a política de devolução válida na data da compra. Use quando o pedido perguntar se um item pode ser devolvido.\n---\n1. Confirme a data da compra.\n2. Abra a política válida na data.\n3. Informe a regra e cite a seção.\n4. Peça a informação que faltar.',
+    'markdown',
   ),
   partition(
     'Separar',
@@ -406,6 +412,7 @@ const temporal = [
     'Continuam pendentes ou expiram',
     'O fluxo só abre a gravação depois de validar a decisão para aquela revisão e dentro do prazo.',
     'import { condition, defineSignal, setHandler } from "@temporalio/workflow";\nconst aprovar = defineSignal<[string]>("aprovar");\n// Dentro do Workflow, após registrar o caso.\nlet revisaoAprovada: string | undefined;\nsetHandler(aprovar, (revisao) => { revisaoAprovada = revisao; });\nconst aprovada = await condition(() => revisaoAprovada === revisaoAtual, "2 days");',
+    'typescript',
   ),
   batches(
     'Repetir',

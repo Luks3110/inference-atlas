@@ -66,6 +66,7 @@ test('estado anterior, progresso, busca, teclado, temas e modos sobrevivem à mi
   await expect(page.locator('.skill-lab .score')).toContainText('Publicação bloqueada');
   await page.locator('.topnav a[href="#/guias"]').click();
   await page.locator('[data-guide="1"]').click();
+  await expect(page.locator('.am-terminal .hljs-keyword').first()).toHaveText('import');
   await page.locator('[data-copy]').click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('summarize(results).passes');
   await page.locator('.topnav a[href="#/producao"]').click();
@@ -287,7 +288,11 @@ test('a captura mostra schema, argumentos em SSE, execução e retorno em cada i
   await expect(packets.nth(1)).toContainText('em transporte');
 
   await select('Code Mode');
-  await expect(packets.first()).toContainText('tools.consultar_pedido({ numero: 42 })');
+  const program = packets.first();
+  await expect(program).toContainText('tools.consultar_pedido({ numero: 42 })');
+  await expect(program.locator('.hljs-keyword').first()).toHaveText('const');
+  await expect(program.locator('.hljs-title').first()).toHaveText('consultar_pedido');
+  await expect(program.locator('.hljs-number').first()).toHaveText('42');
   await expect(packets.nth(1)).toContainText('"name": "consultar_rastreio"');
   await expect(packets.last()).toContainText('"previsao": "21/11"');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390);

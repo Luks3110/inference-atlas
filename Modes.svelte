@@ -7,6 +7,7 @@
 <script>
   import SkillsLab from './SkillsLab.svelte';
   import CourseTerms from './CourseTerms.svelte';
+  import HighlightedCode from './HighlightedCode.svelte';
   import { tick } from 'svelte';
   import { questions, guides } from './mode-data.js';
   import './modes.css';
@@ -172,7 +173,7 @@
               >{copied ? 'Copiado ✓' : 'Copiar'}</button
             >
           </div>
-          <pre><code bind:this={codeElement}>{guide.code}</code></pre>
+          <pre><HighlightedCode source={guide.code} language={guide.language} bind:element={codeElement} /></pre>
         </div>
         <span role="status" class="am-copy-status">{copyStatus}</span>
         {@render source(guide.source)}

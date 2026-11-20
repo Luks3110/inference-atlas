@@ -76,6 +76,7 @@ export const guides = [
     category: 'Agentes',
     description:
       'Use um modelo configurado no seu projeto. Registre a ferramenta de leitura e deixe a checagem de acesso dentro da função que consulta o pedido.',
+    language: 'javascript',
     code: `import { Mastra } from "@mastra/core";
 import { Agent } from "@mastra/core/agent";
 import { model, consultarPedido } from "./deps.js";
@@ -95,6 +96,7 @@ export const mastra = new Mastra({ agents: { suporte } });`,
     category: 'Evals',
     description:
       'Baixe avaliacao.mjs pelo laboratório. Salve este trecho como teste.mjs na mesma pasta e rode node teste.mjs. Troque a configuração para ver o teste detectar uma política errada ou o uso indevido da ferramenta.',
+    language: 'javascript',
     code: `import assert from "node:assert/strict";
 import { decide, evaluate, summarize } from "./avaliacao.mjs";
 
@@ -112,6 +114,7 @@ assert(summarize(results).passes, "Falha na política ou na ferramenta");`,
     category: 'Workflows',
     description:
       'No arquivo de Workflows do SDK TypeScript, use proxyActivities para chamar a função registrada no Worker. O exemplo só lê o pedido e limita o tempo total da Activity, incluindo novas tentativas.',
+    language: 'typescript',
     code: `import { proxyActivities } from "@temporalio/workflow";
 import type * as activities from "./activities.js";
 
@@ -131,6 +134,7 @@ export async function consultarNoFluxo(empresa: string, pedido: string) {
     category: 'Integração',
     description:
       'Troque a origem pelo endereço conhecido do seu serviço. Leia as interfaces, as capacidades e os requisitos de autenticação antes de escolher como enviar uma mensagem.',
+    language: 'bash',
     code: `curl --fail --silent --show-error \\
   https://agente.example.com/.well-known/agent-card.json`,
     source: 'https://a2a-protocol.org/latest/topics/agent-discovery/',
@@ -140,6 +144,7 @@ export async function consultarNoFluxo(empresa: string, pedido: string) {
     category: 'Observabilidade',
     description:
       'Com o SDK e o exportador já configurados no servidor, registre cada etapa dentro da observação do pedido. O exemplo envia a versão da skill e o resultado da consulta, sem o texto ou o número do pedido.',
+    language: 'javascript',
     code: `import { startActiveObservation } from "@langfuse/tracing";
 import { buscarPolitica } from "./politicas.js";
 
