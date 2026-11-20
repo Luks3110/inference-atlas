@@ -78,6 +78,7 @@
 
 <script>
   import { onMount } from 'svelte';
+  import { icon } from './icons.js';
   import JsonInspector from './JsonInspector.svelte';
   let { initialMode = 'openai', initialStep = 'request' } = $props();
   let mode = $state('openai');
@@ -129,11 +130,13 @@
 
 {#snippet packet(title, content, prefix = '')}
   <div class="packet">
-    <h3>{title}</h3>
     {#if typeof content === 'string'}
-      <pre><code>{content}</code></pre>
+      <div class="plain-packet">
+        <h3>{title}</h3>
+        <pre><code>{content}</code></pre>
+      </div>
     {:else}
-      <JsonInspector value={content} {prefix} compact={prefix !== ''} />
+      <JsonInspector value={content} {prefix} compact={prefix !== ''} label={title} />
     {/if}
   </div>
 {/snippet}
@@ -143,20 +146,33 @@
   {#if error}
     <p>Não foi possível abrir a captura. <a href="/labs/tool-calling/trace.json">Abra o JSON diretamente.</a></p>
   {:else if scene}
-    <p>As requisições e os eventos abaixo foram registrados em um teste local. Um servidor de teste fez o papel da OpenAI. Os SDKs, a conexão MCP e o interpretador de JavaScript rodaram com dados fictícios. Clique em um campo sublinhado no JSON para ver o que ele faz.</p>
-    <div class="modes" role="group" aria-label="Escolher implementação">
-      {#each modes as [value,label]}
-        <button type="button" aria-pressed={mode === value} onclick={() => chooseMode(value)}>{label}</button>
-      {/each}
+    <p>O teste rodou os SDKs, o cliente MCP e o interpretador JavaScript com dados fictícios. Um servidor local simulou a API da OpenAI.</p>
+    <div class="controls">
+      <div class="selector">
+        <span class="selector-label">Implementação</span>
+        <div class="modes" role="group" aria-label="Escolher implementação">
+          {#each modes as [value,label]}
+            <button type="button" aria-pressed={mode === value} onclick={() => chooseMode(value)}>{label}</button>
+          {/each}
+        </div>
+      </div>
+      <div class="selector">
+        <span class="selector-label">Etapa da chamada</span>
+        <div class="phases" role="group" aria-label="Escolher etapa da chamada">
+          {#if mode === 'mcp'}
+            <button type="button" aria-pressed={step === 'catalog'} onclick={() => chooseStep('catalog')}>Descobrir ferramentas</button>
+          {/if}
+          {#each steps as [value,label]}
+            <button type="button" aria-pressed={step === value} onclick={() => chooseStep(value)}>{label}</button>
+          {/each}
+        </div>
+      </div>
     </div>
-    <div class="phases" role="group" aria-label="Escolher etapa da chamada">
-      {#if mode === 'mcp'}
-        <button type="button" aria-pressed={step === 'catalog'} onclick={() => chooseStep('catalog')}>Descobrir ferramentas</button>
-      {/if}
-      {#each steps as [value,label]}
-        <button type="button" aria-pressed={step === value} onclick={() => chooseStep(value)}>{label}</button>
-      {/each}
-    </div>
+    <p class="field-hint">
+      {@html icon('code', 15)}
+      <span class="pointer-hint">Passe o mouse sobre um campo sublinhado. Clique para fixar a explicação.</span>
+      <span class="touch-hint">Toque em um campo sublinhado para ler a explicação.</span>
+    </p>
     <div class="trace-panel">
       {#if step === 'catalog' && catalog}
         <p>Depois de inicializar a sessão, o cliente MCP chama <code>tools/list</code>. O harness pega <code>name</code>, <code>description</code> e <code>inputSchema</code> e põe a última em <code>parameters</code> ao montar <code>tools</code> na OpenAI.</p>
@@ -179,9 +195,9 @@
           <p>Na segunda stream, <code>response.output_text.delta</code> traz texto que o aplicativo pode acrescentar à resposta visível.</p>
         {/if}
         <div class="player">
-          <button type="button" onclick={() => position = 0}>Recomeçar</button>
-          <button type="button" onclick={() => position += 1} disabled={position >= events.length - 1}>Próximo evento</button>
           <span aria-live="polite">Evento {position + 1} de {events.length}</span>
+          <button type="button" class="restart" onclick={() => position = 0} disabled={position === 0}>Recomeçar</button>
+          <button type="button" class="advance" onclick={() => position += 1} disabled={position >= events.length - 1}>Próximo evento {@html icon('arrow', 14)}</button>
         </div>
         <div class="pair">
           {@render packet('Evento SSE recebido', current, 'event: ' + current.type + '\ndata: ')}
@@ -239,7 +255,7 @@
     </div>
     <div class="links">
       <a href="/labs/tool-calling/trace.json" download>Baixar a captura JSON completa</a>
-      <a href="https://github.com/Luks3110/inference-atlas/tree/main/examples/tool-calling" target="_blank" rel="noreferrer">Abrir o código que gravou o teste</a>
+      <a href="https://github.com/Luks3110/inference-atlas/tree/main/examples/tool-calling" target="_blank" rel="noreferrer">Abrir o código que gravou o teste {@html icon('external', 13)}</a>
     </div>
   {:else}
     <p role="status">Carregando a captura…</p>
@@ -247,25 +263,94 @@
 </section>
 
 <style>
-  section {min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:9px;margin:0 0 16px;padding:clamp(12px,2.5vw,24px)}
-  h2 {font-size:clamp(18px,2.4vw,24px);margin:0 0 9px}
-  h3 {font-size:13px;margin:0 0 6px}
-  p {font-size:14px;line-height:1.55;color:var(--muted);margin:8px 0}
-  code {font-family:var(--mono)}
-  .modes,.phases,.player,.links {display:flex;flex-wrap:wrap;gap:6px 9px;align-items:center}
-  .modes {margin:12px 0 8px}
-  .phases {border-bottom:1px solid var(--line);padding-bottom:10px}
-  button {padding:6px 9px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:5px;font-size:13px}
-  button[aria-pressed=true] {background:var(--sage);color:var(--sage-ink);font-weight:600}
-  button:disabled {opacity:.55}
-  button:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
-  .packet {min-width:0;margin:8px 0}
-  .packet pre {background:var(--rail);border:1px solid var(--line);border-radius:6px;padding:10px;margin:0;max-height:31rem;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.55 var(--mono)}
-  .pair {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(245px,100%),1fr));gap:9px}
-  .player {margin-top:10px}
-  .player span,.status {color:var(--muted);font-size:12px}
-  a,summary {color:var(--accent);font-size:13px}
-  summary {cursor:pointer}
-  .links {margin-top:12px;gap:12px}
-  .links a {text-decoration:underline;text-underline-offset:2px}
+  section {
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 8px;
+    margin: 0 0 16px;
+    padding: clamp(12px, 2.4vw, 24px);
+  }
+  h2 { font-size: clamp(20px, 2.4vw, 26px); font-weight: 600; letter-spacing: -.038em; }
+  p { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 7px 0 12px; }
+  p code { font-size: .88em; color: var(--ink); overflow-wrap: anywhere; }
+  code { font-family: var(--mono); }
+  .controls {
+    display: grid;
+    gap: 0;
+    margin: 18px 0 9px;
+    border-block: 1px solid var(--line);
+  }
+  .selector {
+    display: grid;
+    grid-template-columns: 8.4rem minmax(0, 1fr);
+    gap: 4px 10px;
+    align-items: baseline;
+    padding: 6px 0;
+  }
+  .selector + .selector { border-top: 1px solid var(--line); }
+  .selector-label { color: var(--subtle); font: 500 11px/1.4 var(--mono); }
+  .modes,.phases,.player,.links { display: flex; flex-wrap: wrap; gap: 3px 6px; align-items: center; }
+  button {
+    padding: 5px 8px;
+    color: var(--muted);
+    border-radius: 4px;
+    font-size: 12px;
+    min-height: 32px;
+    transition: background-color 150ms, color 150ms;
+  }
+  button:hover:not(:disabled) { background: var(--soft); color: var(--ink); }
+  .modes button[aria-pressed=true] { background: var(--action); color: var(--action-ink); }
+  .phases button[aria-pressed=true] { background: var(--selection); color: var(--selection-ink); font-weight: 600; }
+  button:disabled { opacity: .55; }
+  .field-hint {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    color: var(--accent);
+    font-size: 12px;
+    margin: 0 0 14px;
+  }
+  .field-hint :global(.icon) { align-self: center; }
+  .touch-hint { display: none; }
+  @media (hover: none) {
+    .pointer-hint { display: none; }
+    .touch-hint { display: inline; }
+  }
+  .packet { min-width: 0; margin: 8px 0; }
+  .plain-packet { background: var(--bg); border: 1px solid var(--edge); border-radius: 6px; }
+  .plain-packet h3 {
+    font-size: 12px;
+    font-weight: 560;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    border-radius: 5px 5px 0 0;
+    background: var(--rail);
+  }
+  .plain-packet pre {
+    padding: 12px;
+    margin: 0;
+    max-height: 31rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font: 12px/1.75 var(--mono);
+  }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(245px,100%),1fr)); gap: 10px; }
+  .player { gap: 6px 8px; margin-top: 12px; }
+  .player span { margin-right: auto; color: var(--muted); font: 500 11px/1.4 var(--mono); }
+  .player .advance { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--edge); color: var(--ink); }
+  .status { color: var(--muted); font-size: 12px; }
+  a,summary { color: var(--accent); font-size: 13px; }
+  summary { cursor: pointer; }
+  .links { margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--line); gap: 6px 16px; }
+  .links a { display: inline-flex; align-items: center; gap: 5px; }
+  .links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 560px) {
+    .selector { grid-template-columns: 1fr; padding-block: 8px; }
+    .pair { gap: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+  }
 </style>

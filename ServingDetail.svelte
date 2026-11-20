@@ -142,12 +142,12 @@
   .mono,.annotation {font:12px var(--mono)}
   .wire,.combine-wire {fill:none;stroke:var(--subtle);stroke-width:1.5;stroke-linecap:round}
   .wire.live,.combine-wire {stroke:var(--accent);stroke-width:2.8}
-  .wire.local {stroke:var(--sage-ink);stroke-width:2}
+  .wire.local {stroke:var(--selection-ink);stroke-width:2}
   .unused {stroke:var(--subtle);stroke-dasharray:3 4;opacity:.62}
   .unmapped,.absent {opacity:0;pointer-events:none}
   .box,.slot,.token,.gate {stroke:var(--subtle);stroke-width:1;fill:var(--rail)}
-  .chosen,.gate {fill:var(--sage);stroke:var(--sage-ink);stroke-width:1.6}
-  .token {fill:var(--peach);stroke:var(--accent)}
+  .chosen,.gate {fill:var(--selection);stroke:var(--selection-ink);stroke-width:1.6}
+  .token {fill:var(--accent-soft);stroke:var(--accent)}
   .annotation {fill:var(--muted)}
   p {margin:0;line-height:1.5;font-size:13px;color:var(--muted)}
   strong {color:var(--ink)}

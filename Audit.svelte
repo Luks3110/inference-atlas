@@ -49,7 +49,7 @@
   .audit-report {max-width: 1050px}
   .audit-index {display:grid; grid-template-columns:repeat(auto-fit, minmax(min(210px, 100%),1fr)); gap:4px 12px; margin:20px 0}
   .audit-index a {padding:8px; border-radius:6px; display:flex; gap:8px; align-items:baseline}
-  .audit-index a:hover, .audit-index a[aria-current] {background:var(--sage); color:var(--sage-ink)}
+  .audit-index a:hover, .audit-index a[aria-current] {background:var(--selection); color:var(--selection-ink)}
   .audit-index small, .audit-lessons small {color:var(--muted); font:11px var(--mono)}
   .audit-module {background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:clamp(16px,4vw,42px)}
   .audit-module h2 {scroll-margin-top:calc(var(--header) + 14px);font-size:clamp(24px,3vw,36px); letter-spacing:-.04em}

@@ -64,7 +64,7 @@
   h2 {font-size:clamp(17px,1.4vw,22px);line-height:1.25;letter-spacing:-.03em;margin:6px 0 12px;text-wrap:pretty}
   .sim-views {display:flex;gap:3px;flex-wrap:wrap;margin:10px 0;padding:3px;border:1px solid var(--line);border-radius:6px;width:fit-content}
   .sim-views button {padding:6px 9px;border-radius:4px;font-size:12px}
-  .sim-views [aria-pressed=true]{background:var(--sage);color:var(--sage-ink);font-weight:600}
+  .sim-views [aria-pressed=true]{background:var(--selection);color:var(--selection-ink);font-weight:600}
   .fixed-example {border-top:1px solid var(--line);margin-top:12px}
   .fixed-example summary {cursor:pointer;padding:10px 0;color:var(--muted);font-size:13px}
   .comparison-pair {display:grid;gap:10px}
@@ -80,7 +80,7 @@
   .flow span {text-align:center;padding:6px 10px;background:var(--panel);border:1px solid var(--line);border-radius:5px;font-weight:570;overflow-wrap:anywhere}
   .flow small {display:block;margin-top:2px;font:500 12px var(--mono)}
   .flow .reference {border-color:var(--subtle)}
-  .flow .applied {background:var(--sage);color:var(--sage-ink)}
+  .flow .applied {background:var(--selection);color:var(--selection-ink)}
   .flow svg {width:clamp(24px,7%,50px);height:15px;flex:none;color:var(--subtle)}
   .flow path {fill:none;stroke:currentColor;stroke-width:1.5;vector-effect:non-scaling-stroke}
   .readings {display:grid;gap:4px 10px;grid-template-columns:max-content minmax(0,1fr) auto}

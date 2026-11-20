@@ -17,7 +17,7 @@
       {#if modules[i - 1]?.phase !== group.phase}
         <h3 class="phase">{group.phase}</h3>
       {/if}
-      <section class={'group group-' + (i % 6)}>
+      <section class="group">
         <button
           class="group-toggle"
           data-group={i}

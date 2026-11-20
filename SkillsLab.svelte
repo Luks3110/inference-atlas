@@ -48,7 +48,7 @@
   .settings,.downloads {display:flex;gap:8px 16px;flex-wrap:wrap;margin:14px 0}
   label {display:flex;gap:7px;align-items:baseline;font-size:14px}
   input {accent-color:var(--accent)}
-  .score {padding:10px;border-radius:6px;background:var(--sage);color:var(--sage-ink)}
+  .score {padding:10px;border-radius:6px;background:var(--selection);color:var(--selection-ink)}
   .baseline {font-size:12px;margin-top:8px}
   ul {padding:0;margin:12px 0;list-style:none}
   li {border-top:1px solid var(--line);padding:8px 0;display:grid;gap:3px;font-size:13px}

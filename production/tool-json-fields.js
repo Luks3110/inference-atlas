@@ -169,11 +169,11 @@ export function describeField(key, value, parent) {
 // Build the same string as JSON.stringify. Only keys become interactive tokens.
 export function jsonTokens(value, compact = false) {
   const tokens = [];
-  const put = text => tokens.push({text});
+  const put = (text, kind) => tokens.push({text, kind});
   const indent = level => compact ? '' : '\n' + '  '.repeat(level);
   function walk(node, path) {
     if (node === null || typeof node !== 'object') {
-      put(JSON.stringify(node));
+      put(JSON.stringify(node), typeof node === 'string' ? 'json-string' : 'json-literal');
       return;
     }
     const array = Array.isArray(node);

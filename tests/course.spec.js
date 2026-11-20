@@ -309,9 +309,12 @@ test('os campos do JSON e do SSE explicam seu papel sem alterar a captura', asyn
   await schemaType.focus();
   await schemaType.press('Enter');
   await expect(schemaType).toHaveAttribute('aria-pressed', 'true');
-  await expect(schemaType).toBeFocused();
   await expect(note).toContainText('número inteiro');
   await expect(note).toBeInViewport();
+  await expect(note).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(note).toHaveCount(0);
+  await expect(schemaType).toBeFocused();
   expect(await packetText.textContent()).toBe(rawRequest);
   await packet.getByRole('button', { name: 'Copiar JSON', exact: true }).click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(rawRequest);
@@ -333,7 +336,7 @@ test('os campos do JSON e do SSE explicam seu papel sem alterar a captura', asyn
   await lab.getByRole('button', { name: 'Devolver resultado', exact: true }).click();
   await field('output').click();
   await expect(note).toContainText('call_id');
-  await packet.getByText('Ver o JSON dentro desta string', { exact: true }).click();
+  await packet.getByRole('button', { name: 'Abrir JSON desta string', exact: true }).click();
   await field('status').click();
   await expect(packet.locator('.decoded .field-note')).toContainText('Situação da entrega');
 
@@ -341,4 +344,29 @@ test('os campos do JSON e do SSE explicam seu papel sem alterar a captura', asyn
   await field('id').click();
   await expect(note).toContainText('parear a resposta com o pedido MCP');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+});
+
+test('a explicação acompanha o campo sem deslocar a leitura', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/#/aula/tool-calling/4');
+  const field = page.getByRole('button', { name: 'Explicar item.call_id', exact: true });
+  const tooltip = page.getByRole('tooltip');
+  await field.scrollIntoViewIfNeeded();
+  const before = await field.boundingBox();
+  await field.hover();
+  await expect(tooltip).toContainText('function_call_output');
+  await expect(tooltip).toBeInViewport();
+  await tooltip.hover();
+  await expect(tooltip).toBeVisible();
+  expect(await field.boundingBox()).toEqual(before);
+
+  await field.click();
+  const pinned = page.getByRole('region', { name: 'Campo call_id' });
+  await expect(pinned).toBeVisible();
+  await page.mouse.move(10, 10);
+  await expect(pinned).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(pinned).toHaveCount(0);
+  await expect(field).toHaveAttribute('aria-pressed', 'false');
+  expect(await field.boundingBox()).toEqual(before);
 });

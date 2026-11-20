@@ -71,7 +71,7 @@
         <path d="M0 39l-4-8h8Z" fill="var(--accent)"/><text y="23" text-anchor="middle">{fmt(inputs[1])}</text>
       </g>
       <g class="shift" style:transform={'translateX('+x(code*step-inputs[0])+'px)'}>
-        <path d="M0 51l-4 8h8Z" fill="var(--sage-ink)"/>
+        <path d="M0 51l-4 8h8Z" fill="var(--selection-ink)"/>
       </g>
       <text x={x(-inputs[0])} y="76" text-anchor="end">−{fmt(inputs[0])}</text>
       <text x={x(inputs[0])} y="76">{fmt(inputs[0])}</text>
@@ -84,7 +84,7 @@
   figure {margin:9px 0;padding:11px;background:var(--rail);border-radius:7px}
   figcaption {font-weight:600;font-size:13px;margin-bottom:10px}
   .sequence {display:flex;gap:4px;flex-wrap:wrap}
-  .sequence>div {min-width:31px;display:grid;justify-items:center;border:1px solid var(--subtle);border-radius:3px;background:var(--sage);box-shadow:0 2px var(--subtle);padding:3px}
+  .sequence>div {min-width:31px;display:grid;justify-items:center;border:1px solid var(--subtle);border-radius:3px;background:var(--selection);box-shadow:0 2px var(--subtle);padding:3px}
   .sequence>div.padding {border-style:dashed;background:var(--panel);color:var(--muted);box-shadow:none}
   .sequence small {font:9px var(--mono)} .sequence b {font:500 15px var(--mono)}
   .bus {margin:6px auto 0;text-align:center;font:11px var(--mono);display:grid;justify-items:center}
@@ -95,13 +95,13 @@
   .outputs span,.outputs b {display:block}.outputs b {font-size:11px}.outputs span {margin-top:4px;font:12px var(--mono)}.outputs strong {color:var(--accent)}
   svg {display:block;width:100%;max-height:130px} svg text {fill:var(--ink);font:11px var(--mono)}
   .shards {display:flex;flex-wrap:wrap;justify-content:center;gap:7px;border-top:1px solid var(--subtle)}
-  .shards div {display:grid;justify-items:center;position:relative;padding-top:9px;font:10px var(--mono);color:var(--sage-ink)}
+  .shards div {display:grid;justify-items:center;position:relative;padding-top:9px;font:10px var(--mono);color:var(--selection-ink)}
   .shards div::before {content:'';height:8px;border-left:1px solid currentColor;position:absolute;top:0}
   .shards .skip {color:var(--muted)} .shards .skip::before {border-left-style:dashed}
-  .shards svg {width:40px;height:35px;fill:var(--sage);stroke:currentColor}.shards .skip svg {fill:var(--panel)}
-  .paths path {fill:none;stroke:var(--subtle)}.paths rect {fill:var(--sage);stroke:var(--sage-ink)}
+  .shards svg {width:40px;height:35px;fill:var(--selection);stroke:currentColor}.shards .skip svg {fill:var(--panel)}
+  .paths path {fill:none;stroke:var(--subtle)}.paths rect {fill:var(--selection);stroke:var(--selection-ink)}
   .paths .wait {stroke-dasharray:3 3}.paths circle {fill:var(--accent)}
-  .rail {fill:var(--sage);stroke:var(--sage-ink)}
+  .rail {fill:var(--selection);stroke:var(--selection-ink)}
   figure>small {font-size:11px;display:block;margin-top:6px;color:var(--muted)}
   @media(prefers-reduced-motion:no-preference){.shift {transition:transform 140ms ease-out}.paths rect {transition:width 140ms ease-out}.rail{transition:x 140ms,width 140ms}}
 </style>

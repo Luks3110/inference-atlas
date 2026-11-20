@@ -51,9 +51,9 @@
   p + p {margin-top:8px}
   p + h3, a + h3 {margin-top:18px}
   .study-source {margin-top:9px}
-  .decision {margin:18px 0 6px; padding:16px; background:var(--sage); border-radius:7px}
+  .decision {margin:18px 0 6px; padding:16px; background:var(--selection); border-radius:7px}
   .decision p {color:var(--ink)}
-  summary {color:var(--sage-ink); cursor:pointer; font-weight:600; padding:8px 0 0}
+  summary {color:var(--selection-ink); cursor:pointer; font-weight:600; padding:8px 0 0}
   details[open] p {padding-top:5px}
   @media(max-width:760px){.analysis {grid-template-columns:1fr}}
   @media(max-width:740px){.production-case {order:3}}

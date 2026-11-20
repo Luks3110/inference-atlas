@@ -49,7 +49,7 @@
   h2 {font-size:1.13rem;margin-bottom:9px}
   .choices,ol {display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;padding:0}
   button,li {border:1px solid var(--line);padding:6px 8px;border-radius:5px;font-size:13px}
-  button[aria-pressed=true] {background:var(--sage);color:var(--sage-ink);font-weight:600}
+  button[aria-pressed=true] {background:var(--selection);color:var(--selection-ink);font-weight:600}
   li {background:var(--rail);list-style:none}
   li:not(:last-child)::after {content:' →';color:var(--accent)}
   p {line-height:1.5;font-size:14px;margin-top:6px;color:var(--muted)}

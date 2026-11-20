@@ -93,16 +93,16 @@
 </section>
 
 <style>
-  section {background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:16px;padding:clamp(14px,3vw,24px)}
-  h2 {margin:0 0 14px;font-size:clamp(17px,2vw,22px);letter-spacing:-.02em}
-  .choices {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-  button {border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:7px 10px;font-size:13px}
-  button[aria-pressed=true] {border-color:var(--subtle);background:var(--sage);color:var(--sage-ink);font-weight:600}
-  button:focus-visible {outline:2px solid var(--accent);outline-offset:2px}
-  .exchange {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:10px}
-  .message {min-width:0;padding:10px 12px;background:var(--rail);border-left:2px solid var(--subtle);border-radius:5px}
-  .message + .message {border-left-color:var(--accent)}
-  h3 {font-size:13px;margin:0 0 6px}
-  p {margin:0;font-size:14px;line-height:1.5}
-  .note {color:var(--muted);font-size:12px;margin-top:10px}
+  section { background: var(--panel); border: 1px solid var(--edge); border-radius: 8px; margin-bottom: 16px; padding: clamp(14px,3vw,24px); }
+  h2 { margin: 0 0 14px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; letter-spacing: -.035em; }
+  .choices { display: flex; gap: 4px; flex-wrap: wrap; border-block: 1px solid var(--line); padding-block: 6px; margin-bottom: 14px; }
+  button { border-radius: 4px; padding: 7px 10px; font-size: 13px; color: var(--muted); }
+  button:hover { background: var(--soft); color: var(--ink); }
+  button[aria-pressed=true] { background: var(--selection); color: var(--selection-ink); font-weight: 600; }
+  .exchange { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+  .message { min-width: 0; padding: 12px; background: var(--rail); border-left: 2px solid var(--edge); border-radius: 0 5px 5px 0; }
+  .message + .message { border-left-color: var(--accent-strong); background: var(--accent-soft); }
+  h3 { color: var(--muted); font: 500 11px/1.45 var(--mono); margin: 0 0 6px; }
+  p { margin: 0; font-size: 14px; line-height: 1.55; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 10px; }
 </style>

@@ -47,6 +47,6 @@
   fieldset {border:1px solid var(--line);background:var(--rail);border-radius:8px;margin:18px 0 0;padding:10px 14px;min-width:0}
   legend {font-weight:600;font-size:14px;max-width:64ch}
   button {display:block;text-align:left;padding:7px 9px;margin:5px 0;border:1px solid var(--line);background:var(--panel);border-radius:5px;font-size:13px}
-  button[aria-pressed=true] {background:var(--sage);color:var(--sage-ink);border-color:var(--subtle)}
+  button[aria-pressed=true] {background:var(--selection);color:var(--selection-ink);border-color:var(--subtle)}
   p {color:var(--muted);font-size:13px;margin-top:6px;line-height:1.5}
 </style>

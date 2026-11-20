@@ -56,7 +56,7 @@
         <svg class="vectors" viewBox="0 0 150 66" role="img" aria-label={group.label}>
           <path d="M5 54H145M75 5V61" stroke="var(--line)" fill="none"/>
           {#each group.arrows as arrow,j}
-            <g class="arrow" style:transform={'translate(75px,54px) rotate('+(-arrow.angle)+'deg)'} style:color={j?'var(--accent)':'var(--sage-ink)'}>
+            <g class="arrow" style:transform={'translate(75px,54px) rotate('+(-arrow.angle)+'deg)'} style:color={j?'var(--accent)':'var(--selection-ink)'}>
               <path d={'M0 0H'+(arrow.length*9)} stroke="currentColor" stroke-width={j?2:4} />
               <path d={'M'+(arrow.length*9-4)+' -3l4 3-4 3'} fill="none" stroke="currentColor"/>
             </g>
@@ -108,14 +108,14 @@
   header strong {font-size:12px} header span,.change,small {font:11px var(--mono);color:var(--muted)}
   header span {color:var(--ink)}
   .matrix {display:grid;grid-template-columns:repeat(var(--columns),minmax(0,1fr));gap:2px;margin-top:7px;max-width:330px}
-  .matrix span {background:var(--sage);color:var(--sage-ink);padding:3px 1px;text-align:center;border-radius:2px;font:10px var(--mono)}
-  .matrix span.muted {background:var(--rail);color:var(--muted)} .matrix span.warn {background:var(--peach);color:var(--accent)}
+  .matrix span {background:var(--selection);color:var(--selection-ink);padding:3px 1px;text-align:center;border-radius:2px;font:10px var(--mono)}
+  .matrix span.muted {background:var(--rail);color:var(--muted)} .matrix span.warn {background:var(--accent-soft);color:var(--accent)}
   .items,.pile {display:flex;flex-wrap:wrap;align-items:center;gap:3px;margin:5px 0 0}
   .unit {position:relative;width:22px;height:23px}
   .unit svg {position:absolute;inset:0;width:100%;height:100%}
-  .empty {color:var(--line)} .ink,.chip {color:var(--sage-ink)} .ink.added,.chip.warn {color:var(--accent)}
-  .chip {display:inline-flex;align-items:center;gap:3px;font:11px var(--mono);background:var(--sage);border-radius:4px;padding:2px 5px;max-width:100%;overflow-wrap:anywhere}
-  .chip.warn {background:var(--peach)} .chip.muted {color:var(--muted);background:var(--rail)}
+  .empty {color:var(--line)} .ink,.chip {color:var(--selection-ink)} .ink.added,.chip.warn {color:var(--accent)}
+  .chip {display:inline-flex;align-items:center;gap:3px;font:11px var(--mono);background:var(--selection);border-radius:4px;padding:2px 5px;max-width:100%;overflow-wrap:anywhere}
+  .chip.warn {background:var(--accent-soft)} .chip.muted {color:var(--muted);background:var(--rail)}
   .chip svg {width:17px;height:17px;flex:none}
   small {display:block;line-height:1.4;margin-top:3px} p {font-size:12px;line-height:1.4;margin:4px 0;color:var(--muted)}
   .vectors {display:block;width:150px;max-width:100%;height:66px}

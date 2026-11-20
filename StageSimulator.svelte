@@ -186,7 +186,7 @@
   figcaption span:first-child {display:flex;align-items:center;gap:6px;color:var(--ink)}
   .topology-line{display:grid;grid-template-columns:minmax(0,1fr) minmax(70px,1.15fr) minmax(0,1fr);align-items:center;gap:7px;max-width:620px;margin:14px auto 3px;text-align:center}
   .node{border:1px solid var(--line);border-radius:5px;background:var(--rail);padding:8px 5px;font-size:13px;font-weight:570;overflow-wrap:anywhere}
-  .node.target{background:var(--sage);color:var(--sage-ink)}
+  .node.target{background:var(--selection);color:var(--selection-ink)}
   .link-state{display:grid;justify-items:center;font:10px var(--mono);color:var(--muted);overflow-wrap:anywhere}
   .link-state b{font-size:12px;color:var(--accent)}
   .link-state svg{width:100%;height:15px}

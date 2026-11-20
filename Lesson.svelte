@@ -301,9 +301,19 @@
   .tool-alternative > summary {color:var(--accent);font-size:14px;cursor:pointer;margin-bottom:8px}
   .lesson-main .reader-content {padding:0;max-width:72ch}
   .lesson-main .body-text,.start-here {font-size:clamp(15px,1.2vw,17px);line-height:1.65;color:var(--ink)}
-  .lesson-explanation {margin:16px 0 22px;padding:clamp(16px,2.5vw,30px);border:1px solid var(--line);border-radius:10px;background:var(--panel)}
-  .lesson-explanation h2 {font-size:clamp(23px,3vw,35px);margin:6px 0 10px;scroll-margin-top:calc(var(--header) + 20px)}
-  .start-here {border-left:2px solid var(--accent);padding-left:12px;margin-bottom:10px}
+  .lesson-explanation {
+    margin: 20px 0 28px;
+    padding: 20px 0 4px;
+    border-top: 1px solid var(--edge);
+  }
+  .lesson-explanation h2 {
+    font-size: clamp(23px, 3vw, 35px);
+    font-weight: 590;
+    letter-spacing: -.04em;
+    margin: 6px 0 10px;
+    scroll-margin-top: calc(var(--header) + 20px);
+  }
+  .start-here {border-left:2px solid var(--accent-strong);padding-left:12px;margin-bottom:10px}
   .technical-example {margin:12px 0}
   .technical-example summary {cursor:pointer;color:var(--accent);font-size:14px}
   .step-takeaway {max-width:72ch}

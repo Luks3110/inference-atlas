@@ -18,21 +18,26 @@
 }
 :root {
   color-scheme: light;
-  --ink: #252824;
-  --muted: #62665f;
-  --subtle: #777b72;
-  --panel: #fffefa;
-  --bg: #fafaf7;
-  --rail: #f3f4ef;
-  --soft: #efefe8;
-  --line: #dcded5;
-  --accent: #b74722;
-  --orange: #c75129;
-  --peach: #f9e7dc;
-  --sage: #e8eddd;
-  --sage-ink: #50693c;
-  --callout: #f7f1df;
-  --callout-line: #e6dbb7;
+  --ink: #292524;
+  --muted: #57534d;
+  --subtle: #6e665f;
+  --panel: #ffffff;
+  --bg: #fafaf9;
+  --rail: #f5f5f4;
+  --soft: #efeeed;
+  --line: #e7e5e4;
+  --edge: #d6d3d1;
+  --accent: #25578e;
+  --accent-strong: #3b70ac;
+  --accent-soft: #eaf2fc;
+  --selection: #e0edfc;
+  --selection-ink: #174a81;
+  --callout: #eff5fc;
+  --callout-line: #c0d9f8;
+  --action: #1c1917;
+  --action-ink: #fafaf9;
+  --shadow: #29252422;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
   --sans: Geist, system-ui, sans-serif;
   --side: 244px;
@@ -42,21 +47,25 @@
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --ink: #f3f1e8;
-  --muted: #b6b9ae;
-  --subtle: #a4a899;
-  --panel: #252923;
-  --bg: #1d201c;
-  --rail: #20241f;
-  --soft: #30352c;
-  --line: #40453b;
-  --accent: #f4a07a;
-  --orange: #bc562e;
-  --peach: #473126;
-  --sage: #323f2a;
-  --sage-ink: #bfd5a8;
-  --callout: #393528;
-  --callout-line: #54492f;
+  --ink: #fafaf9;
+  --muted: #d6d3d1;
+  --subtle: #a6a09b;
+  --panel: #211e1c;
+  --bg: #171412;
+  --rail: #1c1917;
+  --soft: #292524;
+  --line: #393330;
+  --edge: #57534d;
+  --accent: #aacaf3;
+  --accent-strong: #82acf0;
+  --accent-soft: #1e3049;
+  --selection: #243b58;
+  --selection-ink: #c0d9f8;
+  --callout: #1c293c;
+  --callout-line: #344f70;
+  --action: #fafaf9;
+  --action-ink: #1c1917;
+  --shadow: #0c0a0980;
 }
 * {
   box-sizing: border-box;
@@ -176,13 +185,13 @@ ul {
   align-items: center;
   gap: 7px;
   padding: 9px 12px;
-  border-radius: 6px;
+  border-radius: 4px;
   color: var(--muted);
   font-weight: 550;
   font-size: 13px;
 }
 .topnav a[aria-current] {
-  background: var(--peach);
+  background: var(--accent-soft);
   color: var(--accent);
 }
 .topnav a:hover,
@@ -275,35 +284,17 @@ kbd {
   padding: 0 2px 15px;
 }
 .group {
+  --tone: var(--muted);
+  --wash: var(--soft);
   border-top: 1px solid var(--line);
   padding: 4px 0;
 }
 .group:last-child {
   border-bottom: 1px solid var(--line);
 }
-.group-0 {
-  --tone: #ad542d;
-  --wash: #f2e2d3;
-}
-.group-1 {
-  --tone: #418369;
-  --wash: #dfebe1;
-}
-.group-2 {
-  --tone: #5177a0;
-  --wash: #e0e7ee;
-}
-.group-3 {
-  --tone: #876aa2;
-  --wash: #ece4f2;
-}
-.group-4 {
-  --tone: #96752c;
-  --wash: #eee7ce;
-}
-.group-5 {
-  --tone: #527f82;
-  --wash: #deebea;
+.group:has(a[aria-current]) {
+  --tone: var(--accent);
+  --wash: var(--accent-soft);
 }
 .group-toggle {
   width: 100%;
@@ -322,7 +313,8 @@ kbd {
   place-items: center;
   flex: 0 0 30px;
   height: 30px;
-  border-radius: 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
   background: var(--wash);
   color: var(--tone);
 }
@@ -396,7 +388,7 @@ kbd {
 }
 .group li a[aria-current] {
   color: var(--accent);
-  background: var(--peach);
+  background: var(--accent-soft);
   font-weight: 640;
 }
 .lesson-dot {
@@ -411,8 +403,8 @@ kbd {
   border-color: var(--accent);
 }
 .lesson-dot.done {
-  background: var(--sage);
-  color: var(--sage-ink);
+  background: var(--selection);
+  color: var(--selection-ink);
   border: 0;
   width: 12px;
   height: 12px;
@@ -513,7 +505,7 @@ kbd {
   font-size: clamp(32px, 3.1vw, 52px);
   line-height: 1.08;
   letter-spacing: -0.055em;
-  font-weight: 620;
+  font-weight: 560;
   margin: 8px 0 10px;
   text-wrap: balance;
 }
@@ -540,9 +532,10 @@ kbd {
 }
 .meta .level {
   padding: 4px 7px;
-  border-radius: 5px;
-  color: var(--sage-ink);
-  background: var(--sage);
+  border: 1px solid var(--callout-line);
+  border-radius: 4px;
+  color: var(--selection-ink);
+  background: var(--selection);
   font-weight: 500;
 }
 #diagram {
@@ -552,7 +545,7 @@ kbd {
 .reference-card {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 11px;
+  border-radius: 7px;
   overflow: hidden;
 }
 .timeline {
@@ -630,12 +623,12 @@ kbd {
 }
 .timeline .current a span {
   color: white;
-  background: var(--orange);
-  border-color: var(--orange);
-  box-shadow: 0 0 0 3px var(--peach);
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 .timeline .past a span {
-  background: var(--peach);
+  background: var(--accent-soft);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -683,8 +676,8 @@ kbd {
 }
 .insight {
   background: var(--callout);
-  border: 1px solid var(--callout-line);
-  border-radius: 7px;
+  border-left: 2px solid var(--accent-strong);
+  border-radius: 0 5px 5px 0;
   margin-top: 20px;
   padding: 12px 13px;
 }
@@ -718,12 +711,12 @@ kbd {
 }
 .primary {
   flex: 1;
-  background: var(--ink);
-  color: var(--panel);
+  background: var(--action);
+  color: var(--action-ink);
   padding: 8px 12px;
 }
 .primary:hover {
-  filter: brightness(1.18);
+  background: color-mix(in srgb, var(--action) 88%, var(--action-ink));
 }
 .previous {
   width: 36px;
@@ -738,6 +731,8 @@ kbd {
 .reference-card {
   margin-top: 14px;
   padding: 17px;
+  background: var(--rail);
+  border-color: var(--edge);
 }
 .reference-card ul {
   list-style: none;
@@ -757,7 +752,7 @@ kbd {
 }
 .reference-card li svg {
   margin-top: 2px;
-  color: var(--sage-ink);
+  color: var(--selection-ink);
 }
 .reference-card a {
   align-items: center;
@@ -783,14 +778,15 @@ kbd {
   top: 4px;
   right: 4px;
   padding: 4px;
-  background: #323932;
-  color: white;
+  background: var(--soft);
+  color: var(--accent);
   border-radius: 4px;
 }
 .code-block pre {
   padding: 15px 24px 15px 10px;
-  background: #242922;
-  color: #e5efdc;
+  background: var(--rail);
+  color: var(--ink);
+  border: 1px solid var(--line);
   border-radius: 6px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -804,10 +800,10 @@ dialog {
   width: min(475px, calc(100% - 24px));
   max-height: 78dvh;
   padding: 22px;
-  box-shadow: 0 18px 80px #10150f35;
+  box-shadow: 0 18px 80px var(--shadow);
 }
 dialog::backdrop {
-  background: #171a146b;
+  background: #1c19176b;
   backdrop-filter: blur(3px);
 }
 .dialog-head {
@@ -902,8 +898,8 @@ dialog p {
 .completion-icon {
   display: grid;
   place-items: center;
-  background: var(--sage);
-  color: var(--sage-ink);
+  background: var(--selection);
+  color: var(--selection-ink);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -1031,7 +1027,7 @@ dialog p {
     width: min(290px, 85vw);
     transform: translateX(-102%);
     visibility: hidden;
-    box-shadow: 5px 5px 30px #151a1210;
+    box-shadow: 0 8px 30px var(--shadow);
   }
   .show-menu #sidebar {
     transform: none;
@@ -1042,7 +1038,7 @@ dialog p {
     position: fixed;
     inset: var(--header) 0 0;
     z-index: 8;
-    background: #1b1d184f;
+    background: #1c19174f;
     width: 100%;
   }
   .lesson-layout {

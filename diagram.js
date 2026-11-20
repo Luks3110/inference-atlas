@@ -47,8 +47,8 @@ function stroke(from, to, color = 'var(--dg-outline)', width = 1.2) {
 }
 
 const stone = ['var(--dg-ivory)', 'var(--dg-stone)', 'var(--dg-shadow)'];
-const green = ['var(--dg-mint)', 'var(--dg-sea)', 'var(--dg-deep)'];
-const orange = ['var(--dg-peach)', 'var(--dg-orange)', 'var(--dg-rust)'];
+const rackColors = ['var(--dg-rack-top)', 'var(--dg-rack-side)', 'var(--dg-rack-end)'];
+const gatewayColors = ['var(--dg-gateway-top)', 'var(--dg-gateway-side)', 'var(--dg-gateway-end)'];
 const blue = ['var(--dg-blue)', 'var(--dg-blue-side)', 'var(--dg-blue-end)'];
 
 function block(x, y, z, w, d, h, palette, lineWidth = 1.5) {
@@ -116,11 +116,11 @@ function laptop() {
       1,
     ) +
     stroke([-18.4, 24, 35], [-18.4, -24, 35], 'var(--dg-terminal)', 1) +
-    diode(-18.5, 21, 37.5, 'var(--dg-peach)') +
-    diode(-18.5, 16, 37.5, 'var(--dg-mint)') +
-    stroke([-17.7, 19, 28], [-17.7, 15, 25], 'var(--dg-mint)', 1.8) +
-    stroke([-17.7, 15, 25], [-17.7, 19, 22], 'var(--dg-mint)', 1.8) +
-    stroke([-17.7, 9, 23], [-17.7, -9, 23], 'var(--dg-mint)', 2) +
+    diode(-18.5, 21, 37.5, 'var(--dg-gateway-top)') +
+    diode(-18.5, 16, 37.5, 'var(--dg-rack-top)') +
+    stroke([-17.7, 19, 28], [-17.7, 15, 25], 'var(--dg-rack-top)', 1.8) +
+    stroke([-17.7, 15, 25], [-17.7, 19, 22], 'var(--dg-rack-top)', 1.8) +
+    stroke([-17.7, 9, 23], [-17.7, -9, 23], 'var(--dg-rack-top)', 2) +
     stroke([-17.4, 13, 17], [-17.4, -1, 17], 'var(--dg-blue)', 1.3) +
     keys +
     face(
@@ -153,16 +153,16 @@ function gateway() {
     );
   }
   for (let i = 0; i < 6; i++) {
-    vents += stroke([0, -10 + i * 3, 19], [14, -10 + i * 3, 19], 'var(--dg-rust)', 1.35);
+    vents += stroke([0, -10 + i * 3, 19], [14, -10 + i * 3, 19], 'var(--dg-gateway-end)', 1.35);
   }
   return (
     block(-26, -23, 0, 52, 47, 16, stone) +
-    block(-26, -23, 16, 52, 47, 3, orange, 1.2) +
+    block(-26, -23, 16, 52, 47, 3, gatewayColors, 1.2) +
     ports +
     vents +
-    diode(-19, 24, 11, 'var(--dg-deep)') +
-    diode(26, -15, 9, 'var(--dg-orange)') +
-    stroke([-18, 13, 19], [-8, 13, 19], 'var(--dg-rust)', 2)
+    diode(-19, 24, 11, 'var(--dg-rack-end)') +
+    diode(26, -15, 9, 'var(--dg-gateway-side)') +
+    stroke([-18, 13, 19], [-8, 13, 19], 'var(--dg-gateway-end)', 2)
   );
 }
 
@@ -182,10 +182,10 @@ function gpu() {
         ['var(--dg-terminal)', 'var(--dg-terminal)', 'var(--dg-terminal)'],
         0.8,
       );
-    rack += block(-29, -25, z, 58, 50, 10, n === 2 ? green : stone);
+    rack += block(-29, -25, z, 58, 50, 10, n === 2 ? rackColors : stone);
     for (let i = 0; i < 4; i++)
       rack += stroke([-17 + i * 4.2, 25, z + 6], [-17 + i * 4.2, 25, z + 3], 'var(--dg-terminal)', 1.6);
-    rack += diode(18, 25, z + 5, 'var(--dg-deep)') + diode(23, 25, z + 5, 'var(--dg-peach)');
+    rack += diode(18, 25, z + 5, 'var(--dg-rack-end)') + diode(23, 25, z + 5, 'var(--dg-gateway-top)');
   }
   for (let i = -9; i < 12; i += 4) {
     pins +=
@@ -197,7 +197,7 @@ function gpu() {
   return (
     rack +
     pins +
-    block(-12, -12, 36.5, 24, 24, 2.6, green, 1) +
+    block(-12, -12, 36.5, 24, 24, 2.6, rackColors, 1) +
     face(
       [
         [-6, -6, 39.4],
@@ -216,7 +216,7 @@ function storage() {
   for (let i = 0; i < 3; i++) {
     stack += block(-22, -21, 12 * i, 44, 42, 9, blue);
     stack += stroke([-14, 21, 12 * i + 4], [0, 21, 12 * i + 4], 'var(--dg-terminal)', 1.4);
-    stack += diode(14, 21, 12 * i + 4, 'var(--dg-mint)');
+    stack += diode(14, 21, 12 * i + 4, 'var(--dg-rack-top)');
   }
   return stack;
 }

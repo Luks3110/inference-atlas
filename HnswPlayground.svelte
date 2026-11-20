@@ -303,10 +303,10 @@
   .branch-map rect { fill: var(--panel); stroke: var(--subtle); }
   .branch-map line { stroke: var(--subtle); stroke-width: 1.4; }
   .branch-map line.absent { stroke-dasharray: 2 4; opacity: .65; }
-  .branch-map line.added { stroke: var(--sage-ink); stroke-width: 2.7; }
+  .branch-map line.added { stroke: var(--selection-ink); stroke-width: 2.7; }
   .branch-map line.removed { stroke: var(--accent); stroke-width: 2.7; }
-  .branch-map .added rect { fill: var(--sage); stroke: var(--sage-ink); }
-  .branch-map .removed rect { fill: var(--peach); stroke: var(--accent); }
+  .branch-map .added rect { fill: var(--selection); stroke: var(--selection-ink); }
+  .branch-map .removed rect { fill: var(--accent-soft); stroke: var(--accent); }
   .branch-map .absent text { fill: var(--muted); }
   .branch-map .pivot rect { fill: var(--ink); }
   .branch-map .pivot text { fill: var(--panel); }
@@ -314,10 +314,10 @@
   .visit-map { width: 100%; max-height: 150px; background: var(--panel); }
   .visit-map pattern rect { fill: var(--line); }
   .visit-map .shared { fill: var(--subtle); }
-  .visit-map .added { fill: var(--sage-ink); }
+  .visit-map .added { fill: var(--selection-ink); }
   .visit-map .removed { fill: var(--accent); }
-  .legend .added, .chips .matched { color: var(--sage-ink); background: var(--sage); }
-  .legend .removed, .chips .other { color: var(--accent); background: var(--peach); }
+  .legend .added, .chips .matched { color: var(--selection-ink); background: var(--selection); }
+  .legend .removed, .chips .other { color: var(--accent); background: var(--accent-soft); }
   .route, .all-visits p { font: 12px/1.65 var(--mono); overflow-wrap: anywhere; }
   .all-visits > div { max-height: 10em; overflow: auto; padding: 4px 8px; margin: 8px 0; border-inline-start: 2px solid var(--line); }
   .all-visits h4 { margin: 0; }
