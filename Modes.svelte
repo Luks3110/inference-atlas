@@ -5,6 +5,7 @@
 </script>
 
 <script>
+  import { t } from './i18n.js';
   import SkillsLab from './SkillsLab.svelte';
   import CourseTerms from './CourseTerms.svelte';
   import HighlightedCode from './HighlightedCode.svelte';
@@ -62,7 +63,7 @@
       await navigator.clipboard.writeText(currentGuide.code);
       if (currentCode !== codeElement || currentGuide !== guide) return;
       copied = true;
-      copyStatus = 'Comando copiado.';
+      copyStatus = t('Comando copiado.', 'Command copied.');
     } catch {
       if (currentCode !== codeElement || currentGuide !== guide || !currentCode?.isConnected) return;
       const range = document.createRange();
@@ -70,7 +71,7 @@
       const selection = window.getSelection();
       selection?.removeAllRanges();
       selection?.addRange(range);
-      copyStatus = 'Comando selecionado. Use a opção Copiar do navegador.';
+      copyStatus = t('Comando selecionado. Use a opção Copiar do navegador.', 'Command selected. Use your browser’s Copy option.');
     }
   }
 </script>
@@ -82,7 +83,7 @@
   </header>
 {/snippet}
 
-{#snippet source(url, label = 'Documentação')}
+{#snippet source(url, label = t('Documentação', 'Documentation'))}
   <a class="am-source" href={url} target="_blank" rel="noopener noreferrer"
     >{label} <span aria-hidden="true">↗</span></a
   >
@@ -90,11 +91,11 @@
 
 <div class="am-mode">
   {#if mode === 'pratica'}
-    {@render heading('Prática', 'Tome decisões para agentes, avaliações e operação de aplicações de IA.')}
+    {@render heading(t('Prática', 'Practice'), t('Tome decisões para agentes, avaliações e operação de aplicações de IA.', 'Practice making decisions about agents, evaluations, and operating AI applications.'))}
     {#if question}
       <section class="am-card">
         <div class="am-cardbar">
-          <span>{question.topic}</span><span>Questão {quiz.index + 1} de {questions.length}</span>
+          <span>{question.topic}</span><span>{t(`Questão ${quiz.index + 1} de ${questions.length}`, `Question ${quiz.index + 1} of ${questions.length}`)}</span>
         </div>
         <div class="am-pad">
           <h2 bind:this={headingElement} tabindex="-1">{question.title}</h2>
@@ -114,18 +115,18 @@
               >
                 <span class="am-letter">{String.fromCharCode(65 + index)}</span>
                 <span>{option}</span>
-                {#if correct || wrong}<b class="am-mark">{correct ? 'Correta' : 'Sua escolha'}</b>{/if}
+                {#if correct || wrong}<b class="am-mark">{correct ? t('Correta', 'Correct') : t('Sua escolha', 'Your choice')}</b>{/if}
               </button>
             {/each}
           </div>
           {#if answered}
             <div class="am-feedback" tabindex="-1" bind:this={feedbackElement}>
-              <strong>{picked === question.correct ? 'Resposta correta' : 'Reveja o raciocínio'}</strong>
+              <strong>{picked === question.correct ? t('Resposta correta', 'Correct answer') : t('Reveja o raciocínio', 'Review the reasoning')}</strong>
               <p>{question.reason}</p>
               {@render source(question.source)}
             </div>
             <button class="am-primary" type="button" data-next onclick={advance}>
-              {quiz.index === questions.length - 1 ? 'Ver resultado' : 'Próxima questão'}
+              {quiz.index === questions.length - 1 ? t('Ver resultado', 'View results') : t('Próxima questão', 'Next question')}
               <span aria-hidden="true">→</span>
             </button>
           {/if}
@@ -133,25 +134,25 @@
       </section>
     {:else}
       <section class="am-card am-result">
-        <h2 tabindex="-1" bind:this={headingElement}>Resultado da prática</h2>
+        <h2 tabindex="-1" bind:this={headingElement}>{t('Resultado da prática', 'Practice results')}</h2>
         <p class="am-score">{score} <small>/ {questions.length}</small></p>
         <ul class="am-review">
           {#each questions as item, index}
             <li>
-              <span>{item.title}</span><b>{quiz.answers[index] === item.correct ? 'Acerto' : 'Revisar'}</b>
+              <span>{item.title}</span><b>{quiz.answers[index] === item.correct ? t('Acerto', 'Correct') : t('Revisar', 'Review')}</b>
             </li>
           {/each}
         </ul>
-        <button class="am-primary" type="button" onclick={restart}>Refazer prática</button>
+        <button class="am-primary" type="button" onclick={restart}>{t('Refazer prática', 'Try again')}</button>
       </section>
     {/if}
   {:else if mode === 'laboratorio'}
-    {@render heading('Laboratório de evals', 'Compare versões da mesma skill e veja o que impede uma publicação.')}
+    {@render heading(t('Laboratório de evals', 'Evals lab'), t('Compare versões da mesma skill e veja o que impede uma publicação.', 'Compare versions of the same skill and see what can block a release.'))}
     <SkillsLab />
   {:else if mode === 'guias'}
-    {@render heading('Guias de referência', 'Use os exemplos de ferramentas, workflows, avaliações e registros nas suas aplicações.')}
+    {@render heading(t('Guias de referência', 'Reference guides'), t('Use os exemplos de ferramentas, workflows, avaliações e registros nas suas aplicações.', 'Use these examples of tools, workflows, evaluations, and logging in your applications.'))}
     <div class="am-guidegrid">
-      <nav class="am-guidenav" aria-label="Escolher guia">
+      <nav class="am-guidenav" aria-label={t('Escolher guia', 'Choose a guide')}>
         {#each guides as item, index}
           <button
             type="button"
@@ -170,7 +171,7 @@
         <div class="am-terminal">
           <div>
             <span>Terminal</span><button type="button" data-copy onclick={copyCommand}
-              >{copied ? 'Copiado ✓' : 'Copiar'}</button
+              >{copied ? t('Copiado ✓', 'Copied ✓') : t('Copiar', 'Copy')}</button
             >
           </div>
           <pre><HighlightedCode source={guide.code} language={guide.language} bind:element={codeElement} /></pre>

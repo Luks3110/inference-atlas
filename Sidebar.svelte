@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import { icon } from './icons.js';
   import { modules, lessons, coreLessons } from './curriculum.js';
   import { href, numbered, symbols } from './course-ui.js';
@@ -7,15 +8,15 @@
   let percent = $derived(Math.round(100 * coreCompleted / coreLessons.length));
 </script>
 
-<aside id="sidebar" aria-label="Conteúdo do curso">
+<aside id="sidebar" aria-label={t('Conteúdo do curso', 'Course content')}>
   <div class="sidebar-top">
-    <h2>Currículo</h2>
-    <span class="count">{lessons.length} aulas</span>
+    <h2>{t('Currículo', 'Curriculum')}</h2>
+    <span class="count">{t(`${lessons.length} aulas`, `${lessons.length} lessons`)}</span>
   </div>
-  <nav class="module-list" aria-label="Módulos do curso">
+  <nav class="module-list" aria-label={t('Módulos do curso', 'Course modules')}>
     {#each modules as group, i (group.title)}
       {#if modules[i - 1]?.phase !== group.phase}
-        <h3 class="phase">{group.phase}</h3>
+        <h3 class="phase">{t(group.phase)}</h3>
       {/if}
       <section class="group">
         <button
@@ -26,7 +27,7 @@
           onclick={() => onToggle(i)}
         >
           <span class="module-symbol">{@html icon(symbols[i], 17)}</span>
-          <span class="group-text"><small>Módulo {numbered(i + 1)}</small><strong>{group.title}</strong></span
+          <span class="group-text"><small>{t(`Módulo ${numbered(i + 1)}`, `Module ${numbered(i + 1)}`)}</small><strong>{t(group.title)}</strong></span
           >
           <span class="fold">{@html icon('chevron', 13)}</span>
         </button>
@@ -40,7 +41,7 @@
               >
                 <span class="lesson-dot" class:done={completed.has(item.id)}
                   >{#if completed.has(item.id)}{@html icon('check', 10)}{/if}</span
-                >{item.title}
+                >{t(item.title)}
               </a>
             </li>
           {/each}
@@ -48,12 +49,12 @@
       </section>
     {/each}
   </nav>
-  <a class="sidebar-audit" href="#/auditoria" onclick={onAudit}>{@html icon('notes', 15)} Auditoria do currículo</a>
+  <a class="sidebar-audit" href="#/auditoria" onclick={onAudit}>{@html icon('notes', 15)} {t('Auditoria do currículo', 'Curriculum audit')}</a>
   <button class="progress-card" data-action="progress" onclick={onProgress}>
-    <span class="progress-label">{@html icon('chart', 15)} Seu progresso <b>{percent}%</b></span>
+    <span class="progress-label">{@html icon('chart', 15)} {t('Seu progresso', 'Your progress')} <b>{percent}%</b></span>
     <span class="track"><i style:width={percent + '%'}></i></span>
     <span class="progress-detail"
-      >{coreCompleted} de {coreLessons.length} aulas da trilha {@html icon('chevron', 12)}</span
+      >{t(`${coreCompleted} de ${coreLessons.length} aulas da trilha`, `${coreCompleted} of ${coreLessons.length} track lessons`)} {@html icon('chevron', 12)}</span
     >
   </button>
 </aside>

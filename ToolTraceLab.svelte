@@ -1,18 +1,19 @@
 <script module>
+  import { t } from './i18n.js';
   const modes = [
-    ['openai', 'HTTP direto'],
+    ['openai', t('HTTP direto', 'Direct HTTP')],
     ['mastra', 'Mastra'],
     ['langchain', 'LangChain'],
-    ['langchain-agent', 'LangChain · agente'],
+    ['langchain-agent', t('LangChain · agente', 'LangChain · agent')],
     ['mcp', 'MCP'],
     ['code', 'Code Mode'],
   ];
   const steps = [
-    ['request', 'Enviar ferramentas'],
-    ['stream', 'Ler stream'],
-    ['execute', 'Executar'],
-    ['result', 'Devolver resultado'],
-    ['text', 'Exibir texto'],
+    ['request', t('Enviar ferramentas', 'Send tools')],
+    ['stream', t('Ler stream', 'Read the stream')],
+    ['execute', t('Executar', 'Execute')],
+    ['result', t('Devolver resultado', 'Return the result')],
+    ['text', t('Exibir texto', 'Display text')],
   ];
   const sdkCode = {
     openai: [
@@ -143,25 +144,25 @@
 {/snippet}
 
 <section class="tool-trace" aria-labelledby="tool-trace-title">
-  <h2 id="tool-trace-title">Veja os dados da chamada do pedido 42</h2>
+  <h2 id="tool-trace-title">{t('Veja os dados da chamada do pedido 42', 'Inspect the tool call for order 42')}</h2>
   {#if error}
-    <p>Não foi possível abrir a captura. <a href="/labs/tool-calling/trace.json">Abra o JSON diretamente.</a></p>
+    <p>{t('Não foi possível abrir a captura. ', 'Couldn\'t open the trace. ')}<a href="/labs/tool-calling/trace.json">{t('Abra o JSON diretamente.', 'Open the JSON directly.')}</a></p>
   {:else if scene}
-    <p>O teste rodou os SDKs, o cliente MCP e o interpretador JavaScript com dados fictícios. Um servidor local simulou a API da OpenAI.</p>
+    <p>{t('O teste rodou os SDKs, o cliente MCP e o interpretador JavaScript com dados fictícios. Um servidor local simulou a API da OpenAI.', 'The test ran the SDKs, the MCP client, and the JavaScript interpreter with fictional data. A local server simulated the OpenAI API.')}</p>
     <div class="controls">
       <div class="selector">
-        <span class="selector-label">Implementação</span>
-        <div class="modes" role="group" aria-label="Escolher implementação">
+        <span class="selector-label">{t('Implementação', 'Implementation')}</span>
+        <div class="modes" role="group" aria-label={t('Escolher implementação', 'Choose an implementation')}>
           {#each modes as [value,label]}
             <button type="button" aria-pressed={mode === value} onclick={() => chooseMode(value)}>{label}</button>
           {/each}
         </div>
       </div>
       <div class="selector">
-        <span class="selector-label">Etapa da chamada</span>
-        <div class="phases" role="group" aria-label="Escolher etapa da chamada">
+        <span class="selector-label">{t('Etapa da chamada', 'Call step')}</span>
+        <div class="phases" role="group" aria-label={t('Escolher etapa da chamada', 'Choose a step in the call')}>
           {#if mode === 'mcp'}
-            <button type="button" aria-pressed={step === 'catalog'} onclick={() => chooseStep('catalog')}>Descobrir ferramentas</button>
+            <button type="button" aria-pressed={step === 'catalog'} onclick={() => chooseStep('catalog')}>{t('Descobrir ferramentas', 'Discover tools')}</button>
           {/if}
           {#each steps as [value,label]}
             <button type="button" aria-pressed={step === value} onclick={() => chooseStep(value)}>{label}</button>
@@ -171,95 +172,131 @@
     </div>
     <p class="field-hint">
       {@html icon('code', 15)}
-      <span class="pointer-hint">Passe o mouse sobre um campo sublinhado. Clique para fixar a explicação.</span>
-      <span class="touch-hint">Toque em um campo sublinhado para ler a explicação.</span>
+      <span class="pointer-hint">{t('Passe o mouse sobre um campo sublinhado. Clique para fixar a explicação.', 'Hover over an underlined field. Click to pin the explanation.')}</span>
+      <span class="touch-hint">{t('Toque em um campo sublinhado para ler a explicação.', 'Tap an underlined field to read its explanation.')}</span>
     </p>
     <div class="trace-panel">
       {#if step === 'catalog' && catalog}
-        <p>Depois de inicializar a sessão, o cliente MCP chama <code>tools/list</code>. O harness pega <code>name</code>, <code>description</code> e <code>inputSchema</code> e põe a última em <code>parameters</code> ao montar <code>tools</code> na OpenAI.</p>
+        <p>{@html t(
+          'Depois de inicializar a sessão, o cliente MCP chama <code>tools/list</code>. O harness pega <code>name</code>, <code>description</code> e <code>inputSchema</code> e põe a última em <code>parameters</code> ao montar <code>tools</code> na OpenAI.',
+          'After initializing the session, the MCP client calls <code>tools/list</code>. The harness takes <code>name</code>, <code>description</code>, and <code>inputSchema</code> from the catalog. It puts the schema in <code>parameters</code> when building the OpenAI <code>tools</code> list.',
+        )}</p>
         <div class="pair">
-          {@render packet('Cliente → servidor MCP', catalog.request)}
-          {@render packet('Servidor MCP → cliente', catalog.result)}
+          {@render packet(t('Cliente → servidor MCP', 'Client → MCP server'), catalog.request)}
+          {@render packet(t('Servidor MCP → cliente', 'MCP server → client'), catalog.result)}
         </div>
-        {@render packet('Conversão no harness', sdkCode.mcp, {language: 'javascript'})}
+        {@render packet(t('Conversão no harness', 'Conversion in the harness'), sdkCode.mcp, {language: 'javascript'})}
       {:else if step === 'request'}
         {#if mode === 'code'}
-          <p>A lista tem <code>executar_codigo</code>. A descrição diz quais funções o programa pode chamar. O argumento <code>codigo</code> carrega o JavaScript como texto.</p>
+          <p>{@html t(
+            'A lista tem <code>executar_codigo</code>. A descrição diz quais funções o programa pode chamar. O argumento <code>codigo</code> carrega o JavaScript como texto.',
+            'The tool list contains <code>executar_codigo</code>. Its description names the functions the program can call. The <code>codigo</code> argument carries the JavaScript source as text.',
+          )}</p>
         {:else}
-          <p>A pergunta pede o status de um pedido. O modelo recebe <code>consultar_pedido</code>, que aceita <code>numero</code>, e <code>calcular_frete</code>, que aceita <code>cep</code>. As instruções, as descrições e a pergunta dão ao modelo os dados para propor a ferramenta certa. Com <code>tool_choice: "auto"</code>, ele também pode devolver só texto. Se o campo for omitido, esse é o padrão quando há ferramentas. O harness ainda confere a chamada.</p>
+          <p>{@html t(
+            'A pergunta pede o status de um pedido. O modelo recebe <code>consultar_pedido</code>, que aceita <code>numero</code>, e <code>calcular_frete</code>, que aceita <code>cep</code>. As instruções, as descrições e a pergunta dão ao modelo os dados para propor a ferramenta certa. Com <code>tool_choice: "auto"</code>, ele também pode devolver só texto. Se o campo for omitido, esse é o padrão quando há ferramentas. O harness ainda confere a chamada.',
+            'The question asks for an order status. The model gets <code>consultar_pedido</code>, which takes <code>numero</code>, and <code>calcular_frete</code>, which takes <code>cep</code>. It uses the instructions, descriptions, and question to suggest a tool. With <code>tool_choice: "auto"</code>, the model can also return only text. This is the default when tools are available and the field is omitted. The harness still checks the call.',
+          )}</p>
         {/if}
-        {@render packet('Primeiro POST /v1/responses · corpo JSON', scene.http[0].request)}
+        {@render packet(t('Primeiro POST /v1/responses · corpo JSON', 'First POST /v1/responses · JSON body'), scene.http[0].request)}
       {:else if (step === 'stream' || step === 'text') && current}
         {#if step === 'stream'}
-          <p>O servidor envia eventos em <code>text/event-stream</code>. O primeiro evento exibido abre o item. Os seguintes trazem pedaços de <code>arguments</code>. Acumule por <code>item_id</code> e espere <code>response.completed</code> antes de executar, mesmo se o trecho já parecer JSON válido. <code>call_id</code> liga o resultado à chamada.</p>
+          <p>{@html t(
+            'O servidor envia eventos em <code>text/event-stream</code>. O primeiro evento exibido abre o item. Os seguintes trazem pedaços de <code>arguments</code>. Acumule por <code>item_id</code> e espere <code>response.completed</code> antes de executar, mesmo se o trecho já parecer JSON válido. <code>call_id</code> liga o resultado à chamada.',
+            'The server sends events as <code>text/event-stream</code>. The first event shown opens the item. Later events carry pieces of <code>arguments</code>. Accumulate them by <code>item_id</code> and wait for <code>response.completed</code> before executing, even if the text already looks like valid JSON. <code>call_id</code> links the result to the call.',
+          )}</p>
         {:else}
-          <p>Na segunda stream, <code>response.output_text.delta</code> traz texto que o aplicativo pode acrescentar à resposta visível.</p>
+          <p>{@html t(
+            'Na segunda stream, <code>response.output_text.delta</code> traz texto que o aplicativo pode acrescentar à resposta visível.',
+            'In the second stream, <code>response.output_text.delta</code> carries text the app can append to the visible reply.',
+          )}</p>
         {/if}
         <div class="player">
-          <span aria-live="polite">Evento {position + 1} de {events.length}</span>
-          <button type="button" class="restart" onclick={() => position = 0} disabled={position === 0}>Recomeçar</button>
-          <button type="button" class="advance" onclick={() => position += 1} disabled={position >= events.length - 1}>Próximo evento {@html icon('arrow', 14)}</button>
+          <span aria-live="polite">{t(`Evento ${position + 1} de ${events.length}`, `Event ${position + 1} of ${events.length}`)}</span>
+          <button type="button" class="restart" onclick={() => position = 0} disabled={position === 0}>{t('Recomeçar', 'Start over')}</button>
+          <button type="button" class="advance" onclick={() => position += 1} disabled={position >= events.length - 1}>{t('Próximo evento ', 'Next event ')}{@html icon('arrow', 14)}</button>
         </div>
         <div class="pair">
-          {@render packet('Evento SSE recebido', current, {prefix: 'event: ' + current.type + '\ndata: '})}
-          {@render packet(step === 'text' ? 'Texto visível no chat' : 'Argumentos acumulados como texto',
-            buffer || (step === 'text' ? 'Aguardando texto' : 'Ainda sem argumentos'))}
+          {@render packet(t('Evento SSE recebido', 'Received SSE event'), current, {prefix: 'event: ' + current.type + '\ndata: '})}
+          {@render packet(step === 'text' ? t('Texto visível no chat', 'Visible chat text') : t('Argumentos acumulados como texto', 'Arguments accumulated as text'),
+            buffer || (step === 'text' ? t('Aguardando texto', 'Waiting for text') : t('Ainda sem argumentos', 'No arguments yet')))}
         </div>
         {#if step === 'stream'}
           <p class="status" aria-live="polite">{current.type === 'response.completed'
-            ? 'Resposta completa. O harness pode conferir e executar a chamada.'
-            : 'O harness ainda não executou a função.'}</p>
+            ? t('Resposta completa. O harness pode conferir e executar a chamada.', 'Response complete. The harness can check and execute the call.')
+            : t('O harness ainda não executou a função.', 'The harness is still waiting to execute the function.')}</p>
         {/if}
       {:else if step === 'execute'}
         {#if mode === 'mastra'}
-          <p>A OpenAI devolve o nome da ferramenta. O Mastra monta o evento <code>tool-call</code> com <code>args</code> já lido como objeto. Ele encontra <code>tools.consultar_pedido</code> e chama o <code>execute</code> registrado. O código da função verifica a sessão e devolve o status. <code>tool-result</code> registra a saída que o agente usará na próxima chamada.</p>
-          {@render packet('Registro e stream no Mastra', sdkCode.mastra, {language: 'javascript'})}
+          <p>{@html t(
+            'A OpenAI devolve o nome da ferramenta. O Mastra monta o evento <code>tool-call</code> com <code>args</code> já lido como objeto. Ele encontra <code>tools.consultar_pedido</code> e chama o <code>execute</code> registrado. O código da função verifica a sessão e devolve o status. <code>tool-result</code> registra a saída que o agente usará na próxima chamada.',
+            'OpenAI returns the tool name. Mastra builds the <code>tool-call</code> event with <code>args</code> parsed as an object. It finds <code>tools.consultar_pedido</code> and invokes the registered <code>execute</code> handler. The function checks the session and returns the status. <code>tool-result</code> records the output the agent will use on its next call.',
+          )}</p>
+          {@render packet(t('Registro e stream no Mastra', 'Registration and streaming in Mastra'), sdkCode.mastra, {language: 'javascript'})}
           {#each ['tool-call-delta','tool-call','tool-result'] as type}
-            {@render packet('Evento ' + type, scene.observations.find(event => event.type === type))}
+            {@render packet(t('Evento ', 'Event ') + type, scene.observations.find(event => event.type === type))}
           {/each}
         {:else if mode === 'langchain'}
-          <p><code>bindTools</code> anuncia o schema. Nesta versão manual, o LangChain monta <code>tool_call_chunks</code>, e o nosso código usa <code>concat</code> para juntar os fragmentos. Depois, busca a função pelo nome no registro, chama <code>invoke</code> e passa a <code>ToolMessage</code> junto do histórico na segunda chamada.</p>
-          {@render packet('Código que liga o nome à função', sdkCode.langchain, {language: 'javascript'})}
-          {@render packet('Um fragmento de argumento', scene.observations.find(event => event.tool_call_chunks?.some(chunk => chunk.args)))}
-          {@render packet('Chamada completa', scene.observations.find(event => event.tool_calls))}
-          {@render packet('Mensagem de retorno do LangChain', scene.observations.find(event => event.type === 'ToolMessage'))}
+          <p>{@html t(
+            '<code>bindTools</code> anuncia o schema. Nesta versão manual, o LangChain monta <code>tool_call_chunks</code>, e o nosso código usa <code>concat</code> para juntar os fragmentos. Depois, busca a função pelo nome no registro, chama <code>invoke</code> e passa a <code>ToolMessage</code> junto do histórico na segunda chamada.',
+            '<code>bindTools</code> declares the schema. In this manual version, LangChain builds <code>tool_call_chunks</code>, and our code uses <code>concat</code> to join the fragments. It then looks up the function by name, calls <code>invoke</code>, and passes the <code>ToolMessage</code> with the history in the second call.',
+          )}</p>
+          {@render packet(t('Código que liga o nome à função', 'Code that maps the name to the function'), sdkCode.langchain, {language: 'javascript'})}
+          {@render packet(t('Um fragmento de argumento', 'An argument fragment'), scene.observations.find(event => event.tool_call_chunks?.some(chunk => chunk.args)))}
+          {@render packet(t('Chamada completa', 'Complete call'), scene.observations.find(event => event.tool_calls))}
+          {@render packet(t('Mensagem de retorno do LangChain', 'LangChain tool result message'), scene.observations.find(event => event.type === 'ToolMessage'))}
         {:else if mode === 'langchain-agent'}
-          <p>Ao usar <code>createAgent</code>, a própria execução do agente encaminha <code>tool_calls</code> do nó do modelo ao nó de ferramentas. O nó encontra a função registrada pelo nome, gera a <code>ToolMessage</code> e devolve o controle ao modelo. Esta captura mostra a execução automática.</p>
-          {@render packet('Agente com as duas ferramentas registradas', sdkCode['langchain-agent'], {language: 'javascript'})}
+          <p>{@html t(
+            'Ao usar <code>createAgent</code>, a própria execução do agente encaminha <code>tool_calls</code> do nó do modelo ao nó de ferramentas. O nó encontra a função registrada pelo nome, gera a <code>ToolMessage</code> e devolve o controle ao modelo. Esta captura mostra a execução automática.',
+            'With <code>createAgent</code>, the agent runtime routes <code>tool_calls</code> from the model node to the tools node. The node finds the registered function by name, creates the <code>ToolMessage</code>, and returns control to the model. This trace shows that automatic execution.',
+          )}</p>
+          {@render packet(t('Agente com as duas ferramentas registradas', 'Agent with both tools registered'), sdkCode['langchain-agent'], {language: 'javascript'})}
           {#each scene.observations as update}
-            {@render packet('Atualização do nó ' + update.node, update)}
+            {@render packet(t('Atualização do nó ', 'Node update · ') + update.node, update)}
           {/each}
         {:else if mode === 'mcp' && mcpCall}
-          <p>O modelo pediu <code>consultar_pedido</code>. O harness validou os argumentos e usou o cliente MCP para mandar <code>tools/call</code>. O ID JSON-RPC liga a resposta ao pedido MCP. O harness ainda usa <code>call_id</code> para responder à OpenAI.</p>
+          <p>{@html t(
+            'O modelo pediu <code>consultar_pedido</code>. O harness validou os argumentos e usou o cliente MCP para mandar <code>tools/call</code>. O ID JSON-RPC liga a resposta ao pedido MCP. O harness ainda usa <code>call_id</code> para responder à OpenAI.',
+            'The model requested <code>consultar_pedido</code>. The harness validated the arguments and sent <code>tools/call</code> through the MCP client. The JSON-RPC ID links the reply to the MCP request. The harness also uses <code>call_id</code> when responding to OpenAI.',
+          )}</p>
           <div class="pair">
-            {@render packet('Cliente → servidor MCP', mcpCall.request)}
-            {@render packet('Servidor MCP → cliente', mcpCall.result)}
+            {@render packet(t('Cliente → servidor MCP', 'Client → MCP server'), mcpCall.request)}
+            {@render packet(t('Servidor MCP → cliente', 'MCP server → client'), mcpCall.result)}
           </div>
         {:else if mode === 'code'}
-          <p>A OpenAI devolveu uma chamada de <code>executar_codigo</code>. O harness leu o JSON em <code>arguments</code> e extraiu o campo <code>codigo</code> e passou para o interpretador, que tinha acesso só às duas funções expostas pelo host. Cada função conferiu o pedido e as permissões. O exemplo limita tempo, memória e chamadas.</p>
-          {@render packet('Programa entregue pelo modelo', scene.executions[0].args.codigo, {language: 'javascript'})}
-          {@render packet('Chamadas que o host executou, na ordem', scene.observations)}
-          {@render packet('Objeto devolvido pelo programa', scene.executions[0].result)}
+          <p>{@html t(
+            'A OpenAI devolveu uma chamada de <code>executar_codigo</code>. O harness leu o JSON em <code>arguments</code> e extraiu o campo <code>codigo</code> e passou para o interpretador, que tinha acesso só às duas funções expostas pelo host. Cada função conferiu o pedido e as permissões. O exemplo limita tempo, memória e chamadas.',
+            'OpenAI returned an <code>executar_codigo</code> call. The harness parsed <code>arguments</code> and passed <code>codigo</code> to the interpreter, which could access only the two functions the host exposed. Each function checked the order and permissions. The example limits time, memory, and the number of calls.',
+          )}</p>
+          {@render packet(t('Programa entregue pelo modelo', 'Program returned by the model'), scene.executions[0].args.codigo, {language: 'javascript'})}
+          {@render packet(t('Chamadas que o host executou, na ordem', 'Calls the host executed, in order'), scene.observations)}
+          {@render packet(t('Objeto devolvido pelo programa', 'Object returned by the program'), scene.executions[0].result)}
         {:else}
-          <p>Depois de receber a resposta completa, o harness lê <code>arguments</code> com <code>JSON.parse</code> e usa <code>name</code> para encontrar a função. A função da loja valida o número e a sessão. Os dados autorizados voltam como objeto JavaScript.</p>
-          {@render packet('Código do harness', sdkCode.openai, {language: 'javascript'})}
-          {@render packet('Função executada e resultado registrado', scene.executions[0])}
+          <p>{@html t(
+            'Depois de receber a resposta completa, o harness lê <code>arguments</code> com <code>JSON.parse</code> e usa <code>name</code> para encontrar a função. A função da loja valida o número e a sessão. Os dados autorizados voltam como objeto JavaScript.',
+            'After receiving the complete response, the harness reads <code>arguments</code> with <code>JSON.parse</code> and uses <code>name</code> to find the function. The store\'s function validates the order number and session. It returns the authorized data as a JavaScript object.',
+          )}</p>
+          {@render packet(t('Código do harness', 'Harness code'), sdkCode.openai, {language: 'javascript'})}
+          {@render packet(t('Função executada e resultado registrado', 'Executed function and recorded result'), scene.executions[0])}
         {/if}
       {:else if step === 'result'}
-        <p>O segundo POST envia o histórico, a chamada feita pelo modelo e <code>function_call_output</code>. O <code>call_id</code> repete o identificador que veio na chamada. Em <code>output</code> vai o resultado da função serializado como texto.</p>
-        {@render packet('Item que liga o resultado à chamada', result)}
+        <p>{@html t(
+          'O segundo POST envia o histórico, a chamada feita pelo modelo e <code>function_call_output</code>. O <code>call_id</code> repete o identificador que veio na chamada. Em <code>output</code> vai o resultado da função serializado como texto.',
+          'The second POST sends the history, the model\'s tool call, and <code>function_call_output</code>. The <code>call_id</code> matches the ID in the original call. The <code>output</code> field carries the function result serialized as text.',
+        )}</p>
+        {@render packet(t('Item que liga o resultado à chamada', 'Item linking the result to the call'), result)}
         <details>
-          <summary>Ver corpo completo do segundo POST /v1/responses</summary>
-          {@render packet('Segundo POST /v1/responses · corpo JSON', scene.http[1].request)}
+          <summary>{t('Ver corpo completo do segundo POST /v1/responses', 'View the full body of the second POST /v1/responses')}</summary>
+          {@render packet(t('Segundo POST /v1/responses · corpo JSON', 'Second POST /v1/responses · JSON body'), scene.http[1].request)}
         </details>
       {/if}
     </div>
     <div class="links">
-      <a href="/labs/tool-calling/trace.json" download>Baixar a captura JSON completa</a>
-      <a href="https://github.com/Luks3110/inference-atlas/tree/main/examples/tool-calling" target="_blank" rel="noreferrer">Abrir o código que gravou o teste {@html icon('external', 13)}</a>
+      <a href="/labs/tool-calling/trace.json" download>{t('Baixar a captura JSON completa', 'Download the full JSON trace')}</a>
+      <a href="https://github.com/Luks3110/inference-atlas/tree/main/examples/tool-calling" target="_blank" rel="noreferrer">{t('Abrir o código que gravou o teste', 'Open the code that recorded the test')} {@html icon('external', 13)}</a>
     </div>
   {:else}
-    <p role="status">Carregando a captura…</p>
+    <p role="status">{t('Carregando a captura…', 'Loading the trace…')}</p>
   {/if}
 </section>
 
@@ -274,8 +311,7 @@
   }
   h2 { font-size: clamp(20px, 2.4vw, 26px); font-weight: 600; letter-spacing: -.038em; }
   p { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 7px 0 12px; }
-  p code { font-size: .88em; color: var(--ink); overflow-wrap: anywhere; }
-  code { font-family: var(--mono); }
+  p :global(code) { font-family: var(--mono); font-size: .88em; color: var(--ink); overflow-wrap: anywhere; }
   .controls {
     display: grid;
     gap: 0;

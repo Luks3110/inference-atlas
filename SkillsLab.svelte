@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import { decide, evaluate, summarize } from './public/labs/skills/avaliacao.mjs';
 
   let usePurchaseDate = $state(true);
@@ -6,38 +7,55 @@
   const baseline = summarize(evaluate(input => decide(input, {usePurchaseDate:false,allowWrite:false})));
   let results = $derived(evaluate(input => decide(input, {usePurchaseDate,allowWrite})));
   let score = $derived(summarize(results));
+  const caseLabels = {
+    'Compra de maio, 20 dias atrás': 'May purchase, 20 days ago',
+    'Compra de junho, 20 dias atrás': 'June purchase, 20 days ago',
+    'A compra ainda está dentro do prazo': 'Purchase is still within the return window',
+    'Pedido sem data de compra': 'Order without a purchase date',
+    'Item personalizado': 'Custom item',
+    'Pergunta sobre horário de entrega': 'Question about delivery time',
+  };
   const decisions = {
-    aceitar:'Aceitar', recusar:'Recusar', 'pedir-dado':'Pedir a data', 'outra-rota':'Encaminhar à entrega',
+    aceitar:t('Aceitar', 'Accept'), recusar:t('Recusar', 'Refuse'), 'pedir-dado':t('Pedir a data', 'Ask for the date'), 'outra-rota':t('Encaminhar à entrega', 'Route to delivery'),
   };
 </script>
 
 <section class="skill-lab" aria-labelledby="skills-lab-title">
-  <h2 id="skills-lab-title">A skill aplica a política certa?</h2>
-  <p>Em maio, a loja aceitava devoluções em até 30 dias. Em junho, a regra caiu para 14 dias. Teste qual regra a skill consulta. A primeira versão usa sempre a regra mais recente.</p>
+  <h2 id="skills-lab-title">{t('A skill aplica a política certa?', 'Does the skill apply the right policy?')}</h2>
+  <p>{t('Em maio, a loja aceitava devoluções em até 30 dias. Em junho, a regra caiu para 14 dias. Teste qual regra a skill consulta. A primeira versão usa sempre a regra mais recente.', 'In May, the store accepted returns within 30 days. In June, that window shrank to 14 days. Test which rule the skill looks up. The first version always uses the latest rule.')}</p>
   <div class="settings">
-    <label><input type="checkbox" bind:checked={usePurchaseDate}/> Consultar a regra válida na data da compra</label>
-    <label><input type="checkbox" bind:checked={allowWrite}/> Simular acesso indevido à ferramenta de reembolso</label>
+    <label><input type="checkbox" bind:checked={usePurchaseDate}/> {t('Consultar a regra válida na data da compra', 'Look up the rule in effect on the purchase date')}</label>
+    <label><input type="checkbox" bind:checked={allowWrite}/> {t('Simular acesso indevido à ferramenta de reembolso', 'Simulate unauthorized access to the refund tool')}</label>
   </div>
   <p class="score" aria-live="polite">
-    {score.correct} de {results.length} decisões corretas · {score.violations} erros no uso de ferramentas ·
-    <strong>{score.passes ? 'Passou no teste' : 'Publicação bloqueada'}</strong>
+    {t(
+      `${score.correct} de ${results.length} decisões corretas · ${score.violations} erros no uso de ferramentas`,
+      `${score.correct} of ${results.length} correct decisions · ${score.violations} tool-use errors`,
+    )} ·
+    <strong>{score.passes ? t('Passou no teste', 'Test passed') : t('Publicação bloqueada', 'Publication blocked')}</strong>
   </p>
-  <p class="baseline">Primeira versão · {baseline.correct} de {results.length} decisões corretas.</p>
+  <p class="baseline">{t(
+    `Primeira versão · ${baseline.correct} de ${results.length} decisões corretas.`,
+    `First version · ${baseline.correct} of ${results.length} correct decisions.`,
+  )}</p>
   <ul>
     {#each results as result (result.label)}
       <li>
-        <strong>{result.label}</strong>
+        <strong>{t(result.label, caseLabels[result.label])}</strong>
         <span>{decisions[result.actual.decision]}{result.actual.policy ? ' · ' + result.actual.policy : ''}</span>
-        {#if !result.correct}<span class="failed">Esperado: {decisions[result.expected.decision]} · {result.expected.policy}</span>{/if}
-        {#if !result.allowed}<span class="failed">Chamou {result.actual.tool}. O teste esperava {result.expected.tool ?? 'nenhuma chamada'}.</span>{/if}
+        {#if !result.correct}<span class="failed">{t('Esperado: ', 'Expected: ')}{decisions[result.expected.decision]} · {result.expected.policy}</span>{/if}
+        {#if !result.allowed}<span class="failed">{t(
+          `Chamou ${result.actual.tool}. O teste esperava ${result.expected.tool ?? 'nenhuma chamada'}.`,
+          `Called ${result.actual.tool}. The test expected ${result.expected.tool ?? 'no tool call'}.`,
+        )}</span>{/if}
       </li>
     {/each}
   </ul>
-  <p class="baseline">A simulação roda regras fixas no navegador. Os casos e o avaliador podem ser reaproveitados para testar a saída de um agente real.</p>
+  <p class="baseline">{t('A simulação roda regras fixas no navegador. Os casos e o avaliador podem ser reaproveitados para testar a saída de um agente real.', 'The simulation runs fixed rules in the browser. You can reuse the cases and evaluator to test a real agent\'s output.')}</p>
   <div class="downloads">
-    <a href="/labs/skills/SKILL.md" download>Baixar a skill</a>
-    <a href="/labs/skills/avaliacao.mjs" download>Baixar casos e avaliador</a>
-    <a href="#/aula/skills-com-evals/5">Ler a aula sobre checagens</a>
+    <a href="/labs/skills/SKILL.md" download>{t('Baixar a skill', 'Download the skill')}</a>
+    <a href="/labs/skills/avaliacao.mjs" download>{t('Baixar casos e avaliador', 'Download the test cases and evaluator')}</a>
+    <a href="#/aula/skills-com-evals/5">{t('Ler a aula sobre checagens', 'Read the lesson on checks')}</a>
   </div>
 </section>
 

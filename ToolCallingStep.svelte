@@ -1,60 +1,61 @@
 <script module>
-  const question = 'Onde está meu pedido 42?';
+  import { t } from './i18n.js';
+  const question = t('Onde está meu pedido 42?', 'Where is my order 42?');
   const toolRequest = { name: 'consultar_pedido', arguments: { numero: 42 }, call_id: 'call_42' };
   const toolOutput = { call_id: 'call_42', output: { status: 'em transporte' } };
   const toolError = { call_id: 'call_42', output: { error: 'sistema indisponível' } };
-  const confirmed = 'Seu pedido 42 está em transporte.';
-  const unknown = 'Não consegui confirmar o status do pedido 42.';
+  const confirmed = t('Seu pedido 42 está em transporte.', 'Your order 42 is in transit.');
+  const unknown = t('Não consegui confirmar o status do pedido 42.', 'I couldn\'t confirm the status of order 42.');
   const exercises = {
     0: {
-      title: 'O que muda quando o aplicativo envia o status?',
-      groups: ['O modelo recebe', 'O modelo responde'],
+      title: t('O que muda quando o aplicativo envia o status?', 'What changes when the app sends the status?'),
+      groups: [t('O modelo recebe', 'The model receives'), t('O modelo responde', 'The model replies')],
       options: [
-        { label: 'Só a pergunta', rows: [question, 'Ainda não tenho o status do seu pedido 42.'] },
-        { label: 'Pergunta e status confirmado', rows: [
-          question + ' A loja informou que o pedido 42 está em transporte.', confirmed,
+        { label: t('Só a pergunta', 'Question only'), rows: [question, t('Ainda não tenho o status do seu pedido 42.', 'I don\'t have the status of order 42 yet.')] },
+        { label: t('Pergunta e status confirmado', 'Question and confirmed status'), rows: [
+          question + t(' A loja informou que o pedido 42 está em transporte.', ' The store reported that order 42 is in transit.'), confirmed,
         ] },
       ],
     },
     2: {
-      title: 'A ferramenta tem o dado de que precisa?',
-      groups: ['A pessoa pergunta', 'O modelo envia ao aplicativo'],
+      title: t('A ferramenta tem o dado de que precisa?', 'Does the tool have the information it needs?'),
+      groups: [t('A pessoa pergunta', 'The person asks'), t('O modelo envia ao aplicativo', 'The model sends to the app')],
       options: [
-        { label: 'Com número', rows: [question, { numero: 42 }] },
-        { label: 'Sem número', rows: ['Onde está meu pedido?', 'Qual é o número do seu pedido?'] },
+        { label: t('Com número', 'With an order number'), rows: [question, { numero: 42 }] },
+        { label: t('Sem número', 'Without an order number'), rows: [t('Onde está meu pedido?', 'Where is my order?'), t('Qual é o número do seu pedido?', 'What\'s your order number?')] },
       ],
     },
     3: {
-      title: 'Veja o que o modelo devolve para cada mensagem',
-      groups: ['Mensagem da pessoa', 'Resposta do modelo ao aplicativo'],
+      title: t('Veja o que o modelo devolve para cada mensagem', 'See what the model returns for each message'),
+      groups: [t('Mensagem da pessoa', 'Message from the person'), t('Resposta do modelo ao aplicativo', 'Model response to the app')],
       options: [
-        { label: 'Consultar uma entrega', rows: [question, toolRequest] },
-        { label: 'Agradecer', rows: ['Obrigado pela ajuda!', 'De nada!'] },
+        { label: t('Consultar uma entrega', 'Check a delivery'), rows: [question, toolRequest] },
+        { label: t('Agradecer', 'Say thanks'), rows: [t('Obrigado pela ajuda!', 'Thanks for your help!'), t('De nada!', 'You\'re welcome!')] },
       ],
     },
     4: {
-      title: 'Qual chamada chega ao sistema da loja?',
-      groups: ['Argumentos recebidos', 'O aplicativo faz'],
+      title: t('Qual chamada chega ao sistema da loja?', 'Which call reaches the store\'s system?'),
+      groups: [t('Argumentos recebidos', 'Arguments received'), t('O aplicativo faz', 'What the app does')],
       options: [
-        { label: 'Número válido e conta com acesso', rows: [{ numero: 42 }, 'Consulta o status do pedido 42.'] },
-        { label: 'Número veio como texto', rows: [{ numero: 'quarenta e dois' }, 'Recusa o argumento. O campo exige um inteiro.'] },
-        { label: 'Conta sem acesso', rows: [{ numero: 42 }, 'Recusa a chamada. A loja não recebe a consulta.'] },
+        { label: t('Número válido e conta com acesso', 'Valid order number and authorized account'), rows: [{ numero: 42 }, t('Consulta o status do pedido 42.', 'Checks the status of order 42.')] },
+        { label: t('Número veio como texto', 'Order number came in as text'), rows: [{ numero: 'quarenta e dois' }, t('Recusa o argumento. O campo exige um inteiro.', 'Rejects the argument. The field requires an integer.')] },
+        { label: t('Conta sem acesso', 'Account without access'), rows: [{ numero: 42 }, t('Recusa a chamada. A loja não recebe a consulta.', 'Rejects the call before it reaches the store.')] },
       ],
     },
     5: {
-      title: 'Devolva o resultado da mesma chamada',
-      groups: ['O modelo pediu', 'O aplicativo devolve'],
+      title: t('Devolva o resultado da mesma chamada', 'Return the result of the same call'),
+      groups: [t('O modelo pediu', 'The model requested'), t('O aplicativo devolve', 'The app returns')],
       options: [
-        { label: 'Loja informou o status', rows: [toolRequest, toolOutput] },
-        { label: 'Sistema da loja indisponível', rows: [toolRequest, toolError] },
+        { label: t('Loja informou o status', 'Store reported the status'), rows: [toolRequest, toolOutput] },
+        { label: t('Sistema da loja indisponível', 'Store\'s system is unavailable'), rows: [toolRequest, toolError] },
       ],
     },
     6: {
-      title: 'A resposta acompanha o que a loja informou',
-      groups: ['O modelo recebeu', 'A pessoa vê no chat'],
+      title: t('A resposta acompanha o que a loja informou', 'The reply reflects what the store reported'),
+      groups: [t('O modelo recebeu', 'The model received'), t('A pessoa vê no chat', 'The person sees in chat')],
       options: [
-        { label: 'Consulta confirmou o status', rows: [toolOutput, confirmed] },
-        { label: 'Consulta falhou', rows: [toolError, unknown] },
+        { label: t('Consulta confirmou o status', 'Lookup confirmed the status'), rows: [toolOutput, confirmed] },
+        { label: t('Consulta falhou', 'Lookup failed'), rows: [toolError, unknown] },
       ],
     },
   };
@@ -71,7 +72,7 @@
 
 <section class="tool-step" aria-labelledby="tool-step-title">
   <h2 id="tool-step-title">{exercise.title}</h2>
-  <div class="choices" role="group" aria-label="Escolher exemplo">
+  <div class="choices" role="group" aria-label={t('Escolher exemplo', 'Choose an example')}>
     {#each exercise.options as {label}, i}
       <button type="button" aria-pressed={selected === i} onclick={() => selected = i}>{label}</button>
     {/each}
@@ -89,7 +90,7 @@
       </div>
     {/each}
   </div>
-  <p class="note">Exemplo simulado com o pedido 42.</p>
+  <p class="note">{t('Exemplo simulado com o pedido 42.', 'Simulated example using order 42.')}</p>
 </section>
 
 <style>

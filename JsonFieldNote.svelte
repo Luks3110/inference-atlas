@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -64,7 +65,7 @@
   data-side={side}
   role={pinned ? 'region' : 'tooltip'}
   tabindex="-1"
-  aria-label={pinned ? 'Campo ' + token.key : undefined}
+  aria-label={pinned ? t('Campo ', 'Field ') + token.key : undefined}
   aria-describedby={pinned ? id + '-text' : undefined}
   popover="manual"
   onpointerenter={onenter}
@@ -77,7 +78,7 @@
         <strong>{token.key}</strong>
       </div>
       {#if pinned}
-        <button class="close" type="button" aria-label="Fechar explicação" onclick={() => onclose(true)}>
+        <button class="close" type="button" aria-label={t('Fechar explicação', 'Close explanation')} onclick={() => onclose(true)}>
           {@html icon('close', 16)}
         </button>
       {/if}
@@ -87,10 +88,10 @@
       <div class="note-footer">
         {#if pinned}
           <button class="decode" type="button" onclick={ondecode}>
-            {@html icon('code', 15)} Abrir JSON desta string {@html icon('arrow', 14)}
+            {@html icon('code', 15)} {t('Abrir JSON desta string', 'Open the JSON in this string')} {@html icon('arrow', 14)}
           </button>
         {:else}
-          Clique no campo para abrir o JSON desta string.
+          {t('Clique no campo para abrir o JSON desta string.', 'Click the field to open the JSON in this string.')}
         {/if}
       </div>
     {/if}

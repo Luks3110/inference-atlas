@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   let alternate = $state(false);
   let query = $state('42');
   let viewed = $state('');
@@ -7,7 +8,7 @@
   function observe(event) {
     event.preventDefault();
     viewed = query.trim();
-    status = viewed === '42' ? 'Pedido 42 entregue.' : 'O portal não encontrou esse pedido.';
+    status = viewed === '42' ? t('Pedido 42 entregue.', 'Order 42 delivered.') : t('O portal não encontrou esse pedido.', 'The portal couldn\'t find that order.');
   }
 
   function resetLayout() {
@@ -18,17 +19,17 @@
 </script>
 
 <section class="portal-practice" aria-labelledby="portal-practice-title">
-  <h2 id="portal-practice-title">Encontre o pedido 42 pela tela</h2>
-  <p>Faça o papel do executor no portal fictício. Encontre o campo, consulte e confira o número no resultado. Depois mude a posição do botão e tente a mesma tarefa.</p>
-  <button type="button" class="layout" onclick={resetLayout}>Trocar layout do portal</button>
+  <h2 id="portal-practice-title">{t('Encontre o pedido 42 pela tela', 'Find order 42 in the portal')}</h2>
+  <p>{t('Faça o papel do executor no portal fictício. Encontre o campo, consulte e confira o número no resultado. Depois mude a posição do botão e tente a mesma tarefa.', 'Act as the executor in a fictional portal. Find the field, look up the order, and check the number in the result. Then move the button and try the same task again.')}</p>
+  <button type="button" class="layout" onclick={resetLayout}>{t('Trocar layout do portal', 'Switch portal layout')}</button>
   <div class="screen">
-    <header>Portal de entregas · versão {alternate ? 'B' : 'A'}</header>
+    <header>{t('Portal de entregas · versão ', 'Delivery portal · version ')}{alternate ? 'B' : 'A'}</header>
     <form class:alternate onsubmit={observe}>
-      <label>Número do pedido <input type="text" inputmode="numeric" bind:value={query}/></label>
-      <button type="submit">Consultar entrega</button>
+      <label>{t('Número do pedido ', 'Order number ')}<input type="text" inputmode="numeric" bind:value={query}/></label>
+      <button type="submit">{t('Consultar entrega', 'Look up delivery')}</button>
     </form>
-    <p role="status">{status || 'Aguardando consulta.'}</p>
-    {#if viewed}<button type="button" class="stop" onclick={() => status = 'Ação recusada. A sessão só pode consultar entregas.'}>Tentar encerrar pedido</button>{/if}
+    <p role="status">{status || t('Aguardando consulta.', 'Waiting for a lookup.')}</p>
+    {#if viewed}<button type="button" class="stop" onclick={() => status = t('Ação recusada. A sessão só pode consultar entregas.', 'Action denied. This session can only look up deliveries.')}>{t('Tentar encerrar pedido', 'Try closing the order')}</button>{/if}
   </div>
 </section>
 

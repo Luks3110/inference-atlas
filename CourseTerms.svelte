@@ -1,7 +1,8 @@
 <script>
+  import { t } from './i18n.js';
   import { findTerms } from './production/course-terms.js';
 
-  let { text, label = 'Termos usados aqui' } = $props();
+  let { text, label = t('Termos usados aqui', 'Terms used here') } = $props();
   let terms = $derived(findTerms(text));
 </script>
 
@@ -10,7 +11,7 @@
     <summary>{label}</summary>
     <dl>
       {#each terms as [name, meaning]}
-        <div><dt>{name}</dt><dd>{meaning}</dd></div>
+        <div><dt>{t(name)}</dt><dd>{t(meaning)}</dd></div>
       {/each}
     </dl>
   </details>

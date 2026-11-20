@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import { modules, lessons } from './curriculum.js';
   import { audit } from './production/audit.js';
   import { numbered, href } from './course-ui.js';
@@ -11,34 +12,34 @@
 
 <article class="production-index audit-report">
   <header class="production-intro">
-    <div class="lesson-kicker"><span></span>Currículo · {modules.length} módulos · {lessons.length} aulas</div>
-    <h1>Auditoria do currículo</h1>
-    <p>Esta página mostra quais problemas de produção foram adicionados às aulas. Abra um caso para ler o que a equipe observou e tentar uma decisão com os dados do exercício.</p>
+    <div class="lesson-kicker"><span></span>{t(`Currículo · ${modules.length} módulos · ${lessons.length} aulas`, `Curriculum · ${modules.length} modules · ${lessons.length} lessons`)}</div>
+    <h1>{t('Auditoria do currículo', 'Curriculum audit')}</h1>
+    <p>{t('Esta página mostra quais problemas de produção foram adicionados às aulas. Abra um caso para ler o que a equipe observou e tentar uma decisão com os dados do exercício.', 'See which production problems were added to the lessons. Open a case to read what the team observed, then use the exercise data to make a decision.')}</p>
   </header>
-  <nav aria-label="Selecionar módulo da auditoria" class="audit-index">
+  <nav aria-label={t('Selecionar módulo da auditoria', 'Select an audit module')} class="audit-index">
     {#each modules as group, i}
       <a href={'#/auditoria/' + group.id} aria-current={selected === i ? 'true' : undefined}>
-        <small>{numbered(i + 1)}</small> {group.title}
+        <small>{numbered(i + 1)}</small> {t(group.title)}
       </a>
     {/each}
   </nav>
   <section class="audit-module" aria-labelledby="audit-title">
-    <h2 id="audit-title" tabindex="-1">{current.moduleTitle}</h2>
+    <h2 id="audit-title" tabindex="-1">{t(current.moduleTitle)}</h2>
     <CourseTerms text={[current.baseline, ...current.gaps, ...Object.values(current.lessons).map(lesson => lesson.gap)].join(' ')} />
-    <h3>O que as aulas já cobriam</h3>
-    <p>{current.baseline}</p>
-    <h3>Lacunas identificadas</h3>
-    <ul>{#each current.gaps as gap}<li>{gap}</li>{/each}</ul>
-    <h3>Aprofundamento por aula</h3>
+    <h3>{t('O que as aulas já cobriam', 'What the lessons already covered')}</h3>
+    <p>{t(current.baseline)}</p>
+    <h3>{t('Lacunas identificadas', 'Gaps identified')}</h3>
+    <ul>{#each current.gaps as gap}<li>{t(gap)}</li>{/each}</ul>
+    <h3>{t('Aprofundamento por aula', 'A closer look at each lesson')}</h3>
     <ol class="audit-lessons">
       {#each modules[selected].lessons as lesson}
         {@const entry = current.lessons[lesson.id]}
         {@const source = current.cases[entry.caseIndex]}
         <li>
-          <h4>{lesson.title}</h4>
-          <p>{entry.gap}</p>
-          <a class="study-source" href={href(lesson) + '/caso'}>{entry.title} {@html icon('arrow', 14)}</a>
-          <small><a href={source.url} target="_blank" rel="noreferrer">{source.org} · {source.title} {@html icon('external', 12)}</a></small>
+          <h4>{t(lesson.title)}</h4>
+          <p>{t(entry.gap)}</p>
+          <a class="study-source" href={href(lesson) + '/caso'}>{t(entry.title)} {@html icon('arrow', 14)}</a>
+          <small><a href={source.url} target="_blank" rel="noreferrer">{source.org} · {t(source.title)} {@html icon('external', 12)}</a></small>
         </li>
       {/each}
     </ol>

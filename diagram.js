@@ -7,6 +7,7 @@ import { teachingScene } from './production/teaching-scenes.js';
 import { retrievalScene } from './production/retrieval-scenes.js';
 import { modelScene } from './production/model-scenes.js';
 import { graphScene } from './production/graph-scenes.js';
+import { t } from './i18n.js';
 
 // Each object shares the same isometric axes so its ports, pins and traces line up.
 const projection = ([x, y, z = 0]) => [x - y, (x + y) * 0.47 - z];
@@ -343,7 +344,9 @@ function modelLabel(x, y, label, active) {
 
 function illustrate(config, step, inference, stepIndex, mobile, id) {
   const { width, height, scale, points, route, feedback, annotations, labels } = config;
-  const names = inference ? ['Navegador', 'Servidor', 'Modelo na GPU'] : step.nodes;
+  const names = inference
+    ? [t('Navegador', 'Browser'), t('Servidor', 'Server'), t('Modelo na GPU', 'Model on GPU')]
+    : step.nodes;
   const active = step.active;
   const grid = 'grid-' + id,
     fade = 'fade-' + id,
@@ -373,13 +376,13 @@ function illustrate(config, step, inference, stepIndex, mobile, id) {
           : '') +
         hardware +
         '</g>' +
-        modelLabel(...labels[i], name, i === active)
+        modelLabel(...labels[i], inference ? name : t(name), i === active)
       );
     })
     .join('');
   if (inference) {
     const [ax, ay] = annotations[active];
-    const packet = ['prompt', 'IDs de tokens', 'prefill', 'próximo token', 'streaming'][stepIndex] || 'token';
+    const packet = ['prompt', t('IDs de tokens', 'Token IDs'), 'prefill', t('próximo token', 'next token'), 'streaming'][stepIndex] || 'token';
     const calloutWidth = Math.max(60, packet.length * 6.4 + 14);
     const sub = 'GPU · KV cache';
     components +=
@@ -459,29 +462,33 @@ export function renderDiagram(container, lesson, stepIndex) {
     modelScene(lesson, stepIndex) ??
     graphScene(lesson, stepIndex) ??
     (stepIndex < lesson.labStart ? productionScene(lesson.id, stepIndex) : null);
-  const title = scene?.title ?? (inference ? 'Topologia de inferência' : 'Fluxo da etapa');
+  const title = scene ? t(scene.title) : inference
+    ? t('Topologia de inferência', 'Inference topology')
+    : t('Fluxo da etapa', 'Step flow');
   const description =
-    scene?.description ??
-    (inference
-      ? 'O navegador envia a pergunta ao servidor. O modelo roda na GPU e devolve texto ao navegador.'
-      : step.nodes.join(' → ') + '. Em foco: ' + step.nodes[step.active] + '.');
+    scene ? t(scene.description) : inference
+      ? t(
+          'O navegador envia a pergunta ao servidor. O modelo roda na GPU e devolve texto ao navegador.',
+          'The browser sends the question to the server. The model runs on the GPU and returns text to the browser.',
+        )
+      : step.nodes.map(name => t(name)).join(' → ') + t('. Em foco: ', '. In focus: ') + t(step.nodes[step.active]) + '.';
   const picture =
     scene?.picture ??
     ((mobile) =>
       illustrate(layout(mobile), step, inference, stepIndex, mobile, scope + (mobile ? 'm' : 'w')));
-  const [flowLabel, returnLabel] = scene?.legend ?? [
-    inference ? 'Requisição' : 'Fluxo',
-    inference ? 'Resposta' : '',
-  ];
+  const [flowLabel, returnLabel] = scene
+    ? scene.legend.map(label => t(label))
+    : [inference ? t('Requisição', 'Request') : t('Fluxo', 'Flow'), inference ? t('Resposta', 'Response') : ''];
+  const replayLabel = escapeText(t('Repetir animação', 'Replay animation'));
   container.innerHTML =
     '<figure class="dg" aria-label="' +
-    title +
+    escapeText(title) +
     '">' +
     '<div class="dg-head"><span class="dg-heading">' +
     icon('topology') +
-    title +
+    escapeText(title) +
     '</span>' +
-    '<div class="dg-tools"><button type="button" data-replay aria-label="Repetir animação" title="Repetir animação">' +
+    '<div class="dg-tools"><button type="button" data-replay aria-label="' + replayLabel + '" title="' + replayLabel + '">' +
     icon('replay') +
     '</button>' +
     '<button type="button" data-pause></button></div></div>' +
@@ -492,20 +499,27 @@ export function renderDiagram(container, lesson, stepIndex) {
     picture(true) +
     '</div>' +
     '<figcaption class="dg-legend"><span><i></i>' +
-    flowLabel +
+    escapeText(flowLabel) +
     '</span>' +
-    (returnLabel ? '<span class="dg-legend-return"><i></i>' + returnLabel + '</span>' : '') +
-    (scene ? '' : '<span class="dg-legend-focus"><i></i>Em foco</span>') +
+    (returnLabel ? '<span class="dg-legend-return"><i></i>' + escapeText(returnLabel) + '</span>' : '') +
+    (scene ? '' : '<span class="dg-legend-focus"><i></i>' + t('Em foco', 'In focus') + '</span>') +
     '</figcaption></figure>';
+  if (scene) {
+    for (const text of container.querySelectorAll('.dg-stage svg text, .dg-stage svg title, .dg-stage svg desc')) {
+      const localized = t(text.textContent);
+      if (localized !== text.textContent) text.textContent = localized;
+    }
+  }
   const svgs = container.querySelectorAll('[data-illustration]'),
     button = container.querySelector('[data-pause]');
   let paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function applyPlayback() {
     for (const svg of svgs) paused ? svg.pauseAnimations() : svg.unpauseAnimations();
-    const text = paused ? 'Reproduzir' : 'Pausar';
-    button.innerHTML = icon(paused ? 'play' : 'pause') + '<span>' + text + '</span>';
-    button.setAttribute('aria-label', text + ' animação');
-    button.title = text + ' animação';
+    const text = paused ? t('Reproduzir', 'Play') : t('Pausar', 'Pause');
+    const label = paused ? t('Reproduzir animação', 'Play animation') : t('Pausar animação', 'Pause animation');
+    button.innerHTML = icon(paused ? 'play' : 'pause') + '<span>' + escapeText(text) + '</span>';
+    button.setAttribute('aria-label', label);
+    button.title = label;
   }
   function togglePause() {
     paused = !paused;

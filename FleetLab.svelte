@@ -1,32 +1,33 @@
 <script module>
   const fields = [
-    { key: 'users', label: 'Usuários ativos por dia', value: 2000000, min: 1, max: 1000000000, step: 1 },
-    { key: 'calls', label: 'Gerações por usuário/dia', value: 4, min: 0.1, max: 1000, step: 'any' },
-    { key: 'peak', label: 'Fator de pico sobre a média', value: 6, min: 1, max: 1000, step: 'any' },
+    { key: 'users', label: ["Usuários ativos por dia", "Daily active users"], value: 2000000, min: 1, max: 1000000000, step: 1 },
+    { key: 'calls', label: ["Gerações por usuário/dia", "Generations per user per day"], value: 4, min: 0.1, max: 1000, step: 'any' },
+    { key: 'peak', label: ["Fator de pico sobre a média", "Peak-to-average ratio"], value: 6, min: 1, max: 1000, step: 'any' },
     {
       key: 'duration',
-      label: 'Duração média da geração (s)',
+      label: ["Duração média da geração (s)", "Average generation duration (s)"],
       value: 3.6,
       min: 0.01,
       max: 86400,
       step: 'any',
     },
-    { key: 'qps', label: 'Gerações/s por réplica no SLO', value: 25, min: 0.01, max: 1000000, step: 'any' },
-    { key: 'reserve', label: 'Reserva de capacidade (%)', value: 20, min: 0, max: 99, step: 'any' },
-    { key: 'lookups', label: 'Leituras de chave por geração', value: 2, min: 1, max: 1000, step: 1 },
-    { key: 'hits', label: 'Cache hits durante o failover (%)', value: 80, min: 0, max: 100, step: 'any' },
-    { key: 'origin', label: 'Leituras/s disponíveis na origem', value: 900, min: 1, max: 1000000000, step: 'any' },
-    { key: 'zones', label: 'Zonas de capacidade igual', value: 3, min: 2, max: 12, step: 1 },
+    { key: 'qps', label: ["Gerações/s por réplica no SLO", "Generations/s per replica within the SLO"], value: 25, min: 0.01, max: 1000000, step: 'any' },
+    { key: 'reserve', label: ["Reserva de capacidade (%)", "Capacity reserve (%)"], value: 20, min: 0, max: 99, step: 'any' },
+    { key: 'lookups', label: ["Leituras de chave por geração", "Key reads per generation"], value: 2, min: 1, max: 1000, step: 1 },
+    { key: 'hits', label: ["Cache hits durante o failover (%)", "Cache hit rate during failover (%)"], value: 80, min: 0, max: 100, step: 'any' },
+    { key: 'origin', label: ["Leituras/s disponíveis na origem", "Available reads/s at the origin"], value: 900, min: 1, max: 1000000000, step: 'any' },
+    { key: 'zones', label: ["Zonas de capacidade igual", "Zones with equal capacity"], value: 3, min: 2, max: 12, step: 1 },
   ];
-  const decimal = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
   // The previous successful simulation survives a visit to another lesson.
   let lastValid = Object.fromEntries(fields.map(({ key, value }) => [key, value]));
 </script>
 
 <script>
+  import { formatLocale, t } from './i18n.js';
   import { icon } from './icons.js';
   import './production/study.css';
 
+  let decimal = $derived(new Intl.NumberFormat(formatLocale(), { maximumFractionDigits: 2 }));
   let values = $state({ ...lastValid });
   let valid = $derived(
     fields.every(({ key, min, max, step }) => {
@@ -62,16 +63,15 @@
   });
 </script>
 
-<section id="fleet-lab" aria-label="Dimensionador de frota">
-  <h2>{@html icon('chart')} Dimensionador de frota</h2>
+<section id="fleet-lab" aria-label={t("Dimensionador de frota", "Fleet sizing calculator")}>
+  <h2>{@html icon('chart')} {t("Dimensionador de frota", "Fleet sizing calculator")}</h2>
   <p>
-    Experimente a perda de uma zona. Use a taxa sustentável de uma réplica medida com o seu modelo e a sua
-    distribuição de tokens.
+    {t("Experimente a perda de uma zona. Use a taxa sustentável de uma réplica medida com o seu modelo e a sua distribuição de tokens.", "Simulate losing a zone. Use the sustainable throughput of one replica, measured with your model and token distribution.")}
   </p>
   <div class="fleet-fields">
     {#each fields as field (field.key)}
       <label>
-        {field.label}
+        {t(...field.label)}
         <input
           required
           data-key={field.key}
@@ -88,41 +88,37 @@
     {#if estimate}
       <dl>
         <div>
-          <dt>Gerações/s no pico</dt>
+          <dt>{t("Gerações/s no pico", "Peak generations/s")}</dt>
           <dd>{decimal.format(estimate.load)}</dd>
         </div>
         <div>
-          <dt>Gerações em voo (média no pico)</dt>
+          <dt>{t("Gerações em voo (média no pico)", "In-flight generations (average at peak)")}</dt>
           <dd>{decimal.format(estimate.inFlight)}</dd>
         </div>
         <div>
-          <dt>Réplicas por zona</dt>
+          <dt>{t("Réplicas por zona", "Replicas per zone")}</dt>
           <dd>{decimal.format(estimate.perZone)}</dd>
         </div>
         <div>
-          <dt>Réplicas totais</dt>
+          <dt>{t("Réplicas totais", "Total replicas")}</dt>
           <dd>{decimal.format(estimate.total)}</dd>
         </div>
       </dl>
       <p>
-        Com {estimate.survivingZones} zona(s) disponível(is), a frota sustenta até {decimal.format(
-          estimate.survivingCapacity,
-        )} gerações/s nas premissas informadas. A concorrência usa taxa de pico × duração média em um patamar estável.
-        O cálculo supõe redistribuição uniforme e réplicas já aquecidas.
+        {t(`Com ${estimate.survivingZones} zona(s) disponível(is), a frota sustenta até ${decimal.format(estimate.survivingCapacity)} gerações/s nas premissas informadas. A concorrência usa taxa de pico × duração média em um patamar estável. O cálculo supõe redistribuição uniforme e réplicas já aquecidas.`, `With ${estimate.survivingZones} surviving ${estimate.survivingZones === 1 ? "zone" : "zones"}, the fleet supports up to ${decimal.format(estimate.survivingCapacity)} generations/s under these assumptions. Concurrency equals the peak rate times the average duration at a steady load. The estimate assumes even redistribution and warm replicas.`)}
       </p>
       <p class="origin-estimate">
-        Com o cache a {decimal.format(values.hits)}% de acerto, as consultas ao armazenamento chegam a
-        <strong>{decimal.format(estimate.originLoad)} leituras/s</strong>.
+        {t(`Com o cache a ${decimal.format(values.hits)}% de acerto, as consultas ao armazenamento chegam a`, `At a cache hit rate of ${decimal.format(values.hits)}%, storage queries reach`)}
+        <strong>{t(`${decimal.format(estimate.originLoad)} leituras/s`, `${decimal.format(estimate.originLoad)} reads/s`)}</strong>.
         {#if estimate.originShortfall > 0}
-          Faltam {decimal.format(estimate.originShortfall)} leituras/s na origem mesmo com GPUs suficientes.
+          {t(`Faltam ${decimal.format(estimate.originShortfall)} leituras/s na origem mesmo com GPUs suficientes.`, `The origin falls short by ${decimal.format(estimate.originShortfall)} reads/s even with enough GPUs.`)}
         {:else}
-          A origem comporta essa carga média.
+          {t("A origem comporta essa carga média.", "The origin can handle this average load.")}
         {/if}
-        A taxa mínima de acerto para caber na capacidade informada é {decimal.format(estimate.minHits)}%.
-        O cálculo supõe uma ida à origem por falta no cache e capacidade já descontada das escritas.
+        {t(`A taxa mínima de acerto para caber na capacidade informada é ${decimal.format(estimate.minHits)}%. O cálculo supõe uma ida à origem por falta no cache e capacidade já descontada das escritas.`, `The minimum hit rate to stay within the specified capacity is ${decimal.format(estimate.minHits)}%. The estimate assumes one origin read per cache miss and capacity after accounting for writes.`)}
       </p>
     {:else}
-      Preencha os campos com valores dentro dos limites indicados.
+      {t("Preencha os campos com valores dentro dos limites indicados.", "Enter values within the specified limits.")}
     {/if}
   </div>
 </section>

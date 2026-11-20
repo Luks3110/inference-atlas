@@ -1,0 +1,7 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "language": "Language",
+  "site_description": "An interactive course on AI applications, inference, and running models at scale.",
+  "load_error": "The course could not be loaded.",
+  "retry": "Try again"
+}

@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import { investigations } from './production/audit.js';
   import ProductionCase from './ProductionCase.svelte';
   import { simulations } from './production/simulations.js';
@@ -63,9 +64,9 @@
     try {
       await navigator.clipboard.writeText(step.code);
       copyId = href(lesson, index);
-      copyMessage = 'Trecho copiado.';
+      copyMessage = t("Trecho copiado.", "Snippet copied.");
     } catch {
-      copyMessage = 'Selecione o trecho para copiá-lo.';
+      copyMessage = t("Selecione o trecho para copiá-lo.", "Select the snippet to copy it.");
     }
   }
 </script>
@@ -74,20 +75,20 @@
   <div class="lesson-main">
     <div class="breadcrumb">
       {@html icon('book', 14)}<a href={lesson.fieldwork ? '#/producao' : '#/'}
-        >{lesson.fieldwork ? 'Trilha de produção' : 'Curso'}</a
-      ><span>/</span>{group.title}
+        >{lesson.fieldwork ? t("Trilha de produção", "Production track") : t("Curso", "Course")}</a
+      ><span>/</span>{t(group.title)}
     </div>
     <header class="lesson-intro">
       <div class="lesson-kicker">
-        <span></span>Aula {numbered(lesson.index + 1)} <i>/</i>
+        <span></span>{t("Aula", "Lesson")} {numbered(lesson.index + 1)} <i>/</i>
         {numbered(group.lessons.length)}
       </div>
-      <h1>{lesson.title}</h1>
-      <p>{lessonAims[lesson.id] ?? lesson.summary}</p>
+      <h1>{t(lesson.title)}</h1>
+      <p>{t(lessonAims[lesson.id] ?? lesson.summary)}</p>
       <div class="meta">
-        <span class="level">{@html icon('levels', 14)}{lesson.level}</span><span
+        <span class="level">{@html icon('levels', 14)}{t(lesson.level)}</span><span
           >{@html icon('clock', 14)}{lesson.minutes} min</span
-        ><span>{@html icon('steps', 16)}{lesson.steps.length} etapas</span>
+        ><span>{@html icon('steps', 16)}{lesson.steps.length} {t("etapas", "steps")}</span>
       </div>
 
     </header>
@@ -95,18 +96,18 @@
     <article class="lesson-explanation" aria-labelledby="step-title">
       <div class="reader-content">
         <div class="step-counter">
-          ETAPA {numbered(index + 1)} <span>/ {numbered(lesson.steps.length)}</span>
+          {t("ETAPA", "STEP")} {numbered(index + 1)} <span>/ {numbered(lesson.steps.length)}</span>
         </div>
-        <h2 id="step-title" tabindex="-1">{step.title}</h2>
+        <h2 id="step-title" tabindex="-1">{t(step.title)}</h2>
         {#if index === 0}
-          <p class="start-here">{lesson.scenario}</p>
+          <p class="start-here">{t(lesson.scenario)}</p>
         {/if}
-        <CourseTerms text={termsText} label="Termos usados nesta etapa"/>
-        {#each step.body.split(/\n\s*\n/) as p}<p class="body-text">{p}</p>{/each}
+        <CourseTerms text={termsText} label={t("Termos usados nesta etapa", "Terms used in this step")}/>
+        {#each step.body.split(/\n\s*\n/) as p}<p class="body-text">{t(p)}</p>{/each}
         {#if step.code}<details class="technical-example">
-          <summary>Ver o trecho técnico</summary>
+          <summary>{t("Ver o trecho técnico", "View technical snippet")}</summary>
           <div class="code-block">
-            <button data-action="copy" aria-label="Copiar trecho" onclick={copy}
+            <button data-action="copy" aria-label={t("Copiar trecho", "Copy snippet")} onclick={copy}
               >{@html icon(copyId === href(lesson, index) ? 'check' : 'copy', 14)}</button
             >
             <pre><HighlightedCode source={step.code} language={step.codeLanguage} /></pre>
@@ -114,16 +115,16 @@
           <span role="status" class="sr-only">{copyMessage}</span>
         </details>{/if}
         {#if step.source}<a class="study-source" href={step.source.url} target="_blank" rel="noreferrer"
-            >{step.source.label}{@html icon('external', 13)}</a
+            >{t(step.source.label)}{@html icon('external', 13)}</a
           >{/if}
         {#if step.label === evidenceSteps[lesson.id]}
           <section class="stage-source">
-            <h3>{investigation.source.kind === 'guide' ? 'Documentação' : 'Caso em produção'} · {investigation.source.org}</h3>
-            <p>{investigation.source.observed}</p>
-            <p>{investigation.source.mechanism}</p>
-            <p class="evidence-limits">{investigation.source.limits}</p>
+            <h3>{investigation.source.kind === 'guide' ? t("Documentação", "Documentation") : t("Caso em produção", "Production case")} · {t(investigation.source.org)}</h3>
+            <p>{t(investigation.source.observed)}</p>
+            <p>{t(investigation.source.mechanism)}</p>
+            <p class="evidence-limits">{t(investigation.source.limits)}</p>
             <a class="study-source" href={investigation.source.url} target="_blank" rel="noreferrer">
-              {investigation.source.title} {@html icon('external', 13)}
+              {t(investigation.source.title)} {@html icon('external', 13)}
             </a>
           </section>
         {/if}
@@ -139,7 +140,7 @@
           <ToolTraceLab initialMode={traceView[0]} initialStep={traceView[1]} />
           {#if index >= 2 && index <= 6}
             <details class="tool-alternative">
-              <summary>Testar uma variação</summary>
+              <summary>{t("Testar uma variação", "Try a variation")}</summary>
               <ToolCallingStep {index} />
             </details>
           {/if}
@@ -153,12 +154,12 @@
         <StepDecision decision={step.decision} {model}
           illustrate={illustrations[lesson.id][index]} stageId={lesson.id + '-' + index} stepLabel={step.label} hnsw={lesson.id === 'rag-indice-hnsw'}>
           {#snippet readings()}
-      <dl class="instruments" aria-label="Medições da etapa">
+      <dl class="instruments" aria-label={t("Medições da etapa", "Step measurements")}>
         {#each step.metrics as [label, value]}<div>
-            <dt>{label}</dt>
-            <dd>{value}</dd>
+            <dt>{t(label)}</dt>
+            <dd>{t(value)}</dd>
             {#if previous.has(label) && previous.get(label) !== value}<small
-                >Antes: {previous.get(label)}</small
+                >{t("Antes:", "Before:")} {t(previous.get(label))}</small
               >{/if}
           </div>{/each}
       </dl>
@@ -174,13 +175,13 @@
     <div class="step-takeaway">
         {#if step.change}
           <section class="step-change">
-            <h3>O que mudou</h3>
-            <p>{step.change}</p>
+            <h3>{t("O que mudou", "What changed")}</h3>
+            <p>{t(step.change)}</p>
           </section>
         {/if}
         <div class="insight">
-          <h3>{@html icon('idea', 17)} Ideia-chave</h3>
-          <p>{step.idea}</p>
+          <h3>{@html icon('idea', 17)} {t("Ideia-chave", "Key idea")}</h3>
+          <p>{t(step.idea)}</p>
         </div>
     </div>
     {#if lesson.id === 'ciclo-de-inferencia'}
@@ -188,15 +189,15 @@
     {/if}
     <div class="trace-evidence">
       {#if step.artifact}<section class="artifact-readout">
-          <h3>{@html icon('notes', 15)} {step.artifact.label}</h3>
+          <h3>{@html icon('notes', 15)} {t(step.artifact.label)}</h3>
           <pre>{step.artifact.lines.join('\n')}</pre>
         </section>{/if}
       {#if step.metrics}<details class="trace-history">
-        <summary>{@html icon('chart', 15)} Comparar medições das etapas</summary>
+        <summary>{@html icon('chart', 15)} {t("Comparar medições das etapas", "Compare measurements across steps")}</summary>
         <ol>
           {#each lesson.steps.slice(0, index + 1) as s, i}<li>
-              <a href={href(lesson, i)}>{numbered(i + 1)} · {s.label}</a><span
-                >{#each s.metrics as [label, value]}<span>{label} <b>{value}</b></span>{/each}</span
+              <a href={href(lesson, i)}>{numbered(i + 1)} · {t(s.label)}</a><span
+                >{#each s.metrics as [label, value]}<span>{t(label)} <b>{t(value)}</b></span>{/each}</span
               >
             </li>{/each}
         </ol>
@@ -206,14 +207,14 @@
         <button
           class="previous"
           data-action="back"
-          aria-label="Etapa anterior"
+          aria-label={t("Etapa anterior", "Previous step")}
           disabled={index === 0}
           onclick={onBack}>{@html icon('back', 17)}</button
         >
         <button class="primary" data-action="next" onclick={onNext}
           >{index === lesson.steps.length - 1
-            ? 'Concluir aula'
-            : 'Próximo · ' + lesson.steps[index + 1].label}{@html icon(
+            ? t("Concluir aula", "Finish lesson")
+            : t("Próximo · ", "Next · ") + t(lesson.steps[index + 1].label)}{@html icon(
             index === lesson.steps.length - 1 ? 'check' : 'arrow',
             17,
           )}</button
@@ -221,7 +222,7 @@
       </div>
     <section class="timeline">
       <div class="timeline-heading">
-        <h2>Nesta aula</h2>
+        <h2>{t("Nesta aula", "In this lesson")}</h2>
         <span>{numbered(index + 1)} / {numbered(lesson.steps.length)}</span>
       </div>
       <ol class:many-steps={lesson.steps.length > 6} style={'--step-count:' + lesson.steps.length}>
@@ -230,22 +231,22 @@
             <a href={href(lesson, i)} aria-current={i === index ? 'step' : undefined}
               ><span
                 >{#if i < index}{@html icon('check', 13)}{:else}{numbered(i + 1)}{/if}</span
-              ><b>{s.label}</b></a
+              ><b>{t(s.label)}</b></a
             >
           </li>
         {/each}
       </ol>
     </section>
     <div class="shortcuts">
-      {@html icon('keyboard', 15)}<span><kbd>←</kbd><kbd>→</kbd> navegar</span><span
-        ><kbd>R</kbd> restaurar / repetir</span
-      ><span><kbd>Espaço</kbd> pausar exemplo</span>
+      {@html icon('keyboard', 15)}<span><kbd>←</kbd><kbd>→</kbd> {t("navegar", "navigate")}</span><span
+        ><kbd>R</kbd> {t("restaurar / repetir", "reset / replay")}</span
+      ><span><kbd>{t("Espaço", "Space")}</kbd> {t("pausar exemplo", "pause example")}</span>
     </div>
   </div>
   <div class="reader-track">
-  <aside class="reader" aria-label="Objetivos e referências">
+  <aside class="reader" aria-label={t("Objetivos e referências", "Objectives and references")}>
     <section class="reference-card">
-      <h2>Objetivos da aula</h2>
+      <h2>{t("Objetivos da aula", "Lesson objectives")}</h2>
       <ul class="objective-checks">
         {#each lesson.objectives as text, i}
           <li>
@@ -254,41 +255,41 @@
                 type="checkbox"
                 checked={checks.has(lesson.id + '/' + i)}
                 onchange={(e) => toggle(lesson.id + '/' + i, e.currentTarget.checked)}
-              />{text}</label
+              />{t(text)}</label
             >
           </li>
         {/each}
       </ul>
       <a href={lesson.source.url} target="_blank" rel="noreferrer"
-        >{@html icon('book', 15)}<span>{lesson.source.label}</span>{@html icon('external', 13)}</a
+        >{@html icon('book', 15)}<span>{t(lesson.source.label)}</span>{@html icon('external', 13)}</a
       >
       {#each lesson.references || [] as ref}<a
           class="extra-ref"
           href={ref.url}
           target="_blank"
-          rel="noreferrer">{@html icon('book', 15)}<span>{ref.label}</span>{@html icon('external', 13)}</a
+          rel="noreferrer">{@html icon('book', 15)}<span>{t(ref.label)}</span>{@html icon('external', 13)}</a
         >{/each}
       <a class="study-source case-link" href={href(lesson, index) + '/caso'} onclick={() => { if (showCase) focusCase() }}>
-        {@html icon('notes', 15)} {investigation.source.kind === 'guide' ? 'Exercício guiado' : 'Caso em produção'} · {investigation.title} {@html icon('arrow', 14)}
+        {@html icon('notes', 15)} {investigation.source.kind === 'guide' ? t("Exercício guiado", "Guided exercise") : t("Caso em produção", "Production case")} · {t(investigation.title)} {@html icon('arrow', 14)}
       </a>
     </section>
   </aside>
   </div>
   {#key lesson.id}<ProductionCase {investigation} group={group.id} />{/key}
-  <section class="fieldwork" aria-label="Aplicação em produção">
+  <section class="fieldwork" aria-label={t("Aplicação em produção", "Application in production")}>
     {#if lesson.fieldwork}<article>
-        <h2>{@html icon('book')} Caso documentado</h2>
-        <p>{lesson.fieldwork.caseStudy.text}</p>
+        <h2>{@html icon('book')} {t("Caso documentado", "Documented case")}</h2>
+        <p>{t(lesson.fieldwork.caseStudy.text)}</p>
         <a class="study-source" href={lesson.fieldwork.caseStudy.source.url} target="_blank" rel="noreferrer"
-          >{lesson.fieldwork.caseStudy.source.label} {@html icon('external', 13)}</a
+          >{t(lesson.fieldwork.caseStudy.source.label)} {@html icon('external', 13)}</a
         >
       </article>{/if}
     <article>
-      <h2>{@html icon('practice')} Exercício de produção</h2>
-      <p>{exercise.prompt}</p>
+      <h2>{@html icon('practice')} {t("Exercício de produção", "Production exercise")}</h2>
+      <p>{t(exercise.prompt)}</p>
       {#key lesson.id}<details>
-          <summary>Conferir resolução</summary>
-          <p>{exercise.solution}</p>
+          <summary>{t("Conferir resolução", "Check the solution")}</summary>
+          <p>{t(exercise.solution)}</p>
         </details>{/key}
     </article>
     {#if lesson.id === 'capacidade-milhoes'}<FleetLab />{/if}

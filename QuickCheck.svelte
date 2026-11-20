@@ -1,27 +1,28 @@
 <script module>
+  import { t } from './i18n.js';
   const questions = {
     0: {
-      question: 'Em que momento você começa a medir a espera de quem usa o chat?',
-      choices: ['Quando o navegador envia o pedido.', 'Quando a GPU começa as contas.'],
+      question: t('Em que momento você começa a medir a espera de quem usa o chat?', 'When do you start measuring how long someone waits for a chat response?'),
+      choices: [t('Quando o navegador envia o pedido.', 'When the browser sends the request.'), t('Quando a GPU começa as contas.', 'When the GPU starts computing.')],
       feedback: [
-        'Isso. A rede e a fila já fazem parte da espera, mesmo antes de a GPU começar.',
-        'Se começar na GPU, você deixa de contar a viagem pela rede e o tempo na fila.',
+        t('Isso. A rede e a fila já fazem parte da espera, mesmo antes de a GPU começar.', 'Right. Network and queue time count toward the wait before the GPU starts.'),
+        t('Se começar na GPU, você deixa de contar a viagem pela rede e o tempo na fila.', 'Starting at the GPU leaves out network travel and queue time.'),
       ],
     },
     1: {
-      question: 'A pergunta tem nove tokens. Por que o modelo recebe trinta?',
-      choices: ['Porque o servidor inclui a instrução e as marcas da conversa.', 'Porque o navegador já inclui a primeira parte da resposta.'],
+      question: t('A pergunta tem nove tokens. Por que o modelo recebe trinta?', 'The question has nine tokens. Why does the model receive thirty?'),
+      choices: [t('Porque o servidor inclui a instrução e as marcas da conversa.', 'Because the server includes the instruction and conversation markers.'), t('Porque o navegador já inclui a primeira parte da resposta.', 'Because the browser already includes the first part of the answer.')],
       feedback: [
-        'Isso. A instrução e as marcas de quem fala também viram tokens. As trinta posições descrevem a entrada.',
-        'A geração da resposta ainda nem começou. Os outros tokens vêm da instrução e das marcas de quem fala.',
+        t('Isso. A instrução e as marcas de quem fala também viram tokens. As trinta posições descrevem a entrada.', 'Right. The instruction and speaker markers become tokens too. All thirty positions are input tokens.'),
+        t('A geração da resposta ainda nem começou. Os outros tokens vêm da instrução e das marcas de quem fala.', 'The answer hasn\'t started generating yet. The other tokens come from the instruction and speaker markers.'),
       ],
     },
     6: {
-      question: 'A GPU termina aos 76 ms. O navegador recebe a letra aos 90 ms. O que você registra como espera no navegador?',
-      choices: ['76 ms, quando a GPU escolhe a letra.', '90 ms, quando a letra chega ao navegador.'],
+      question: t('A GPU termina aos 76 ms. O navegador recebe a letra aos 90 ms. O que você registra como espera no navegador?', 'The GPU finishes at 76 ms. The browser receives the letter at 90 ms. What wait time do you record in the browser?'),
+      choices: [t('76 ms, quando a GPU escolhe a letra.', '76 ms, when the GPU selects the letter.'), t('90 ms, quando a letra chega ao navegador.', '90 ms, when the letter reaches the browser.')],
       feedback: [
-        'A GPU já produziu a letra, mas quem usa o chat ainda espera mais 14 ms.',
-        'Isso. O relógio do navegador vai do envio até o recebimento do primeiro token.',
+        t('A GPU já produziu a letra, mas quem usa o chat ainda espera mais 14 ms.', 'The GPU has produced the letter. The person using the chat waits another 14 ms.'),
+        t('Isso. O relógio do navegador vai do envio até o recebimento do primeiro token.', 'Right. The browser measures from sending the request to receiving the first token.'),
       ],
     },
   };

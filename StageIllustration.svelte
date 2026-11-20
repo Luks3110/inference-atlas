@@ -1,5 +1,4 @@
 <script module>
-  const format = new Intl.NumberFormat('pt-BR', {maximumSignificantDigits:5});
   // Each glyph has an outline and interior detail so it also reads in monochrome.
   const symbols = {
     token: ['M2 8 8 3h12l2 3v10l-6 5H4l-2-3Z','m3 9 3 2h11l4-4M6 11v7m4-3h5'],
@@ -26,14 +25,16 @@
   }
 </script>
 <script>
+  import { formatLocale, t } from './i18n.js';
   import ServingDetail, {hasServingDetail} from './ServingDetail.svelte';
   import ApplicationDetail from './ApplicationDetail.svelte';
   let { groups, original, inputs, readings, stageId } = $props();
+  let format = $derived(new Intl.NumberFormat(formatLocale(), { maximumSignificantDigits: 5 }));
   const id = $props.id();
 </script>
 
-<section class="objects" aria-label="Desenho com os parâmetros atuais">
-  <h3>Com seus parâmetros</h3>
+<section class="objects" aria-label={t("Desenho com os parâmetros atuais", "Diagram with the current parameters")}>
+  <h3>{t("Com seus parâmetros", "With your parameters")}</h3>
   {#if hasServingDetail(stageId)}
     <ServingDetail {stageId} {inputs} {readings}/>
   {:else}
@@ -51,9 +52,9 @@
     {@const showLane = hasServingDetail(stageId) ? false : stageId === 'espacos-de-embeddings-0' ? i === 1 : stageId === 'rag-quantizacao-vetorial-1' ? i === 2 : true}
     {@const initial = original[i]?.value ?? group.value}
     {#if showLane}<div class="lane" data-shape={group.shape}>
-      <header><strong>{group.label}</strong><span>{format.format(group.value)} {group.unit}</span></header>
+      <header><strong>{t(group.label)}</strong><span>{format.format(group.value)} {t(group.unit)}</span></header>
       {#if group.arrows}
-        <svg class="vectors" viewBox="0 0 150 66" role="img" aria-label={group.label}>
+        <svg class="vectors" viewBox="0 0 150 66" role="img" aria-label={t(group.label)}>
           <path d="M5 54H145M75 5V61" stroke="var(--line)" fill="none"/>
           {#each group.arrows as arrow,j}
             <g class="arrow" style:transform={'translate(75px,54px) rotate('+(-arrow.angle)+'deg)'} style:color={j?'var(--accent)':'var(--selection-ink)'}>
@@ -62,19 +63,19 @@
             </g>
           {/each}
         </svg>
-        <small>{group.arrows.map(a=>a.label+' · '+a.angle+'°').join(' / ')}</small>
+        <small>{group.arrows.map(a=>t(a.label)+' · '+a.angle+'°').join(' / ')}</small>
       {:else if group.matrix}
         <div class="matrix" style={'--columns:'+group.matrix.columns}>
           {#each group.matrix.cells as cell}
-            <span title={cell.label} aria-label={cell.label} class:muted={cell.state==='muted'} class:warn={cell.state==='warn'}>{cell.label.replace('Gravação ', 'G').replace('leitura ', 'L').replace(' / ', '·')}</span>
+            <span title={t(cell.label)} aria-label={t(cell.label)} class:muted={cell.state==='muted'} class:warn={cell.state==='warn'}>{t(cell.label).replace('Gravação ', 'G').replace('leitura ', 'L').replace('Write ', 'W').replace('read ', 'R').replace(' / ', '·')}</span>
           {/each}
         </div>
-        {#if group.matrix.note}<small>{group.matrix.note}</small>{/if}
+        {#if group.matrix.note}<small>{t(group.matrix.note)}</small>{/if}
       {:else if group.items}
         <div class="items">
           {#each group.items as item}
             <span class="chip" class:muted={item.state==='muted'} class:warn={item.state==='warn'}>
-              <svg aria-hidden="true"><use href={'#'+id+group.shape}/></svg>{item.label}
+              <svg aria-hidden="true"><use href={'#'+id+group.shape}/></svg>{t(item.label)}
             </span>
           {/each}
         </div>
@@ -90,10 +91,10 @@
             </span>
           {/each}
         </div>
-        {#if size !== 1}<small>Cada símbolo inteiro vale {format.format(size)} {group.unit}.</small>{/if}
+        {#if size !== 1}<small>{t(`Cada símbolo inteiro vale ${format.format(size)} ${t(group.unit)}.`, `Each whole symbol represents ${format.format(size)} ${t(group.unit)}.`)}</small>{/if}
       {/if}
-      {#if group.note}<p>{group.note}</p>{/if}
-      {#if initial !== group.value}<small class="change">Inicial · {format.format(initial)} {group.unit}</small>{/if}
+      {#if group.note}<p>{t(group.note)}</p>{/if}
+      {#if initial !== group.value}<small class="change">{t("Inicial", "Initial")} · {format.format(initial)} {t(group.unit)}</small>{/if}
     </div>{/if}
   {/each}
 </section>

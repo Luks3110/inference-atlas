@@ -1,6 +1,6 @@
 # Inference Atlas
 
-Curso interativo em português para quem desenvolve aplicações com modelos de IA. São 56 aulas em 13 módulos, com 458 etapas. Cada etapa tem uma explicação, um diagrama e um simulador com hipóteses explícitas. O site usa Svelte 5. O navegador guarda o progresso e a etapa atual.
+Curso interativo em português e inglês para quem desenvolve aplicações com modelos de IA. São 56 aulas em 13 módulos, com 458 etapas. Cada etapa tem uma explicação, um diagrama e um simulador com hipóteses explícitas. O site usa Svelte 5. O navegador guarda o progresso e a etapa atual.
 
 ## Abrir localmente
 
@@ -18,6 +18,10 @@ npm run build
 ```
 
 O build gera o site estático em `dist/`, incluindo fontes e ilustrações. Sirva essa pasta por HTTP. Cada etapa tem um endereço com hash que pode ser compartilhado.
+
+## Idiomas
+
+O seletor no cabeçalho guarda a preferência de idioma e mantém a etapa aberta. Para compartilhar em inglês, acrescente `?lang=en` antes do hash. O Paraglide compila os arquivos de `messages/` durante o build. A tradução do currículo está em `public/locales/course.en.json`, com os textos em português como chaves. As legendas que variam junto com os simuladores usam os padrões em `locales/`.
 
 ## Explorar
 

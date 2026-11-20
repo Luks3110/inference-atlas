@@ -1,4 +1,5 @@
 import { build, context } from 'esbuild';
+import { paraglideEsbuildPlugin } from '@inlang/paraglide-js';
 import { compile } from 'svelte/compiler';
 import { dirname } from 'node:path';
 import { cp, mkdir, readFile, writeFile, watch } from 'node:fs/promises';
@@ -10,6 +11,7 @@ const options = {
   bundle: true,
   conditions: ['svelte', 'browser'],
   plugins: [
+    paraglideEsbuildPlugin({ project: './project.inlang', outdir: './paraglide' }),
     {
       name: 'svelte',
       setup(builder) {
@@ -48,7 +50,7 @@ if (serve) {
   console.log('Inference Atlas em http://localhost:' + server.port);
   await Promise.all(
     ['index.html', 'public'].map(async (file) => {
-      for await (const _ of watch(file)) await copyShell();
+      for await (const _ of watch(file, { recursive: file === 'public' })) await copyShell();
     }),
   );
 } else {

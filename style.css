@@ -1140,3 +1140,17 @@ dialog p {
     scroll-behavior: auto !important;
   }
 }
+
+@media (min-width: 741px) and (max-width: 800px) {
+  #topbar { gap: 8px; padding-inline: 12px; }
+  .header-tools { gap: 5px; }
+}
+
+@media (max-width: 380px) {
+  .brand { font-size: 16px; }
+  .header-tools { gap: 5px; }
+}
+
+@media (max-width: 345px) {
+  .brand span { display: none; }
+}

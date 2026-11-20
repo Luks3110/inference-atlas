@@ -1,11 +1,12 @@
 <script>
+  import { formatLocale, t } from './i18n.js';
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import { prefersReducedMotion } from 'svelte/motion';
   import { compareVisits, branchFor } from './hnsw-comparison.js';
   import benchmark from './production/hnsw-filter.json';
 
-  const fmt = (n, digits = 2) => n.toLocaleString('pt-BR', { maximumFractionDigits: digits });
+  const fmt = (n, digits = 2) => n.toLocaleString(formatLocale(), { maximumFractionDigits: digits });
   const defaultEf = 32;
   const defaultSelectivity = 10;
   let ef = $state(defaultEf);
@@ -35,7 +36,22 @@
     active = null;
     pending = null;
     measured = null;
-    fault = message || 'O navegador não conseguiu executar a busca.';
+    fault = message || t("O navegador não conseguiu executar a busca.", "The browser could not run the search.");
+  }
+
+  function workerError(message) {
+    switch (message) {
+      case 'Não foi possível carregar a fixture HNSW.':
+        return t(message, 'The HNSW fixture could not be loaded.');
+      case 'Formato da fixture HNSW incompatível.':
+        return t(message, 'The HNSW fixture has an incompatible format.');
+      case 'Dimensões inválidas na fixture HNSW.':
+        return t(message, 'The HNSW fixture has invalid dimensions.');
+      case 'Use efSearch inteiro entre 10 e 160 e seletividade entre 1% e 100%.':
+        return t(message, 'Use an integer efSearch from 10 to 160 and selectivity from 1% to 100%.');
+      default:
+        return t(message);
+    }
   }
 
   function dispatch() {
@@ -47,16 +63,16 @@
         const instance = new Worker('/labs/hnsw-worker.js', { type: 'module' });
         worker = instance;
         instance.onerror = () => {
-          if (worker === instance) breakWorker('Falha ao carregar ou executar o worker HNSW.');
+          if (worker === instance) breakWorker(t("Falha ao carregar ou executar o worker HNSW.", "The HNSW worker could not load or run."));
         };
         instance.onmessageerror = () => {
-          if (worker === instance) breakWorker('O resultado da busca chegou ilegível.');
+          if (worker === instance) breakWorker(t("O resultado da busca chegou ilegível.", "The worker returned an unreadable search result."));
         };
         instance.onmessage = ({ data }) => {
           if (!mounted || worker !== instance || data?.id !== active) return;
           active = null;
           if (data.error && data.id === version) {
-            breakWorker(String(data.error));
+            breakWorker(workerError(String(data.error)));
             return;
           }
           if (!data.error && data.id >= minBaselineVersion) {
@@ -69,7 +85,7 @@
       active = request.id;
       worker.postMessage(request);
     } catch {
-      breakWorker('Não foi possível iniciar a busca HNSW neste navegador.');
+      breakWorker(t("Não foi possível iniciar a busca HNSW neste navegador.", "This browser could not start the HNSW search."));
     }
   }
 
@@ -111,12 +127,12 @@
     };
   });
 
-  const states = {
-    added: { label: 'Só nesta busca', mark: '+' },
-    removed: { label: 'Só na referência', mark: '−' },
-    shared: { label: 'Nas duas buscas', mark: '=' },
-    absent: { label: 'Sem visita', mark: '·' },
-  };
+  let states = $derived({
+    added: { label: t("Só nesta busca", "Current search only"), mark: '+' },
+    removed: { label: t("Só na referência", "Baseline search only"), mark: '−' },
+    shared: { label: t("Nas duas buscas", "Both searches"), mark: '=' },
+    absent: { label: t("Sem visita", "Not visited"), mark: '·' },
+  });
   const comparedStates = ['added', 'removed', 'shared'];
   let diff = $derived(base && measured ? compareVisits(base.example, measured.example) : null);
   let branchId = $derived(diff?.parents.includes(selectedBranch) ? selectedBranch : diff?.auto);
@@ -128,77 +144,77 @@
   function route(ids) { return ids.map(id => '#' + id).join(' → '); }
 </script>
 
-<section class="hnsw-play" aria-label="Laboratório HNSW">
+<section class="hnsw-play" aria-label={t("Laboratório HNSW", "HNSW lab")}>
   <header>
-    <h3>Explore a busca HNSW</h3>
-    <p>Arraste <code>efSearch</code> para mudar quantos candidatos a busca guarda. O índice percorre o grafo primeiro, aplica o filtro e devolve até dez vizinhos. Mexa só no filtro para ver quais resultados passam pelo corte.</p>
+    <h3>{t("Explore a busca HNSW", "Explore HNSW search")}</h3>
+    <p>{t("Arraste", "Drag")} <code>efSearch</code> {t("para mudar quantos candidatos a busca guarda. O índice percorre o grafo primeiro, aplica o filtro e devolve até dez vizinhos. Mexa só no filtro para ver quais resultados passam pelo corte.", "to change how many candidates the search retains. The index traverses the graph, applies the filter, and returns up to ten neighbors. Adjust the filter by itself to see which results pass.")}</p>
   </header>
 
   <div class="controls">
     <label>
-      <span>Largura de busca <strong>efSearch = {ef}</strong></span>
+      <span>{t("Largura de busca", "Search width")} <strong>efSearch = {ef}</strong></span>
       <input type="range" min="10" max="160" step="1" value={ef} aria-label="efSearch"
         oninput={(event) => { ef = Number(event.currentTarget.value); schedule(); }} />
-      <small><span>10 candidatos</span><span>160</span></small>
+      <small><span>{t("10 candidatos", "10 candidates")}</span><span>160</span></small>
     </label>
     <label>
-      <span>Seletividade <strong>{selectivity}%</strong></span>
-      <input type="range" min="1" max="100" step="1" value={selectivity} aria-label="Seletividade do filtro"
-        aria-valuetext={selectivity + '% dos vetores elegíveis'}
+      <span>{t("Seletividade", "Selectivity")} <strong>{selectivity}%</strong></span>
+      <input type="range" min="1" max="100" step="1" value={selectivity} aria-label={t("Seletividade do filtro", "Filter selectivity")}
+        aria-valuetext={t(`${selectivity}% dos vetores elegíveis`, `${selectivity}% of vectors eligible`)}
         oninput={(event) => { selectivity = Number(event.currentTarget.value); schedule(); }} />
-      <small><span>1% dos vetores</span><span>100%</span></small>
+      <small><span>{t("1% dos vetores", "1% of vectors")}</span><span>100%</span></small>
     </label>
-    <button data-sim-reset type="button" onclick={reset}>Restaurar valores</button>
+    <button data-sim-reset type="button" onclick={reset}>{t("Restaurar valores", "Reset values")}</button>
   </div>
 
   <div class="outcome" aria-live="polite" aria-busy={updating}>
     {#if fault}
-      <span>{fault}</span> <button type="button" onclick={() => schedule()}>Tentar novamente</button>
+      <span>{fault}</span> <button type="button" onclick={() => schedule()}>{t("Tentar novamente", "Try again")}</button>
     {:else if !measured}
-      <span>Executando as buscas no navegador…</span>
+      <span>{t("Executando as buscas no navegador…", "Running searches in your browser…")}</span>
     {:else}
-      <span>{updating ? 'Atualizando' : 'Concluído'} · efSearch {measured.ef} · filtro {measured.selectivity}% · {fmt(measured.queries)} consultas · {fmt(measured.eligible)} de {fmt(measured.vectors)} vetores elegíveis</span>
+      <span>{updating ? t("Atualizando", "Updating") : t("Concluído", "Complete")} · efSearch {measured.ef} · {t(`filtro ${measured.selectivity}% · ${fmt(measured.queries)} consultas · ${fmt(measured.eligible)} de ${fmt(measured.vectors)} vetores elegíveis`, `filter ${measured.selectivity}% · ${fmt(measured.queries)} queries · ${fmt(measured.eligible)} of ${fmt(measured.vectors)} vectors eligible`)}</span>
     {/if}
   </div>
 
   <div class="pin">
-    <button type="button" disabled={!measured || updating} onclick={() => { pinned = measured; selectedBranch = null; }}>Fixar medição para comparar</button>
+    <button type="button" disabled={!measured || updating} onclick={() => { pinned = measured; selectedBranch = null; }}>{t("Fixar medição para comparar", "Pin measurement as baseline")}</button>
     {#if base}
-      <span>{pinned ? 'Referência fixada' : 'Referência inicial'} · efSearch {base.ef}, filtro {base.selectivity}%</span>
-      {#if measured}<span>Variação de recall {fmt(measured.recall - base.recall, 2)} p.p. · p95 {fmt(measured.p95 - base.p95, 3)} ms · visitados {fmt(measured.visited - base.visited, 1)} IDs/consulta</span>{/if}
+      <span>{pinned ? t("Referência fixada", "Pinned baseline") : t("Referência inicial", "Initial baseline")} · efSearch {base.ef}, {t(`filtro ${base.selectivity}%`, `filter ${base.selectivity}%`)}</span>
+      {#if measured}<span>{t(`Variação de recall ${fmt(measured.recall - base.recall, 2)} p.p. · p95 ${fmt(measured.p95 - base.p95, 3)} ms · visitados ${fmt(measured.visited - base.visited, 1)} IDs/consulta`, `Change in recall ${fmt(measured.recall - base.recall, 2)} pp · p95 ${fmt(measured.p95 - base.p95, 3)} ms · visits ${fmt(measured.visited - base.visited, 1)} IDs/query`)}</span>{/if}
     {/if}
   </div>
 
 
   {#if measured && diff && branch}
     {@const ex = measured.example}
-    <figure class="visit-diff" aria-label="Comparação de visitas da consulta 1">
-      <figcaption><strong>Quais vetores a consulta 1 visitou?</strong>
-        <span>A busca calculou a distância até {fmt(diff.now.size)} vetores. Com efSearch {base.ef} e filtro de {base.selectivity}%, visitou {fmt(diff.before.size)}.</span>
+    <figure class="visit-diff" aria-label={t("Comparação de visitas da consulta 1", "Comparison of visits for query 1")}>
+      <figcaption><strong>{t("Quais vetores a consulta 1 visitou?", "Which vectors did query 1 visit?")}</strong>
+        <span>{t(`A busca calculou a distância até ${fmt(diff.now.size)} vetores. Com efSearch ${base.ef} e filtro de ${base.selectivity}%, visitou ${fmt(diff.before.size)}.`, `The search calculated distances to ${fmt(diff.now.size)} vectors. With efSearch ${base.ef} and a ${base.selectivity}% filter, it visited ${fmt(diff.before.size)}.`)}</span>
       </figcaption>
       <div class="legend">
         {#each comparedStates as state}
           <span class={state} data-diff={state}>{states[state].mark} {fmt(diff[state].length)} · {states[state].label}</span>
         {/each}
       </div>
-      <label class="branch-picker">Vizinhos do nó
+      <label class="branch-picker">{t("Vizinhos do nó", "Node neighbors")}
         <select value={diff.parents.includes(selectedBranch) ? selectedBranch : ''} onchange={e => selectedBranch = e.currentTarget.value === '' ? null : Number(e.currentTarget.value)}>
-          <option value="">Automático · #{diff.auto}</option>
+          <option value="">{t("Automático", "Automatic")} · #{diff.auto}</option>
           {#each diff.parents as id}<option value={id}>#{id}</option>{/each}
         </select>
       </label>
       <div class="graph-scroll">
-        <svg viewBox={'0 0 390 ' + branch.height} role="img" class="branch-map" aria-label={'Percurso HNSW pelos vizinhos do vetor ' + branchId}>
+        <svg viewBox={'0 0 390 ' + branch.height} role="img" class="branch-map" aria-label={t(`Percurso HNSW pelos vizinhos do vetor ${branchId}`, `HNSW traversal through the neighbors of vector ${branchId}`)}>
           {#key branchId}
             <g transition:fade={{ duration: prefersReducedMotion.current ? 0 : 120 }}>
               {#each branch.nodes as node (node.id)}
                 <line class={node.edge} x1={branch.center.x} y1={branch.center.y} x2={node.x} y2={node.y}>
-                  <title>#{branchId} → #{node.id} · {node.edge === 'absent' ? 'Sem primeira visita por esta ligação' : states[node.edge].label}</title>
+                  <title>#{branchId} → #{node.id} · {node.edge === 'absent' ? t("Sem primeira visita por esta ligação", "No first visit through this edge") : states[node.edge].label}</title>
                 </line>
               {/each}
               {#each branch.nodes as node (node.id)}
                 <g class={node.state} data-node={node.id} transform={'translate(' + node.x + ' ' + node.y + ')'}>
-                  <title>Vetor {node.id} · {states[node.state].label}</title>
+                  <title>{t("Vetor", "Vector")} {node.id} · {states[node.state].label}</title>
                   <rect x="-36" y="-10" width="72" height="20" rx="7"/>
                   <text text-anchor="middle" dominant-baseline="central">{states[node.state].mark} #{node.id}</text>
                 </g>
@@ -211,29 +227,29 @@
           {/key}
         </svg>
       </div>
-      <p class="fine">Cada linha liga dois vizinhos do índice. A linha contínua marca a primeira visita pelo nó central. Verde indica uma ligação usada só nesta busca, laranja só na referência e cinza nas duas. A pontilhada marca os outros vizinhos.</p>
-      {#if branch.now.length}<p class="route"><b>Da entrada até #{branchId}</b> {route(branch.now)}</p>{/if}
-      {#if branch.before.length && route(branch.before) !== route(branch.now)}<p class="route"><b>Caminho na referência</b> {route(branch.before)}</p>{/if}
-      <svg class="visit-map" viewBox={'0 0 576 ' + Math.ceil(measured.vectors / 96) * 5} role="img" aria-label="Mapa de visitas da consulta 1 por ID">
+      <p class="fine">{t("Cada linha liga dois vizinhos do índice. A linha contínua marca a primeira visita pelo nó central. Verde indica uma ligação usada só nesta busca, laranja só na referência e cinza nas duas. A pontilhada marca os outros vizinhos.", "Each line connects two neighbors in the index. A solid line marks a first visit through the center node. Green marks edges unique to the current search. Orange marks edges unique to the baseline. Gray marks edges shared by both searches. Dashed lines mark the other neighbors.")}</p>
+      {#if branch.now.length}<p class="route"><b>{t("Da entrada até", "From the entry point to")} #{branchId}</b> {route(branch.now)}</p>{/if}
+      {#if branch.before.length && route(branch.before) !== route(branch.now)}<p class="route"><b>{t("Caminho na referência", "Baseline path")}</b> {route(branch.before)}</p>{/if}
+      <svg class="visit-map" viewBox={'0 0 576 ' + Math.ceil(measured.vectors / 96) * 5} role="img" aria-label={t("Mapa de visitas da consulta 1 por ID", "Visit map by ID for query 1")}>
         <defs><pattern id="hnsw-slots" width="6" height="5" patternUnits="userSpaceOnUse"><rect x="1" y="1" width="4" height="3"/></pattern></defs>
         <rect width="100%" height="100%" fill="url(#hnsw-slots)"/>
         {#each ['shared', 'removed', 'added'] as state}
           <path class={state} d={tiles(diff[state])}/>
         {/each}
       </svg>
-      <p class="fine">Cada quadrado ocupa o lugar de um ID. A primeira linha vai do 0 ao 95. Um quadrado claro indica que as duas buscas pularam aquele vetor.</p>
+      <p class="fine">{t("Cada quadrado ocupa o lugar de um ID. A primeira linha vai do 0 ao 95. Um quadrado claro indica que as duas buscas pularam aquele vetor.", "Each square corresponds to an ID. The first row covers IDs 0 to 95. A light square means both searches skipped that vector.")}</p>
 
       <details class="all-visits">
-        <summary>Ver todos os IDs e as ligações de primeira visita</summary>
+        <summary>{t("Ver todos os IDs e as ligações de primeira visita", "View all IDs and edges used for first visits")}</summary>
         {#each comparedStates as state}
-          <div><h4>{states[state].label}</h4><p><b>{fmt(diff[state].length)} IDs</b> · {diff[state].join(', ') || 'Nenhum'}</p>
-          <p><b>{fmt(diff.edges[state].length)} ligações</b> · {diff.edges[state].map(([from,to]) => '#' + from + ' → #' + to).join(', ') || 'Nenhuma'}</p></div>
+          <div><h4>{states[state].label}</h4><p><b>{fmt(diff[state].length)} IDs</b> · {diff[state].join(', ') || t("Nenhum", "None")}</p>
+          <p><b>{fmt(diff.edges[state].length)} {t("ligações", "edges")}</b> · {diff.edges[state].map(([from,to]) => '#' + from + ' → #' + to).join(', ') || t("Nenhuma", "None")}</p></div>
         {/each}
       </details>
-      <div class="id-line"><b>Retornados</b>
-        <div class="chips">{#each ex.found as id}<span class:matched={ex.truth.includes(id)} class:other={!ex.truth.includes(id)}>{id}</span>{:else}<em>Nenhum ID passou pelo pós-filtro.</em>{/each}</div>
+      <div class="id-line"><b>{t("Retornados", "Returned IDs")}</b>
+        <div class="chips">{#each ex.found as id}<span class:matched={ex.truth.includes(id)} class:other={!ex.truth.includes(id)}>{id}</span>{:else}<em>{t("Nenhum ID passou pelo pós-filtro.", "No IDs passed the post-filter.")}</em>{/each}</div>
       </div>
-      <div class="id-line"><b>Gabarito exato</b>
+      <div class="id-line"><b>{t("Gabarito exato", "Exact results")}</b>
         <div class="chips">{#each ex.truth as id}<span class:matched={ex.found.includes(id)}>{id}</span>{/each}</div>
       </div>
     </figure>
@@ -241,24 +257,24 @@
     <div class="graph-placeholder" aria-hidden="true"></div>
   {/if}
 
-  <dl class="metrics" aria-label="Resultados medidos">
+  <dl class="metrics" aria-label={t("Resultados medidos", "Measured results")}>
     <div><dt>Recall@10</dt><dd>{measured ? fmt(measured.recall, 1) + '%' : '—'}</dd></div>
-    <div><dt>Latência p95</dt><dd>{measured ? fmt(measured.p95, 3) + ' ms' : '—'}</dd></div>
-    <div><dt>Preenchimento médio</dt><dd>{measured ? fmt(measured.filled, 1) + ' / 10' : '—'}</dd></div>
-    <div><dt>IDs visitados por consulta</dt><dd>{measured ? fmt(measured.visited, 1) + ' IDs' : '—'}</dd></div>
+    <div><dt>{t("Latência p95", "p95 latency")}</dt><dd>{measured ? fmt(measured.p95, 3) + ' ms' : '—'}</dd></div>
+    <div><dt>{t("Preenchimento médio", "Average results returned")}</dt><dd>{measured ? fmt(measured.filled, 1) + ' / 10' : '—'}</dd></div>
+    <div><dt>{t("IDs visitados por consulta", "IDs visited per query")}</dt><dd>{measured ? fmt(measured.visited, 1) + ' IDs' : '—'}</dd></div>
   </dl>
-  <p class="fine">O navegador executa 48 consultas três vezes após o aquecimento. O p95 inclui a busca, a ordenação e o filtro. Cada ID conta uma vez por consulta, mesmo quando o índice encontra o mesmo vetor em duas camadas.</p>
+  <p class="fine">{t("O navegador executa 48 consultas três vezes após o aquecimento. O p95 inclui a busca, a ordenação e o filtro. Cada ID conta uma vez por consulta, mesmo quando o índice encontra o mesmo vetor em duas camadas.", "After warming up, the browser runs 48 queries three times. The p95 includes search, sorting, and filtering. Each ID counts once per query, even if the index finds the same vector on two layers.")}</p>
 
   <details>
-    <summary>Referência em CPU · filtro durante a busca com Faiss</summary>
-    <p>O Faiss {benchmark.faiss} filtra os IDs durante a busca. Este ensaio usou outro conjunto de {fmt(benchmark.vectors)} vetores de {benchmark.dims} dimensões e {benchmark.queries} consultas em CPU {benchmark.cpu}, com {benchmark.threads} thread.</p>
-    <label class="ref-select">Seletividade no Faiss
+    <summary>{t("Referência em CPU · filtro durante a busca com Faiss", "CPU benchmark · filtering during search with Faiss")}</summary>
+    <p>{t(`O Faiss ${benchmark.faiss} filtra os IDs durante a busca. Este ensaio usou outro conjunto de ${fmt(benchmark.vectors)} vetores de ${benchmark.dims} dimensões e ${benchmark.queries} consultas em CPU ${benchmark.cpu}, com ${benchmark.threads} thread.`, `Faiss ${benchmark.faiss} filters IDs during search. This benchmark used a separate set of ${fmt(benchmark.vectors)} vectors with ${benchmark.dims} dimensions and ${benchmark.queries} queries on a ${benchmark.cpu} CPU with ${benchmark.threads} thread.`)}</p>
+    <label class="ref-select">{t("Seletividade no Faiss", "Selectivity in Faiss")}
       <select bind:value={refSelectivity}>{#each benchmark.selectivity as pct}<option value={pct}>{fmt(pct)}%</option>{/each}</select>
     </label>
     <div class="ref-table">
       <table>
-        <caption>{benchmark.rows.length} configurações medidas · {fmt(refSelectivity)}% elegíveis nesta seleção</caption>
-        <thead><tr><th scope="col">efSearch</th><th scope="col">Recall@10</th><th scope="col">p95</th><th scope="col">IDs/consulta</th></tr></thead>
+        <caption>{t(`${benchmark.rows.length} configurações medidas · ${fmt(refSelectivity)}% elegíveis nesta seleção`, `${benchmark.rows.length} configurations measured · ${fmt(refSelectivity)}% eligible in this selection`)}</caption>
+        <thead><tr><th scope="col">efSearch</th><th scope="col">Recall@10</th><th scope="col">p95</th><th scope="col">{t("IDs/consulta", "IDs/query")}</th></tr></thead>
         <tbody>
           {#each referenceRows as row}
             <tr><th scope="row">{row.ef}</th><td>{fmt(row.recall)}%</td><td>{fmt(row.p95, 4)} ms</td><td>{fmt(row.filled, 2)}</td></tr>
@@ -266,9 +282,9 @@
         </tbody>
       </table>
     </div>
-    <a href="/labs/bench-hnsw-filter.py" download>Baixar benchmark Faiss (.py)</a>
+    <a href="/labs/bench-hnsw-filter.py" download>{t("Baixar benchmark Faiss (.py)", "Download the Faiss benchmark (.py)")}</a>
   </details>
-  <a href="/labs/build-hnsw-fixture.py" download>Baixar gerador do grafo do navegador (.py)</a>
+  <a href="/labs/build-hnsw-fixture.py" download>{t("Baixar gerador do grafo do navegador (.py)", "Download the browser graph generator (.py)")}</a>
 </section>
 
 <style>

@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import { tick } from 'svelte';
   import { icon } from './icons.js';
   import JsonInspector from './JsonInspector.svelte';
@@ -13,10 +14,12 @@
   let opened = $state.raw(null);
   let pinned = $state(false);
   let copyStatus = $state('');
+  let copyMessage = $derived(copyStatus === 'copied' ? t('Copiado', 'Copied')
+    : copyStatus === 'error' ? t('Selecione o texto para copiar.', 'Select the text to copy it.') : '');
   let openTimer;
   let closeTimer;
   let restoringFocus = false;
-  let tokens = $derived(jsonTokens(value));
+  let tokens = $derived(jsonTokens(value, t));
   let decoded = $derived(depth === 0 ? decodeField(active?.token.value) : null);
   let format = $derived(prefix ? 'SSE' : 'JSON');
 
@@ -116,9 +119,9 @@
     try {
       const text = prefix ? prefix + JSON.stringify(value) : JSON.stringify(value, null, 2);
       await navigator.clipboard.writeText(text);
-      copyStatus = 'Copiado';
+      copyStatus = 'copied';
     } catch {
-      copyStatus = 'Selecione o texto para copiar.';
+      copyStatus = 'error';
     }
   }
 </script>
@@ -132,17 +135,17 @@
         <span class="format">{format}</span>
         {#if label}<h3>{label}</h3>{/if}
       </div>
-      <button type="button" aria-label={'Copiar ' + format} class="copy" onclick={copy}>
-        {@html icon(copyStatus === 'Copiado' ? 'check' : 'copy', 14)}
-        <span>{copyStatus === 'Copiado' ? copyStatus : 'Copiar ' + format}</span>
+      <button type="button" aria-label={t('Copiar ', 'Copy ') + format} class="copy" onclick={copy}>
+        {@html icon(copyStatus === 'copied' ? 'check' : 'copy', 14)}
+        <span>{copyStatus === 'copied' ? copyMessage : t('Copiar ', 'Copy ') + format}</span>
       </button>
-      <span role="status" class="sr-only">{copyStatus}</span>
+      <span role="status" class="sr-only">{copyMessage}</span>
     </div>
-    {#if copyStatus && copyStatus !== 'Copiado'}<p class="copy-error">{copyStatus}</p>{/if}
+    {#if copyStatus === 'error'}<p class="copy-error">{copyMessage}</p>{/if}
     <pre bind:this={code}><code>{#if prefix}<span class="prefix">{prefix}</span>{/if}{#each tokens as token}{#if token.help}<button
       type="button"
       class="field"
-      aria-label={'Explicar ' + formatPath(token.path)}
+      aria-label={t('Explicar ', 'Explain ') + formatPath(token.path)}
       aria-pressed={pinned && active?.token === token}
       aria-controls={active?.token === token ? detailId : undefined}
       aria-describedby={active?.token === token ? detailId + '-text' : undefined}
@@ -164,9 +167,9 @@
   {#if opened}
     <div class="decoded">
       <div class="decoded-head">
-        <h4 tabindex="-1" bind:this={inner}>Dentro de <code>{formatPath(opened.token.path)}</code></h4>
+        <h4 tabindex="-1" bind:this={inner}>{t('Dentro de ', 'Inside ')}<code>{formatPath(opened.token.path)}</code></h4>
         <button type="button" class="copy" onclick={closeDecoded}>
-          {@html icon('close', 14)} Fechar
+          {@html icon('close', 14)} {t('Fechar', 'Close')}
         </button>
       </div>
       <JsonInspector value={opened.value} depth={depth + 1} />

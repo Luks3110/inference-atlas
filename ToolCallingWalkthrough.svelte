@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import JsonInspector from './JsonInspector.svelte';
   import { icon } from './icons.js';
 
@@ -9,36 +10,36 @@
 
   let flow = $derived([
     {
-      actor: 'Pessoa',
-      note: scenario === 'missing' ? 'Onde está meu pedido?' : 'Onde está meu pedido 42?',
-      next: 'Enviar ao modelo',
+      actor: t('Pessoa', 'Person'),
+      note: scenario === 'missing' ? t('Onde está meu pedido?', 'Where is my order?') : t('Onde está meu pedido 42?', 'Where is my order 42?'),
+      next: t('Enviar ao modelo', 'Send to the model'),
     },
     {
       actor: 'Harness',
-      note: 'Envia a pergunta e a descrição de consultar_pedido. A função precisa do número do pedido.',
-      next: 'Ver o que o modelo pede',
+      note: t('Envia a pergunta e a descrição de consultar_pedido. A função precisa do número do pedido.', 'Sends the question and the description of consultar_pedido. The function needs the order number.'),
+      next: t('Ver o que o modelo pede', 'See what the model requests'),
     },
     ...(scenario === 'missing' ? [
-      { actor: 'Modelo', note: 'Qual é o número do seu pedido?' },
+      { actor: t('Modelo', 'Model'), note: t('Qual é o número do seu pedido?', 'What\'s your order number?') },
     ] : [
-      { actor: 'Modelo', note: 'Pede que o aplicativo consulte o pedido 42.', data: request, next: 'Conferir a chamada' },
+      { actor: t('Modelo', 'Model'), note: t('Pede que o aplicativo consulte o pedido 42.', 'Asks the app to look up order 42.'), data: request, next: t('Conferir a chamada', 'Check the call') },
       { actor: 'Harness', note: scenario === 'denied'
-        ? 'A conta conectada não tem acesso. O sistema da loja não recebe a consulta.'
-        : 'O número é válido e a conta conectada tem acesso ao pedido.',
-        next: scenario === 'denied' ? 'Devolver a recusa ao modelo' : 'Consultar e devolver o resultado' },
+        ? t('A conta conectada não tem acesso. O sistema da loja não recebe a consulta.', 'The signed-in account lacks access. The lookup stops before it reaches the store\'s system.')
+        : t('O número é válido e a conta conectada tem acesso ao pedido.', 'The order number is valid, and the signed-in account can access the order.'),
+        next: scenario === 'denied' ? t('Devolver a recusa ao modelo', 'Return the refusal to the model') : t('Consultar e devolver o resultado', 'Look up the order and return the result') },
       {
         actor: 'Harness',
         note: scenario === 'denied'
-          ? 'Informa a recusa com o mesmo identificador da chamada.'
-          : 'Consulta o sistema da loja. Devolve o status com o identificador da chamada.',
+          ? t('Informa a recusa com o mesmo identificador da chamada.', 'Reports the refusal using the same call ID.')
+          : t('Consulta o sistema da loja. Devolve o status com o identificador da chamada.', 'Checks the store\'s system and returns the status with the call ID.'),
         data: { call_id: request.call_id, output: scenario === 'denied' ? { error: 'sem acesso' } : result },
-        next: 'Mostrar a resposta',
+        next: t('Mostrar a resposta', 'Show the reply'),
       },
       {
-        actor: 'Modelo',
+        actor: t('Modelo', 'Model'),
         note: scenario === 'denied'
-          ? 'Não consigo consultar esse pedido com a conta atual.'
-          : 'Seu pedido 42 está em transporte.',
+          ? t('Não consigo consultar esse pedido com a conta atual.', 'I can\'t look up this order with the current account.')
+          : t('Seu pedido 42 está em transporte.', 'Your order 42 is in transit.'),
       },
     ]),
   ]);
@@ -50,24 +51,24 @@
 </script>
 
 <section class="tool-walkthrough" aria-labelledby="tool-walkthrough-title">
-  <h2 id="tool-walkthrough-title">Siga a chamada no chat</h2>
-  <p>É um chat simulado. Avance para ver o que cada parte recebe e o que ela faz.</p>
+  <h2 id="tool-walkthrough-title">{t('Siga a chamada no chat', 'Follow the call in the chat')}</h2>
+  <p>{t('É um chat simulado. Avance para ver o que cada parte recebe e o que ela faz.', 'This is a simulated chat. Step through it to see what each participant receives and does.')}</p>
   <label>
-    Situação
+    {t('Situação', 'Scenario')}
     <select value={scenario} onchange={event => restart(event.currentTarget.value)}>
-      <option value="allowed">Pedido 42 com acesso</option>
-      <option value="missing">Pergunta sem número</option>
-      <option value="denied">Pedido 42 sem acesso</option>
+      <option value="allowed">{t('Pedido 42 com acesso', 'Order 42 with access')}</option>
+      <option value="missing">{t('Pergunta sem número', 'Question without an order number')}</option>
+      <option value="denied">{t('Pedido 42 sem acesso', 'Order 42 without access')}</option>
     </select>
   </label>
-  <ol aria-label="Histórico da chamada" aria-live="polite">
+  <ol aria-label={t('Histórico da chamada', 'Call history')} aria-live="polite">
     {#each flow.slice(0, cursor + 1) as entry, i}
       <li class:latest={i === cursor}>
         <strong>{entry.actor}</strong>
         <div>
           <p>{entry.note}</p>
           {#if entry.data}
-            <details><summary>Ver os dados enviados</summary><JsonInspector value={entry.data} /></details>
+            <details><summary>{t('Ver os dados enviados', 'View the data sent')}</summary><JsonInspector value={entry.data} /></details>
           {/if}
         </div>
       </li>
@@ -77,7 +78,7 @@
     {#if flow[cursor]?.next}
       <button type="button" class="advance" onclick={() => cursor += 1}>{flow[cursor].next} {@html icon('arrow', 14)}</button>
     {/if}
-    {#if cursor > 0}<button type="button" onclick={() => restart()}>Recomeçar</button>{/if}
+    {#if cursor > 0}<button type="button" onclick={() => restart()}>{t('Recomeçar', 'Start over')}</button>{/if}
   </div>
 </section>
 

@@ -1,10 +1,8 @@
 <script module>
-  const format = new Intl.NumberFormat('pt-BR', { maximumSignificantDigits: 5 });
-  const formatValue = (value) => format.format(value);
   const storagePrefix = 'atlas:ensaio:';
-  const visual = {
-    fluxo: ['network', 'Fluxo'], fila: ['steps', 'Fila'], memoria: ['stack', 'Memória'],
-    tempo: ['clock', 'Tempo'], qualidade: ['chart', 'Qualidade'], distribuicao: ['chart', 'Distribuição'],
+  const visuals = {
+    fluxo: ['network', "Fluxo", "Flow"], fila: ['steps', "Fila", "Queue"], memoria: ['stack', "Memória", "Memory"],
+    tempo: ['clock', "Tempo", "Time"], qualidade: ['chart', "Qualidade", "Quality"], distribuicao: ['chart', "Distribuição", "Distribution"],
   };
   function restore(key, parameters) {
     const initial = parameters.map(p => p.initial);
@@ -18,6 +16,7 @@
   }
 </script>
 <script>
+  import { formatLocale, t } from './i18n.js';
   import StageIllustration from './StageIllustration.svelte';
   import { untrack } from 'svelte';
   import { prefersReducedMotion } from 'svelte/motion';
@@ -26,6 +25,9 @@
   import { icon } from './icons.js';
 
   let { model, illustrate, children, stageId, origin, destination, stepLabel } = $props();
+  let numberFormat = $derived(new Intl.NumberFormat(formatLocale(), { maximumSignificantDigits: 5 }));
+  const formatValue = (value) => numberFormat.format(value);
+  let [visualIcon, ...visualLabels] = $derived(visuals[model.kind]);
   let values = $state.raw([]);
   let axis = $state(0);
   // The parent keys each simulator by its lesson and step.
@@ -81,19 +83,19 @@
   }
 </script>
 
-<section class="simulator" aria-label="Simulador da etapa">
+<section class="simulator" aria-label={t("Simulador da etapa", "Step simulator")}>
   <div class="controls-heading">
-    <h3>Parâmetros</h3>
-    <button data-sim-reset type="button" onclick={reset} disabled={!modified}>{@html icon('replay',13)} Restaurar</button>
+    <h3>{t("Parâmetros", "Parameters")}</h3>
+    <button data-sim-reset type="button" onclick={reset} disabled={!modified}>{@html icon('replay',13)} {t("Restaurar", "Reset")}</button>
   </div>
   <div class="knobs">
     {#each model.knobs as p, i}
       <div class="knob">
-        <label for={'range-' + stageId + i}>{p.label} {#if p.unit}<small>({p.unit})</small>{/if}</label>
+        <label for={'range-' + stageId + i}>{t(p.label)} {#if p.unit}<small>({t(p.unit)})</small>{/if}</label>
         <div class="input-row">
           <input type="range" id={'range-' + stageId + i} min={p.min} max={p.max} step={p.step} value={inputs[i]}
             onfocus={() => axis = i} oninput={e => change(i, e.currentTarget.valueAsNumber)} />
-          <input aria-label={'Valor de ' + p.label} type="number" min={p.min} max={p.max} step={p.step} value={inputs[i]}
+          <input aria-label={t(`Valor de ${t(p.label)}`, `Value of ${t(p.label)}`)} type="number" min={p.min} max={p.max} step={p.step} value={inputs[i]}
             onfocus={() => axis = i}
             oninput={e => { if (e.currentTarget.validity.valid) change(i, e.currentTarget.valueAsNumber); }}
             onchange={e => { const el = e.currentTarget; change(i, el.valueAsNumber); el.value = String(inputs[i]); }}
@@ -102,42 +104,42 @@
       </div>
     {/each}
   </div>
-  <dl class="live-readings" aria-label="Métricas com os parâmetros atuais">
+  <dl class="live-readings" aria-label={t("Métricas com os parâmetros atuais", "Metrics with the current parameters")}>
     {#each model.metrics as [name, unit], i}
-      <div><dt>{name}</dt><dd>{formatValue(readings[i])} <small>{unit}</small></dd></div>
+      <div><dt>{t(name)}</dt><dd>{formatValue(readings[i])} <small>{t(unit)}</small></dd></div>
     {/each}
   </dl>
   <div class="drawing-board">
-    <div class="reference-scene"><div class="reference-label">Exemplo da aula</div>{@render children()}</div>
+    <div class="reference-scene"><div class="reference-label">{t("Exemplo da aula", "Lesson example")}</div>{@render children()}</div>
     <StageIllustration {groups} {original} {stageId} {inputs} {readings}/>
   </div>
-  <p class="premise">{model.explanation}</p>
+  <p class="premise">{t(model.explanation)}</p>
   <details class="curve-panel">
-    <summary>Ver curvas e valores das métricas</summary>
-  <figure class="live-graph" aria-label={'Curvas de ' + stepLabel}>
-    <figcaption><span>{@html icon(visual[model.kind][0],15)} {visual[model.kind][1]} · {stepLabel}</span></figcaption>
+    <summary>{t("Ver curvas e valores das métricas", "View metric curves and values")}</summary>
+  <figure class="live-graph" aria-label={t(`Curvas de ${t(stepLabel)}`, `Curves for ${t(stepLabel)}`)}>
+    <figcaption><span>{@html icon(visualIcon, 15)} {t(...visualLabels)} · {t(stepLabel)}</span></figcaption>
     <div class="topology-line">
-      <span class="node">{origin}</span>
+      <span class="node">{t(origin)}</span>
       <div class="link-state">
-        <b>{formatValue(inputs[axis])} {parameter.unit}</b>
+        <b>{formatValue(inputs[axis])} {t(parameter.unit)}</b>
         <svg viewBox="0 0 120 16" preserveAspectRatio="none" aria-hidden="true">
           <path d="M1 8H116 M109 2L117 8L109 14" fill="none" stroke="var(--subtle)"/>
           <line x1="1" x2={3 + 103*plot.fraction} y1="8" y2="8" stroke="var(--accent)" stroke-width="2"/>
           <circle cx={3 + 103*plot.fraction} cy="8" r="3" fill="var(--accent)"/>
         </svg>
-        <span>{parameter.label}</span>
+        <span>{t(parameter.label)}</span>
       </div>
-      <span class="node target">{destination}</span>
+      <span class="node target">{t(destination)}</span>
     </div>
     <div class="branches" style={'--n:' + model.metrics.length}>
       {#each model.metrics as [name, unit], i}
         {@const chart = curves[i]}
         <div class="branch">
-          <h4>{name}</h4>
-          <div class="value"><strong>{formatValue(readings[i])}</strong> <span>{unit}</span></div>
+          <h4>{t(name)}</h4>
+          <div class="value"><strong>{formatValue(readings[i])}</strong> <span>{t(unit)}</span></div>
           <div class="chart">
           <div class="vertical-scale" aria-hidden="true"><span>{formatValue(chart.max)}</span>{#if chart.max !== chart.min}<span>{formatValue(chart.min)}</span>{/if}</div>
-          <svg viewBox="0 0 200 52" preserveAspectRatio="none" role="img" aria-label={name + ' em função de ' + parameter.label + '. Mínimo ' + formatValue(chart.min) + ', máximo ' + formatValue(chart.max)}>
+          <svg viewBox="0 0 200 52" preserveAspectRatio="none" role="img" aria-label={t(`${t(name)} em função de ${t(parameter.label)}. Mínimo ${formatValue(chart.min)}, máximo ${formatValue(chart.max)}`, `${t(name)} as a function of ${t(parameter.label)}. Minimum ${formatValue(chart.min)}, maximum ${formatValue(chart.max)}`)}>
             <path class="grid" d="M5 6H195 M5 26H195 M5 46H195"/>
             <polyline class="curve" points={plot.lines[i].map(p => p.x + ',' + p.y).join(' ')}/>
             <line class="cursor" x1={cursorX} x2={cursorX} y1="4" y2="49"/>
@@ -145,11 +147,11 @@
           </svg>
           </div>
           <div class="ticks"><span>{formatValue(parameter.min)}</span><span>{formatValue(parameter.max)}</span></div>
-          <small class="base" class:concealed={!modified}>Inicial · {formatValue(baseline[i])} {unit}</small>
+          <small class="base" class:concealed={!modified}>{t("Inicial", "Initial")} · {formatValue(baseline[i])} {t(unit)}</small>
         </div>
       {/each}
     </div>
-    <div class="axis-note">Cada curva varia {parameter.label.toLowerCase()} e mantém os outros valores que você escolheu.</div>
+    <div class="axis-note">{t(`Cada curva varia ${t(parameter.label).toLowerCase()} e mantém os outros valores que você escolheu.`, `Each curve varies ${t(parameter.label).toLowerCase()} while holding your other settings constant.`)}</div>
   </figure>
   </details>
 </section>

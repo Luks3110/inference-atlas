@@ -1,4 +1,5 @@
 <script>
+  import { t } from './i18n.js';
   import CourseTerms from './CourseTerms.svelte';
   import { icon } from './icons.js';
   let { investigation, group } = $props();
@@ -7,37 +8,37 @@
 
 <section class="production-case" aria-labelledby="case-title">
   <header>
-    <div class="lesson-kicker"><span></span>{caseStudy.kind === 'guide' ? 'Exercício guiado' : 'Caso em produção'} · {caseStudy.org}</div>
-    <h2 id="case-title" tabindex="-1">{investigation.title}</h2>
+    <div class="lesson-kicker"><span></span>{caseStudy.kind === 'guide' ? t("Exercício guiado", "Guided exercise") : t("Caso em produção", "Production case")} · {t(caseStudy.org)}</div>
+    <h2 id="case-title" tabindex="-1">{t(investigation.title)}</h2>
   </header>
   <CourseTerms text={[caseStudy.observed, caseStudy.mechanism, investigation.method, investigation.signal, investigation.exercise.prompt].join(' ')} />
   <div class="analysis">
     <section>
-      <h3>{caseStudy.title}</h3>
-      <p>{caseStudy.observed}</p>
-      <p>{caseStudy.mechanism}</p>
+      <h3>{t(caseStudy.title)}</h3>
+      <p>{t(caseStudy.observed)}</p>
+      <p>{t(caseStudy.mechanism)}</p>
       <a class="study-source" href={caseStudy.url} target="_blank" rel="noreferrer">
-        Fonte primária · {caseStudy.org} {@html icon('external', 13)}
+        {t("Fonte primária", "Primary source")} · {t(caseStudy.org)} {@html icon('external', 13)}
       </a>
-      <h3>O que o teste cobre</h3>
-      <p>{caseStudy.limits}</p>
+      <h3>{t("O que o teste cobre", "What the test covers")}</h3>
+      <p>{t(caseStudy.limits)}</p>
     </section>
     <section>
-      <h3>Como aplicar na aula</h3>
-      <p>{investigation.method}</p>
-      <h3>O que medir para decidir</h3>
-      <p>{investigation.signal}</p>
+      <h3>{t("Como aplicar na aula", "How to apply it in this lesson")}</h3>
+      <p>{t(investigation.method)}</p>
+      <h3>{t("O que medir para decidir", "What to measure before deciding")}</h3>
+      <p>{t(investigation.signal)}</p>
     </section>
   </div>
   <section class="decision">
-    <h3>O que você faria?</h3>
-    <p>{investigation.exercise.prompt}</p>
+    <h3>{t("O que você faria?", "What would you do?")}</h3>
+    <p>{t(investigation.exercise.prompt)}</p>
     <details>
-      <summary>Conferir raciocínio</summary>
-      <p>{investigation.exercise.solution}</p>
+      <summary>{t("Conferir raciocínio", "Check the reasoning")}</summary>
+      <p>{t(investigation.exercise.solution)}</p>
     </details>
   </section>
-  <a class="study-source" href={'#/auditoria/' + group}>Ver auditoria deste módulo {@html icon('arrow', 14)}</a>
+  <a class="study-source" href={'#/auditoria/' + group}>{t("Ver auditoria deste módulo", "View this module’s audit")} {@html icon('arrow', 14)}</a>
 </section>
 
 <style>

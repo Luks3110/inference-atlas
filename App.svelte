@@ -1,4 +1,6 @@
 <script>
+  import { t } from './i18n.js';
+  import LanguageSwitcher from './LanguageSwitcher.svelte';
   import { onMount, tick } from 'svelte';
   import Sidebar from './Sidebar.svelte';
   import Lesson from './Lesson.svelte';
@@ -51,8 +53,8 @@
     document.documentElement.dataset.theme = theme;
   });
   function pageTitle(current) {
-    if (current.page === 'aprender') return current.item.title;
-    if (current.page === 'auditoria') return 'Auditoria do currículo';
+    if (current.page === 'aprender') return t(current.item.title);
+    if (current.page === 'auditoria') return t('Auditoria do currículo', 'Curriculum audit');
     return modes[current.page][1];
   }
   $effect(() => {
@@ -218,7 +220,7 @@
       }
       notice =
         next.page === 'aprender'
-          ? next.item.title + ', etapa ' + (next.index + 1) + '. ' + next.item.steps[next.index].title
+          ? `${t(next.item.title)}, ${t('etapa', 'step')} ${next.index + 1}. ${t(next.item.steps[next.index].title)}`
           : pageTitle(next);
     }
     window.addEventListener('hashchange', change);
@@ -238,21 +240,21 @@
   onclick={(e) => {
     e.preventDefault();
     main.focus();
-  }}>Pular para o conteúdo</a
+  }}>{t('Pular para o conteúdo', 'Skip to content')}</a
 >
 <header id="topbar">
   <button
     bind:this={menuButton}
     class="icon-button menu-button"
-    aria-label="Abrir currículo"
+    aria-label={t('Abrir currículo', 'Open curriculum')}
     aria-controls="sidebar"
     aria-expanded={drawer}
     onclick={toggleDrawer}>{@html icon('menu')}</button
   >
-  <a class="brand" href="#/" aria-label="Inference Atlas — continuar curso"
+  <a class="brand" href="#/" aria-label={t('Inference Atlas — continuar curso', 'Inference Atlas — continue course')}
     ><img src="/mark.svg" alt="" width="32" height="32" /><span>Inference <b>Atlas</b></span></a
   >
-  <nav class="topnav" aria-label="Navegação principal">
+  <nav class="topnav" aria-label={t('Navegação principal', 'Main navigation')}>
     {#each Object.entries(modes) as [id, [symbol, title]]}
       <a href={id === 'aprender' ? '#/' : '#/' + id} aria-current={route.page === id ? 'page' : undefined}
         >{@html icon(symbol, 16)}<span>{title}</span></a
@@ -260,12 +262,13 @@
     {/each}
   </nav>
   <div class="header-tools">
-    <button class="search-trigger" aria-label="Buscar no curso" onclick={search}
-      >{@html icon('search', 17)}<span>Buscar no curso</span><kbd>Ctrl K</kbd></button
+    <LanguageSwitcher />
+    <button class="search-trigger" aria-label={t('Buscar no curso', 'Search the course')} onclick={search}
+      >{@html icon('search', 17)}<span>{t('Buscar no curso', 'Search the course')}</span><kbd>Ctrl K</kbd></button
     >
     <button
       class="icon-button theme-button"
-      aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
+      aria-label={theme === 'dark' ? t('Ativar tema claro', 'Switch to light theme') : t('Ativar tema escuro', 'Switch to dark theme')}
       onclick={changeTheme}>{@html icon(theme === 'dark' ? 'sun' : 'moon', 17)}</button
     >
   </div>
@@ -299,19 +302,19 @@
     {/if}
   </main>
 </div>
-<button type="button" class="scrim" aria-label="Fechar índice" onclick={closeDrawer}></button>
+<button type="button" class="scrim" aria-label={t('Fechar índice', 'Close course index')} onclick={closeDrawer}></button>
 <dialog id="finder" bind:this={finder} aria-labelledby="find-title" onclick={closeBackdrop}>
   <div class="dialog-head">
-    <h2 id="find-title">Buscar no curso</h2>
-    <button class="icon-button" aria-label="Fechar busca" onclick={() => finder.close()}
+    <h2 id="find-title">{t('Buscar no curso', 'Search the course')}</h2>
+    <button class="icon-button" aria-label={t('Fechar busca', 'Close search')} onclick={() => finder.close()}
       >{@html icon('close', 16)}</button
     >
   </div>
   <label class="find-input"
     >{@html icon('search', 19)}<input
       type="search"
-      placeholder="Aula, conceito ou tecnologia…"
-      aria-label="Termo de busca"
+      placeholder={t('Aula, conceito ou tecnologia…', 'Lesson, concept, or technology…')}
+      aria-label={t('Termo de busca', 'Search term')}
       autocomplete="off"
       bind:this={termInput}
       bind:value={query}
@@ -322,14 +325,14 @@
     {#each matches as result (result.item.id)}
       <a href={href(result.item, result.index) + (result.showCase ? '/caso' : '')} onclick={() => finder.close()}
         >{@html icon(symbols[result.item.group], 17)}<span
-          ><strong>{result.item.title}</strong><small
-            >{modules[result.item.group].title}{result.showCase ? ' · Caso em produção' : result.index
-              ? ' · ' + result.item.steps[result.index].label
+          ><strong>{t(result.item.title)}</strong><small
+            >{t(modules[result.item.group].title)}{result.showCase ? t(' · Caso em produção', ' · Production case') : result.index
+              ? ' · ' + t(result.item.steps[result.index].label)
               : ''}</small
           ></span
         >{@html icon('chevron', 14)}</a
       >
-    {:else}<p>Nenhuma aula encontrada. Tente outra palavra.</p>{/each}
+    {:else}<p>{t('Nenhuma aula encontrada. Tente outra palavra.', 'No lessons found. Try another search term.')}</p>{/each}
   </div>
 </dialog>
 <dialog id="progress-dialog" bind:this={progress} aria-labelledby="progress-title" onclick={closeBackdrop}>
@@ -337,31 +340,31 @@
     <div class="dialog-head">
       <span class="completion-icon">{@html icon('check', 22)}</span><button
         class="icon-button"
-        aria-label="Fechar"
+        aria-label={t('Fechar', 'Close')}
         onclick={() => progress.close()}>{@html icon('close', 17)}</button
       >
     </div>
-    <h2 id="progress-title">{nextLesson ? 'Aula concluída' : 'Curso concluído'}</h2>
-    <p>{nextLesson ? route.item.title : 'Você completou a trilha principal do Inference Atlas.'}</p>
-    <p class="finish-total">{coreCompleted} de {coreLessons.length} aulas da trilha concluídas</p>
+    <h2 id="progress-title">{nextLesson ? t('Aula concluída', 'Lesson completed') : t('Curso concluído', 'Course completed')}</h2>
+    <p>{nextLesson ? t(route.item.title) : t('Você completou a trilha principal do Inference Atlas.', 'You completed the Inference Atlas core track.')}</p>
+    <p class="finish-total">{t(`${coreCompleted} de ${coreLessons.length} aulas da trilha concluídas`, `${coreCompleted} of ${coreLessons.length} track lessons completed`)}</p>
     <a
       class="primary finish-link"
       href={nextLesson ? href(nextLesson) : '#/pratica'}
       onclick={() => progress.close()}
-      >{nextLesson ? 'Continuar com ' + nextLesson.title : 'Praticar agora'}{@html icon('arrow', 16)}</a
+      >{nextLesson ? t(`Continuar com ${nextLesson.title}`, `Continue with ${t(nextLesson.title)}`) : t('Praticar agora', 'Practice now')}{@html icon('arrow', 16)}</a
     >
   {:else}
     <div class="dialog-head">
-      <h2 id="progress-title">Seu progresso</h2>
-      <button class="icon-button" aria-label="Fechar" onclick={() => progress.close()}
+      <h2 id="progress-title">{t('Seu progresso', 'Your progress')}</h2>
+      <button class="icon-button" aria-label={t('Fechar', 'Close')} onclick={() => progress.close()}
         >{@html icon('close', 16)}</button
       >
     </div>
-    <p>{coreCompleted} de {coreLessons.length} aulas da trilha concluídas neste navegador</p>
+    <p>{t(`${coreCompleted} de ${coreLessons.length} aulas da trilha concluídas neste navegador`, `${coreCompleted} of ${coreLessons.length} track lessons completed in this browser`)}</p>
     <ul class="progress-list">
       {#each modules as group, i}<li>
           <span class={'module-symbol group-' + (i % 6)}>{@html icon(symbols[i], 16)}</span><strong
-            >{group.title}</strong
+            >{t(group.title)}</strong
           ><span>{group.lessons.filter((l) => completed.has(l.id)).length} / {group.lessons.length}</span>
         </li>{/each}
     </ul>

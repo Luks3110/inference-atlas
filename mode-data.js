@@ -1,81 +1,82 @@
+import { t } from './i18n.js';
 export const questions = [
   {
-    topic: 'Agentes',
-    title: 'Prazo de entrega ou pesquisa?',
-    prompt: 'O banco já tem a data prevista para o pedido. Qual caminho você começa usando?',
+    topic: t('Agentes', 'Agents'),
+    title: t('Prazo de entrega ou pesquisa?', 'Look up the delivery date or research it?'),
+    prompt: t('O banco já tem a data prevista para o pedido. Qual caminho você começa usando?', 'The database already has the estimated delivery date. What do you try first?'),
     options: [
-      'Consultar o pedido pelo código',
-      'Delegar para dois especialistas',
-      'Fazer uma pesquisa aberta no navegador',
+      t('Consultar o pedido pelo código', 'Look up the order by its ID'),
+      t('Delegar para dois especialistas', 'Delegate to two specialists'),
+      t('Fazer uma pesquisa aberta no navegador', 'Do an open-ended web search'),
     ],
     correct: 0,
-    reason: 'A data já vem de uma fonte conhecida. Uma consulta validada e autorizada basta para esse caso.',
+    reason: t('A data já vem de uma fonte conhecida. Uma consulta validada e autorizada basta para esse caso.', 'The date already comes from a known source. An authorized lookup with validated input is enough.'),
     source: 'https://mastra.ai/docs/guides/multi-agent-systems',
   },
   {
     topic: 'Temporal',
-    title: 'A confirmação do pagamento se perdeu',
-    prompt: 'O trabalhador caiu depois de chamar o provedor. Como retomar sem repetir o pagamento?',
+    title: t('A confirmação do pagamento se perdeu', 'The payment confirmation was lost'),
+    prompt: t('O trabalhador caiu depois de chamar o provedor. Como retomar sem repetir o pagamento?', 'The worker crashed after calling the provider. How do you resume without charging twice?'),
     options: [
-      'Gerar outra chave para a tentativa',
-      'Usar a mesma chave e conferir o recibo',
-      'Escolher um novo número de pedido',
+      t('Gerar outra chave para a tentativa', 'Generate a different key for the retry'),
+      t('Usar a mesma chave e conferir o recibo', 'Reuse the same key and check the receipt'),
+      t('Escolher um novo número de pedido', 'Choose a new order number'),
     ],
     correct: 1,
     reason:
-      'Se o provedor reconhece a mesma chave, a repetição encontra o pagamento anterior. Se não, confira o estado antes de reenviar.',
+      t('Se o provedor reconhece a mesma chave, a repetição encontra o pagamento anterior. Se não, confira o estado antes de reenviar.', 'If the provider recognizes the same key, the retry finds the previous payment. Otherwise, check its status before sending the request again.'),
     source: 'https://docs.temporal.io/develop/typescript/activities/basics',
   },
   {
     topic: 'Evals',
-    title: 'A nota subiu com uma gravação indevida',
+    title: t('A nota subiu com uma gravação indevida', 'The score rose despite an unauthorized write'),
     prompt:
-      'A skill ganhou em clareza, mas chamou a ferramenta de reembolso sem aprovação. O que acontece com a versão?',
+      t('A skill ganhou em clareza, mas chamou a ferramenta de reembolso sem aprovação. O que acontece com a versão?', 'The skill gave a clearer answer but called the refund tool without approval. What happens to this version?'),
     options: [
-      'Publicar porque a média subiu',
-      'Ignorar se houve só uma chamada',
-      'Bloquear até corrigir a permissão',
+      t('Publicar porque a média subiu', 'Release it because the average improved'),
+      t('Ignorar se houve só uma chamada', 'Ignore it if the tool was only called once'),
+      t('Bloquear até corrigir a permissão', 'Block the release until the permission is fixed'),
     ],
     correct: 2,
     reason:
-      'Uma condição obrigatória deve ser testada separadamente da nota média. Clareza nunca autoriza uma gravação.',
+      t('Uma condição obrigatória deve ser testada separadamente da nota média. Clareza nunca autoriza uma gravação.', 'Test mandatory requirements separately from the average score. A clear answer never authorizes a write.'),
     source: 'https://langfuse.com/docs/evaluation/core-concepts',
   },
   {
     topic: 'A2A',
-    title: 'A logística pede um dado',
-    prompt: 'A tarefa remota aguarda o número de rastreio. Como a aplicação continua?',
+    title: t('A logística pede um dado', 'Logistics asks for more information'),
+    prompt: t('A tarefa remota aguarda o número de rastreio. Como a aplicação continua?', 'The remote task is waiting for a tracking number. How does the application continue?'),
     options: [
-      'Enviar o dado associado à tarefa existente',
-      'Descartar a tarefa e criar sempre outra',
-      'Marcar como concluída e devolver o vazio',
+      t('Enviar o dado associado à tarefa existente', 'Send the information with the existing task ID'),
+      t('Descartar a tarefa e criar sempre outra', 'Discard the task and always create a new one'),
+      t('Marcar como concluída e devolver o vazio', 'Mark it complete and return an empty response'),
     ],
     correct: 0,
-    reason: 'O identificador existente liga a nova mensagem ao trabalho que já começou.',
+    reason: t('O identificador existente liga a nova mensagem ao trabalho que já começou.', 'The existing ID connects the new message to the work already underway.'),
     source: 'https://a2a-protocol.org/latest/specification/',
   },
   {
     topic: 'Tenancy',
-    title: 'Duas lojas têm um pedido 42',
-    prompt: 'De onde vem a empresa usada para buscar o pedido?',
+    title: t('Duas lojas têm um pedido 42', 'Two stores have an order numbered 42'),
+    prompt: t('De onde vem a empresa usada para buscar o pedido?', 'Where does the order lookup get the tenant ID?'),
     options: [
-      'De um argumento que o modelo produziu',
-      'Da sessão autenticada da aplicação',
-      'Do texto livre da última mensagem',
+      t('De um argumento que o modelo produziu', 'From an argument generated by the model'),
+      t('Da sessão autenticada da aplicação', 'From the application’s authenticated session'),
+      t('Do texto livre da última mensagem', 'From the free text in the last message'),
     ],
     correct: 1,
     reason:
-      'O serviço verifica a identidade e usa o acesso autorizado tanto na leitura do banco quanto no cache e nas ferramentas.',
+      t('O serviço verifica a identidade e usa o acesso autorizado tanto na leitura do banco quanto no cache e nas ferramentas.', 'The service verifies the identity and enforces the same permissions for database reads, cache access, and tool calls.'),
     source: 'https://mastra.ai/docs/guides/mcp-authentication-authorization',
   },
 ];
 
 export const guides = [
   {
-    title: 'Registrar um agente no Mastra',
-    category: 'Agentes',
+    title: t('Registrar um agente no Mastra', 'Register an agent in Mastra'),
+    category: t('Agentes', 'Agents'),
     description:
-      'Use um modelo configurado no seu projeto. Registre a ferramenta de leitura e deixe a checagem de acesso dentro da função que consulta o pedido.',
+      t('Use um modelo configurado no seu projeto. Registre a ferramenta de leitura e deixe a checagem de acesso dentro da função que consulta o pedido.', 'Use a model configured in your project. Register the read tool and check permissions inside the order lookup function.'),
     language: 'javascript',
     code: `import { Mastra } from "@mastra/core";
 import { Agent } from "@mastra/core/agent";
@@ -83,8 +84,8 @@ import { model, consultarPedido } from "./deps.js";
 
 const suporte = new Agent({
   id: "suporte",
-  name: "Suporte",
-  instructions: "Consulte o pedido antes de dar um prazo.",
+  name: ${JSON.stringify(t('Suporte', 'Support'))},
+  instructions: ${JSON.stringify(t('Consulte o pedido antes de dar um prazo.', 'Look up the order before giving a delivery date.'))},
   model,
   tools: { consultarPedido },
 });
@@ -92,10 +93,10 @@ export const mastra = new Mastra({ agents: { suporte } });`,
     source: 'https://mastra.ai/docs/agents/overview',
   },
   {
-    title: 'Testar uma skill com Node.js',
+    title: t('Testar uma skill com Node.js', 'Test a skill with Node.js'),
     category: 'Evals',
     description:
-      'Baixe avaliacao.mjs pelo laboratório. Salve este trecho como teste.mjs na mesma pasta e rode node teste.mjs. Troque a configuração para ver o teste detectar uma política errada ou o uso indevido da ferramenta.',
+      t('Baixe avaliacao.mjs pelo laboratório. Salve este trecho como teste.mjs na mesma pasta e rode node teste.mjs. Troque a configuração para ver o teste detectar uma política errada ou o uso indevido da ferramenta.', 'Download avaliacao.mjs from the lab. Save this snippet as teste.mjs in the same directory and run node teste.mjs. Change the configuration to see the test catch a wrong policy or an unauthorized tool call.'),
     language: 'javascript',
     code: `import assert from "node:assert/strict";
 import { decide, evaluate, summarize } from "./avaliacao.mjs";
@@ -106,14 +107,14 @@ const results = evaluate(input => decide(input, {
 }));
 console.table(results.map(({label, correct, allowed}) =>
   ({label, correct, allowed})));
-assert(summarize(results).passes, "Falha na política ou na ferramenta");`,
+assert(summarize(results).passes, ${JSON.stringify(t('Falha na política ou na ferramenta', 'Policy or tool check failed'))});`,
     source: 'https://agentskills.io/specification',
   },
   {
-    title: 'Chamar uma Activity do Temporal',
+    title: t('Chamar uma Activity do Temporal', 'Call a Temporal Activity'),
     category: 'Workflows',
     description:
-      'No arquivo de Workflows do SDK TypeScript, use proxyActivities para chamar a função registrada no Worker. O exemplo só lê o pedido e limita o tempo total da Activity, incluindo novas tentativas.',
+      t('No arquivo de Workflows do SDK TypeScript, use proxyActivities para chamar a função registrada no Worker. O exemplo só lê o pedido e limita o tempo total da Activity, incluindo novas tentativas.', 'In the TypeScript SDK Workflow file, use proxyActivities to call the function registered with the Worker. This example reads the order and caps the Activity’s total runtime, including retries.'),
     language: 'typescript',
     code: `import { proxyActivities } from "@temporalio/workflow";
 import type * as activities from "./activities.js";
@@ -130,20 +131,20 @@ export async function consultarNoFluxo(empresa: string, pedido: string) {
     source: 'https://docs.temporal.io/develop/typescript/activities/basics',
   },
   {
-    title: 'Ler o cartão de um agente A2A',
-    category: 'Integração',
+    title: t('Ler o cartão de um agente A2A', 'Read an A2A Agent Card'),
+    category: t('Integração', 'Integration'),
     description:
-      'Troque a origem pelo endereço conhecido do seu serviço. Leia as interfaces, as capacidades e os requisitos de autenticação antes de escolher como enviar uma mensagem.',
+      t('Troque a origem pelo endereço conhecido do seu serviço. Leia as interfaces, as capacidades e os requisitos de autenticação antes de escolher como enviar uma mensagem.', 'Replace the URL’s origin with your service’s known address. Read its interfaces, capabilities, and authentication requirements before choosing how to send a message.'),
     language: 'bash',
     code: `curl --fail --silent --show-error \\
   https://agente.example.com/.well-known/agent-card.json`,
     source: 'https://a2a-protocol.org/latest/topics/agent-discovery/',
   },
   {
-    title: 'Ligar a consulta ao trace do Langfuse',
-    category: 'Observabilidade',
+    title: t('Ligar a consulta ao trace do Langfuse', 'Link a lookup to a Langfuse trace'),
+    category: t('Observabilidade', 'Observability'),
     description:
-      'Com o SDK e o exportador já configurados no servidor, registre cada etapa dentro da observação do pedido. O exemplo envia a versão da skill e o resultado da consulta, sem o texto ou o número do pedido.',
+      t('Com o SDK e o exportador já configurados no servidor, registre cada etapa dentro da observação do pedido. O exemplo envia a versão da skill e o resultado da consulta, sem o texto ou o número do pedido.', 'Once the SDK and exporter are configured on the server, record each step within the order observation. This example sends the skill version and lookup result while omitting the order text and number.'),
     language: 'javascript',
     code: `import { startActiveObservation } from "@langfuse/tracing";
 import { buscarPolitica } from "./politicas.js";

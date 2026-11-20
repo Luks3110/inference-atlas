@@ -1,6 +1,7 @@
 <script>
+  import { formatLocale, t } from './i18n.js';
   let { stageId, inputs, readings } = $props();
-  const fmt = n => n.toLocaleString('pt-BR', {maximumSignificantDigits:4});
+  const fmt = n => n.toLocaleString(formatLocale(), {maximumSignificantDigits:4});
   let valid = $derived(inputs[0]);
   let length = $derived(inputs[0] + inputs[1]);
   let step = $derived(2 * inputs[0] / 255);
@@ -8,30 +9,30 @@
   const x = v => 146 + v * 19;
 </script>
 {#if stageId === 'espacos-de-embeddings-0'}
-  <figure aria-label="As duas médias do mesmo lote">
-    <figcaption>Quais posições entram na média?</figcaption>
+  <figure aria-label={t("As duas médias do mesmo lote", "Two averages for the same batch")}>
+    <figcaption>{t("Quais posições entram na média?", "Which positions count toward the average?")}</figcaption>
     <div class="sequence">
       {#each Array(length) as _,i}
         <div class:padding={i>=valid}><small>{i<valid?'Token':'PAD'}</small><b>{i<valid?inputs[2]:0}</b></div>
       {/each}
     </div>
-    <div class="bus"><span>Soma · {valid*inputs[2]}</span></div>
+    <div class="bus"><span>{t("Soma", "Sum")} · {valid*inputs[2]}</span></div>
     <div class="outputs">
-      <div><b>Todas as posições</b><span>{valid*inputs[2]} ÷ {length} = <strong>{fmt(readings[0])}</strong></span></div>
-      <div><b>Só os tokens válidos</b><span>{valid*inputs[2]} ÷ {valid} = <strong>{fmt(readings[1])}</strong></span></div>
+      <div><b>{t("Todas as posições", "All positions")}</b><span>{valid*inputs[2]} ÷ {length} = <strong>{fmt(readings[0])}</strong></span></div>
+      <div><b>{t("Só os tokens válidos", "Valid tokens only")}</b><span>{valid*inputs[2]} ÷ {valid} = <strong>{fmt(readings[1])}</strong></span></div>
     </div>
   </figure>
 {:else if stageId === 'rag-ivf-e-shards-4'}
   {@const [total,lists,allowed] = inputs}
   {@const opened = Math.min(lists,allowed)}
-  <figure aria-label="Listas que o roteador lê">
-    <figcaption>Para onde vai a consulta?</figcaption>
-    <div class="bus"><span>Roteador · abre as {opened} maiores</span></div>
+  <figure aria-label={t("Listas que o roteador lê", "Lists read by the router")}>
+    <figcaption>{t("Para onde vai a consulta?", "Where does the query go?")}</figcaption>
+    <div class="bus"><span>{t(`Roteador · abre as ${opened} maiores`, `Router · opens the ${opened} largest lists`)}</span></div>
     <div class="shards">
       {#each Array(lists) as _,i}
-        <div class:skip={i>=opened}><b>Lista {i+1}</b>
+        <div class:skip={i>=opened}><b>{t("Lista", "List")} {i+1}</b>
           <svg viewBox="0 0 44 38" aria-hidden="true"><path d="M5 8C5 1 39 1 39 8v21c0 8-34 8-34 0Z"/><ellipse cx="22" cy="8" rx="17" ry="5"/><path d="M5 18c0 7 34 7 34 0"/></svg>
-          <span>{fmt(Math.floor(total/lists)+(i<total%lists?1:0))} itens</span><small>{i<opened?'Lida':'Pulada'}</small></div>
+          <span>{fmt(Math.floor(total/lists)+(i<total%lists?1:0))} {t("itens", "items")}</span><small>{i<opened?t("Lida", "Read"):t("Pulada", "Skipped")}</small></div>
       {/each}
     </div>
   </figure>
@@ -41,9 +42,9 @@
   {@const total = trace ? readings[0] : longest}
   {@const scale = 176 / Math.max(1,total)}
   {@const end = 48 + longest*scale}
-  <figure aria-label="Dois ramos executados em paralelo">
-    <figcaption>Quando o próximo nó pode começar?</figcaption>
-    <svg viewBox="0 0 300 106" role="img" aria-label={'Os ramos se encontram aos '+longest+' ms'}>
+  <figure aria-label={t("Dois ramos executados em paralelo", "Two branches running in parallel")}>
+    <figcaption>{t("Quando o próximo nó pode começar?", "When can the next node start?")}</figcaption>
+    <svg viewBox="0 0 300 106" role="img" aria-label={t(`Os ramos se encontram aos ${fmt(longest)} ms`, `The branches join at ${fmt(longest)} ms`)}>
       <g class="paths">
         <path d="M8 51H20L44 28H48M20 51l24 24h4"/>
         {#each [inputs[0],inputs[1]] as duration,j}
@@ -51,20 +52,20 @@
           {@const finish=48+scale*duration}
           <rect x="48" y={y-6} width={scale*duration} height="12" rx="4"/>
           <path class="wait" d={'M'+finish+' '+y+'H'+end}/>
-          <text x="48" y={y-11}>{trace ? (j?'Vetorial':'Lexical') : (j?'Transportadora':'Pedido')} · {fmt(duration)} ms</text>
+          <text x="48" y={y-11}>{trace ? (j?t("Vetorial", "Vector"):'Lexical') : (j?t("Transportadora", "Carrier"):t("Pedido", "Order"))} · {fmt(duration)} ms</text>
         {/each}
         <path d={'M'+end+' 28l10 23-10 24M'+(end+10)+' 51H258'}/>
         <circle cx={end+10} cy="51" r="3"/>
       </g>
-      <text x="293" y="44" text-anchor="end">{trace?'Token':'Junção'}</text>
+      <text x="293" y="44" text-anchor="end">{trace?'Token':t("Junção", "Join")}</text>
       <text x="293" y="66" text-anchor="end">{fmt(total)} ms</text>
     </svg>
-    <small>{trace ? 'Depois da junção, somam-se '+inputs[2]+' ms de fila e 40 ms para gerar o primeiro token.' : 'A junção espera as duas respostas. O tracejado mostra quanto o ramo mais curto espera.'}</small>
+    <small>{trace ? t(`Depois da junção, somam-se ${fmt(inputs[2])} ms de fila e 40 ms para gerar o primeiro token.`, `After the join, add ${fmt(inputs[2])} ms for queueing and 40 ms to generate the first token.`) : t("A junção espera as duas respostas. O tracejado mostra quanto o ramo mais curto espera.", "The join waits for both responses. The dashed line shows how long the shorter branch waits.")}</small>
   </figure>
 {:else if stageId === 'rag-quantizacao-vetorial-1'}
-  <figure aria-label="Coordenada original e reconstrução SQ8">
-    <figcaption>Onde a coordenada cai nos 256 níveis</figcaption>
-    <svg viewBox="0 0 292 95" role="img" aria-label={'Coordenada '+fmt(inputs[1])+', código '+code}>
+  <figure aria-label={t("Coordenada original e reconstrução SQ8", "Original coordinate and SQ8 reconstruction")}>
+    <figcaption>{t("Onde a coordenada cai nos 256 níveis", "Where the coordinate falls within the 256 levels")}</figcaption>
+    <svg viewBox="0 0 292 95" role="img" aria-label={t(`Coordenada ${fmt(inputs[1])}, código ${code}`, `Coordinate ${fmt(inputs[1])}, code ${code}`)}>
       <line x1="14" x2="277" y1="45" y2="45" stroke="var(--line)" />
       <rect class="rail" x={x(-inputs[0])} y="40" width={38*inputs[0]} height="10" rx="3"/>
       <g class="shift" style:transform={'translateX('+x(inputs[1])+'px)'}>
@@ -76,8 +77,8 @@
       <text x={x(-inputs[0])} y="76" text-anchor="end">−{fmt(inputs[0])}</text>
       <text x={x(inputs[0])} y="76">{fmt(inputs[0])}</text>
     </svg>
-    <div class="outputs"><div><b>Código SQ8</b><span>{code.toString(2).padStart(8,'0')}</span></div><div><b>Valor reconstruído</b><span>{fmt(code*step-inputs[0])}</span></div></div>
-    <small>O triângulo acima marca a entrada. O de baixo marca o valor que o código consegue representar.</small>
+    <div class="outputs"><div><b>{t("Código SQ8", "SQ8 code")}</b><span>{code.toString(2).padStart(8,'0')}</span></div><div><b>{t("Valor reconstruído", "Reconstructed value")}</b><span>{fmt(code*step-inputs[0])}</span></div></div>
+    <small>{t("O triângulo acima marca a entrada. O de baixo marca o valor que o código consegue representar.", "The upper triangle marks the input. The lower one marks the value the code can represent.")}</small>
   </figure>
 {/if}
 <style>

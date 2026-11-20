@@ -9,6 +9,8 @@
     "test:ui": "playwright test"
   },
   "devDependencies": {
+    "@inlang/paraglide-js": "^3.2.2",
+    "@inlang/plugin-message-format": "^4.6.0",
     "@playwright/test": "^1.58.2",
     "esbuild": "^0.28.2"
   },

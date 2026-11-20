@@ -1,23 +1,24 @@
 <script>
+  import { t } from './i18n.js';
   import { comparisonScale } from './decision-scale.js';
   import StageSimulator from './StageSimulator.svelte';
   import HnswPlayground from './HnswPlayground.svelte';
   import { icon } from './icons.js';
   let { decision, model, illustrate, stageId, stepLabel, hnsw, children, readings: baseReadings } = $props();
   let mode = $state('initial');
-  let showHnsw = $derived(hnsw && (mode === 'benchmark' || (mode === 'initial' && ['Referência','Ajustar','Filtrar'].includes(stepLabel))));
+  let showHnsw = $derived(hnsw && (mode === 'benchmark' || (mode === 'initial' && ['Referência', 'Ajustar', 'Filtrar'].includes(stepLabel))));
   let [action, origin, destination, metric, before, after, reason] = $derived(decision);
   let selected = $state(1);
   let scale = $derived(comparisonScale(before, after, metric));
 </script>
 
-<section class="step-decision" aria-label="Comparação da decisão">
-  <div class="caption">{@html icon('lab', 15)} Simulação da etapa</div>
-  <h2>{action}</h2>
+<section class="step-decision" aria-label={t("Comparação da decisão", "Decision comparison")}>
+  <div class="caption">{@html icon('lab', 15)} {t("Simulação da etapa", "Step simulation")}</div>
+  <h2>{t(action)}</h2>
   {#if hnsw}
-    <nav class="sim-views" aria-label="Escolher simulador">
-      <button type="button" aria-pressed={!showHnsw} onclick={() => mode = 'step'}>Decisão da etapa</button>
-      <button type="button" aria-pressed={showHnsw} onclick={() => mode = 'benchmark'}>Busca HNSW · efSearch e filtro</button>
+    <nav class="sim-views" aria-label={t("Escolher simulador", "Choose a simulator")}>
+      <button type="button" aria-pressed={!showHnsw} onclick={() => mode = 'step'}>{t("Decisão da etapa", "Step decision")}</button>
+      <button type="button" aria-pressed={showHnsw} onclick={() => mode = 'benchmark'}>{t("Busca HNSW · efSearch e filtro", "HNSW search · efSearch and filtering")}</button>
     </nav>
   {/if}
   {#if showHnsw}
@@ -27,33 +28,33 @@
     <StageSimulator {model} {illustrate} {stageId} {origin} {destination} {stepLabel}>{@render children()}</StageSimulator>
   {/if}
   <details class="fixed-example">
-    <summary>Comparar os valores do exemplo da aula</summary>
+    <summary>{t("Comparar os valores do exemplo da aula", "Compare the values in the lesson example")}</summary>
     <div class="comparison-pair">
 
-    <figure aria-label={origin + ' → ' + destination + '. ' + metric + '. Referência: ' + before + '. Com a decisão: ' + after}>
-    <figcaption>{metric}</figcaption>
+    <figure aria-label={t(`${t(origin)} → ${t(destination)}. ${t(metric)}. Referência: ${t(before)}. Com a decisão: ${t(after)}`, `${t(origin)} → ${t(destination)}. ${t(metric)}. Baseline: ${t(before)}. With the decision: ${t(after)}`)}>
+    <figcaption>{t(metric)}</figcaption>
     <div class="flow">
-      <span class:reference={selected === 0}>{origin}{#if selected === 0}<small>{before}</small>{/if}</span>
+      <span class:reference={selected === 0}>{t(origin)}{#if selected === 0}<small>{t(before)}</small>{/if}</span>
       <svg aria-hidden="true" viewBox="0 0 52 18" preserveAspectRatio="none"><path d="M0 9 H48 M39 2 L48 9 L39 16"/></svg>
-      <span class:applied={selected === 1}>{destination}{#if selected === 1}<small>{after}</small>{/if}</span>
+      <span class:applied={selected === 1}>{t(destination)}{#if selected === 1}<small>{t(after)}</small>{/if}</span>
     </div>
-    <div class="readings" role="group" aria-label="Selecionar estado no diagrama">
+    <div class="readings" role="group" aria-label={t("Selecionar estado no diagrama", "Select a state in the diagram")}>
       {#each [before, after] as value, i}
         <button type="button" class="reading" class:chosen={selected === i} aria-pressed={selected === i} onclick={() => selected = i}>
-          <span>{i === 0 ? 'Referência' : 'Com a decisão'}</span>
+          <span>{i === 0 ? t("Referência", "Baseline") : t("Com a decisão", "With the decision")}</span>
           {#if scale}
             <span class="rail" aria-hidden="true">
               <i style:left={scale.bars[i].start + '%'} style:width={scale.bars[i].width + '%'}></i>
               {#if scale.zero > 0}<b style:left={scale.zero + '%'}></b>{/if}
             </span>
           {/if}
-          <strong>{value}</strong>
+          <strong>{t(value)}</strong>
         </button>
       {/each}
     </div>
     </figure>
   </div>
-    <p class="original-rationale">{reason}</p>
+    <p class="original-rationale">{t(reason)}</p>
     {@render baseReadings()}
   </details>
 </section>

@@ -8,7 +8,7 @@
     return [addressStage, gateStage, combineStage, fanoutStage].includes(stageId);
   }
 
-  const fmt = n => n.toLocaleString('pt-BR', { maximumFractionDigits: 3 });
+  const fmt = n => n.toLocaleString(formatLocale(), { maximumFractionDigits: 3 });
   const physicalY = page => 52 + page * 29;
   const expertY = index => 55 + 50 * index;
   const fanoutY = index => 49 + index * 23;
@@ -19,6 +19,7 @@
 </script>
 
 <script>
+  import { formatLocale, t } from './i18n.js';
   let { stageId, inputs, readings } = $props();
 </script>
 
@@ -28,11 +29,11 @@
   {@const physicalPage = logicalPage === 0 ? 4 : secondPage}
   {@const offset = position % 4}
   <figure>
-    <figcaption>Onde a GPU lê a posição {position}?</figcaption>
-    <svg viewBox="0 0 396 197" role="img" aria-label={'A página lógica L' + logicalPage + ' aponta para P' + physicalPage + '. A GPU lê o slot ' + offset + ', endereço ' + readings[1] + '.'}>
-      <text class="heading" x="13" y="23">Página lógica</text>
-      <text class="heading" x="184" y="23">Página física</text>
-      <text class="heading" x="279" y="23">Endereços</text>
+    <figcaption>{t(`Onde a GPU lê a posição ${position}?`, `Where does the GPU read position ${position}?`)}</figcaption>
+    <svg viewBox="0 0 396 197" role="img" aria-label={t(`A página lógica L${logicalPage} aponta para P${physicalPage}. A GPU lê o slot ${offset}, endereço ${readings[1]}.`, `Logical page L${logicalPage} points to P${physicalPage}. The GPU reads slot ${offset} at address ${readings[1]}.`)}>
+      <text class="heading" x="13" y="23">{t("Página lógica", "Logical page")}</text>
+      <text class="heading" x="184" y="23">{t("Página física", "Physical page")}</text>
+      <text class="heading" x="279" y="23">{t("Endereços", "Addresses")}</text>
       {#each [0,1] as logical}
         {@const sourceY = logical ? 139 : 79}
         {#each (logical ? [0,1,2,3] : [4]) as dest}
@@ -40,7 +41,7 @@
           <path class="wire" class:unmapped={!mapped} class:live={mapped && logical === logicalPage} d={connection(115,sourceY,182,physicalY(dest))}/>
         {/each}
         <rect class="box" class:chosen={logical === logicalPage} x="12" y={sourceY-17} width="103" height="34" rx="6"/>
-        <text class="mono" x="63" y={sourceY+4} text-anchor="middle">{logical ? 'L1 · 4 a 7' : 'L0 · 0 a 3'}</text>
+        <text class="mono" x="63" y={sourceY+4} text-anchor="middle">{logical ? t("L1 · 4 a 7", "L1 · 4 to 7") : t("L0 · 0 a 3", "L0 · 0 to 3")}</text>
       {/each}
       {#each [0,1,2,3,4] as page}
         {@const y = physicalY(page)}
@@ -53,42 +54,42 @@
         {/each}
       {/each}
     </svg>
-    <p>L{logicalPage} aponta para P{physicalPage}. O slot {offset} fica no endereço <strong>{readings[1]}</strong>.
-      {#if logicalPage === 1}Somar a posição à base de P4 daria {readings[0]}.{/if}</p>
+    <p>{t(`L${logicalPage} aponta para P${physicalPage}. O slot ${offset} fica no endereço`, `L${logicalPage} points to P${physicalPage}. Slot ${offset} is at address`)} <strong>{readings[1]}</strong>.
+      {#if logicalPage === 1}{t(`Somar a posição à base de P4 daria ${readings[0]}.`, `Adding the position to the base of P4 would give ${readings[0]}.`)}{/if}</p>
   </figure>
 {:else if stageId === gateStage}
   {@const [second, third, delta] = inputs}
   {@const chosen = readings[1] ? 3 : 2}
   <figure>
-    <figcaption>Quais experts recebem este token?</figcaption>
-    <svg viewBox="0 0 396 187" role="img" aria-label={'O roteador envia o token para E1 e E' + chosen + '. E2 tem score ' + fmt(second) + ' e E3 tem ' + fmt(third + delta) + '.'}>
-      <text class="heading" x="17" y="25">Entrada</text>
-      <text class="heading" x="117" y="25">Roteador</text>
-      <text class="heading" x="271" y="25">Destinos</text>
+    <figcaption>{t("Quais experts recebem este token?", "Which experts receive this token?")}</figcaption>
+    <svg viewBox="0 0 396 187" role="img" aria-label={t(`O roteador envia o token para E1 e E${chosen}. E2 tem score ${fmt(second)} e E3 tem ${fmt(third + delta)}.`, `The router sends the token to E1 and E${chosen}. E2 scores ${fmt(second)} and E3 scores ${fmt(third + delta)}.`)}>
+      <text class="heading" x="17" y="25">{t("Entrada", "Input")}</text>
+      <text class="heading" x="117" y="25">{t("Roteador", "Router")}</text>
+      <text class="heading" x="271" y="25">{t("Destinos", "Destinations")}</text>
       <path class="wire live" d="M81 105 H116"/>
       {#each [1,2,3] as id}
         {@const y = expertY(id-1)}
         {@const selected = id === 1 || id === chosen}
         <path class="wire" class:live={selected} class:unused={!selected} d={connection(190,105,269,y)}/>
         <rect class="box" class:chosen={selected} x="269" y={y-15} width="114" height="30" rx="6"/>
-        <text class="mono" x="326" y={y+4} text-anchor="middle">E{id} · {id === 1 ? 'fixo' : fmt(id === 2 ? second : third + delta)}</text>
+        <text class="mono" x="326" y={y+4} text-anchor="middle">E{id} · {id === 1 ? t("fixo", "fixed") : fmt(id === 2 ? second : third + delta)}</text>
       {/each}
       <path class="token" d="M22 91H72L82 105L72 119H22Q16 119 16 113V97Q16 91 22 91Z"/>
       <text class="mono" x="48" y="109" text-anchor="middle">token</text>
       <path class="gate" d="M116 105L153 78L190 105L153 132Z"/>
       <text class="mono" x="153" y="109" text-anchor="middle">top-2</text>
     </svg>
-    <p>E1 tem a primeira vaga. A segunda vai para <strong>E{chosen}</strong>.
-      {#if Math.round((third + delta) * 100) === Math.round(second * 100)}No empate, o roteador mantém E2.{:else}O score de E3 vai de {fmt(third)} para {fmt(third + delta)}.{/if}</p>
+    <p>{t("E1 tem a primeira vaga. A segunda vai para", "E1 gets the first slot. The second goes to")} <strong>E{chosen}</strong>.
+      {#if Math.round((third + delta) * 100) === Math.round(second * 100)}{t("No empate, o roteador mantém E2.", "On a tie, the router keeps E2.")}{:else}{t(`O score de E3 vai de ${fmt(third)} para ${fmt(third + delta)}.`, `The E3 score changes from ${fmt(third)} to ${fmt(third + delta)}.`)}{/if}</p>
   </figure>
 {:else if stageId === combineStage}
   {@const [weight,b] = inputs}
   {@const [total,first,second] = readings}
   <figure>
-    <figcaption>Quanto cada ramo devolve ao token?</figcaption>
-    <svg viewBox="0 0 396 150" role="img" aria-label={'A envia ' + fmt(first) + ' e B envia ' + fmt(second) + '. A soma é ' + fmt(total) + '.'}>
-      <text class="heading" x="12" y="22">Saída do expert</text>
-      <text class="heading" x="157" y="22">Peso no combine</text>
+    <figcaption>{t("Quanto cada ramo devolve ao token?", "How much does each branch contribute to the token?")}</figcaption>
+    <svg viewBox="0 0 396 150" role="img" aria-label={t(`A envia ${fmt(first)} e B envia ${fmt(second)}. A soma é ${fmt(total)}.`, `A sends ${fmt(first)} and B sends ${fmt(second)}. The sum is ${fmt(total)}.`)}>
+      <text class="heading" x="12" y="22">{t("Saída do expert", "Expert output")}</text>
+      <text class="heading" x="157" y="22">{t("Peso no combine", "Combine weight")}</text>
       <path class="combine-wire" style:stroke-width={1 + 6 * weight / 100} class:unused={weight === 0} d={connection(102,58,273,84)}/>
       <path class="combine-wire" style:stroke-width={1 + 6 * (100-weight) / 100} class:unused={weight === 100} d={connection(102,117,273,84)}/>
       <rect class="box" x="13" y="43" width="89" height="30" rx="5"/>
@@ -100,16 +101,16 @@
       <rect class="box chosen" x="273" y="67" width="107" height="34" rx="6"/>
       <text class="mono" x="326" y="88" text-anchor="middle">Σ {fmt(total)}</text>
     </svg>
-    <p>A contribui com {fmt(first)} e B com {fmt(second)}. Se o retorno de B faltar, a soma fica em <strong>{fmt(first)}</strong>.</p>
+    <p>{t(`A contribui com ${fmt(first)} e B com ${fmt(second)}. Se o retorno de B faltar, a soma fica em`, `A contributes ${fmt(first)} and B contributes ${fmt(second)}. If B fails to return, the sum is`)} <strong>{fmt(first)}</strong>.</p>
   </figure>
 {:else if stageId === fanoutStage}
   {@const [k, perNode] = inputs}
   {@const nodes = readings[1]}
   <figure>
-    <figcaption>Por onde o token chega a cada expert?</figcaption>
-    <svg viewBox="0 0 396 242" role="img" aria-label={'Um token cruza a rede ' + nodes + ' vezes e chega a ' + k + ' experts. Cada nó recebe até ' + perNode + ' destinos.'}>
-      <text class="heading" x="12" y="22">Origem</text>
-      <text class="heading" x="146" y="22">Nós remotos</text>
+    <figcaption>{t("Por onde o token chega a cada expert?", "How does the token reach each expert?")}</figcaption>
+    <svg viewBox="0 0 396 242" role="img" aria-label={t(`Um token cruza a rede ${nodes} vezes e chega a ${k} experts. Cada nó recebe até ${perNode} destinos.`, `A token crosses the network ${nodes} times and reaches ${k} experts. Each node handles up to ${perNode} destinations.`)}>
+      <text class="heading" x="12" y="22">{t("Origem", "Source")}</text>
+      <text class="heading" x="146" y="22">{t("Nós remotos", "Remote nodes")}</text>
       <text class="heading" x="304" y="22">Experts</text>
       {#each [0,1,2,3,4,5,6,7] as i}
         {@const y = fanoutY(i)}
@@ -129,7 +130,7 @@
       <path class="token" d="M19 93H65L78 107L65 121H19Q13 121 13 115V99Q13 93 19 93Z"/>
       <text class="mono" x="43" y="111" text-anchor="middle">token</text>
     </svg>
-    <p>{nodes === 1 ? 'Uma cópia cruza' : nodes + ' cópias cruzam'} a rede. Cada nó repassa o token aos seus experts locais. Separar todos os destinos exigiria {k === 1 ? 'uma travessia' : k + ' travessias'}.</p>
+    <p>{t(`${nodes === 1 ? 'Uma cópia cruza' : nodes + ' cópias cruzam'} a rede. Cada nó repassa o token aos seus experts locais. Separar todos os destinos exigiria ${k === 1 ? 'uma travessia' : k + ' travessias'}.`, `${nodes === 1 ? 'One copy crosses' : nodes + ' copies cross'} the network. Each node forwards the token to its local experts. Sending it to every expert individually would require ${k === 1 ? 'one crossing' : k + ' crossings'}.`)}</p>
   </figure>
 {/if}
 

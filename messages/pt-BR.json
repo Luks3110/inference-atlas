@@ -1,0 +1,7 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "language": "Idioma",
+  "site_description": "Curso interativo sobre aplicações de IA, inferência e operação de modelos em escala.",
+  "load_error": "Não foi possível carregar o curso.",
+  "retry": "Tentar novamente"
+}
